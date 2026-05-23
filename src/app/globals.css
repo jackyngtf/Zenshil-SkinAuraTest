@@ -1,26 +1,67 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-playfair);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/20 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] rounded-3xl;
+  }
+  
+  .glass-button {
+    @apply bg-white/40 backdrop-blur-md border border-white/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] transition-all duration-300;
+  }
+
+  .noise-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    pointer-events: none;
+  }
+
+  .fluid-blob {
+    animation: morph 8s ease-in-out infinite alternate;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
 
+@keyframes morph {
+  0% {
+    border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%;
+    transform: rotate(0deg) scale(1);
+  }
+  34% {
+    border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%;
+    transform: rotate(15deg) scale(1.05);
+  }
+  67% {
+    border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%;
+    transform: rotate(-5deg) scale(0.95);
+  }
+  100% {
+    border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: #1a1a1a;
+  background: #f8f7f5;
+  font-family: var(--font-inter), sans-serif;
+  overscroll-behavior-y: none;
 }

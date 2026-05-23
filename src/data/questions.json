@@ -1,0 +1,366 @@
+[
+  {
+    "id": "q1",
+    "questionText": "放假時，你最想去邊種地方？",
+    "interaction": {
+      "type": "imageStage",
+      "confirmMode": "doubleTap",
+      "showAllOptions": true
+    },
+    "options": [
+      {
+        "id": "A",
+        "text": "海邊／溫泉",
+        "auraMapping": "recovery",
+        "imageUrl": "/assets/quiz/q01/a-coastal-wellness.png",
+        "textEn": "Seaside / Hot Spring"
+      },
+      {
+        "id": "B",
+        "text": "山景Café",
+        "auraMapping": "burnout",
+        "imageUrl": "/assets/quiz/q01/b-hillside-cafe.png",
+        "textEn": "Hillside Cafe"
+      },
+      {
+        "id": "C",
+        "text": "Staycation瞓覺",
+        "auraMapping": "preventive",
+        "imageUrl": "/assets/quiz/q01/c-hotel-staycation-rest.png",
+        "textEn": "Staycation & Sleep"
+      },
+      {
+        "id": "D",
+        "text": "熱鬧城市",
+        "auraMapping": "glow",
+        "imageUrl": "/assets/quiz/q01/d-central-evening-energy.png",
+        "textEn": "Bustling City"
+      }
+    ],
+    "questionTextEn": "Where is your dream vacation destination?"
+  },
+  {
+    "id": "q2",
+    "questionText": "你皮膚最似以下邊種天氣？",
+    "interaction": {
+      "type": "weatherStage",
+      "confirmMode": "doubleTap",
+      "showAllOptions": true
+    },
+    "options": [
+      {
+        "id": "A",
+        "text": "陰天",
+        "auraMapping": "overworked",
+        "textEn": "Cloudy"
+      },
+      {
+        "id": "B",
+        "text": "悶熱暴風雨",
+        "auraMapping": "stress",
+        "textEn": "Humid & Stormy"
+      },
+      {
+        "id": "C",
+        "text": "乾燥秋天",
+        "auraMapping": "hidden_aging",
+        "textEn": "Dry Autumn"
+      },
+      {
+        "id": "D",
+        "text": "清晨陽光",
+        "auraMapping": "glow",
+        "textEn": "Early Sunrise"
+      }
+    ],
+    "questionTextEn": "Which weather best represents your skin state?"
+  },
+  {
+    "id": "q3",
+    "questionText": "如果皮膚有情緒，你覺得佢而家會講：",
+    "interaction": {
+      "type": "emotionStage",
+      "confirmMode": "doubleTap",
+      "showAllOptions": true
+    },
+    "options": [
+      {
+        "id": "A",
+        "text": "我好攰",
+        "auraMapping": "overworked",
+        "textEn": "I'm so exhausted"
+      },
+      {
+        "id": "B",
+        "text": "我頂唔順",
+        "auraMapping": "stress",
+        "textEn": "I can't take it anymore"
+      },
+      {
+        "id": "C",
+        "text": "我想休息",
+        "auraMapping": "recovery",
+        "textEn": "I need a break"
+      },
+      {
+        "id": "D",
+        "text": "我想變更好",
+        "auraMapping": "preventive",
+        "textEn": "I want to be better"
+      }
+    ],
+    "questionTextEn": "If your skin had feelings, it would say:"
+  },
+  {
+    "id": "q4",
+    "questionText": "你最近最缺乏：",
+    "interaction": {
+      "type": "elementStage",
+      "confirmMode": "doubleTap",
+      "showAllOptions": true
+    },
+    "options": [
+      {
+        "id": "A",
+        "text": "睡眠",
+        "auraMapping": "late_night",
+        "textEn": "Sleep"
+      },
+      {
+        "id": "B",
+        "text": "放鬆",
+        "auraMapping": "burnout",
+        "textEn": "Relaxation"
+      },
+      {
+        "id": "C",
+        "text": "時間",
+        "auraMapping": "preventive",
+        "textEn": "Time"
+      },
+      {
+        "id": "D",
+        "text": "能量",
+        "auraMapping": "overworked",
+        "textEn": "Energy"
+      }
+    ],
+    "questionTextEn": "What do you lack the most recently?"
+  },
+  {
+    "id": "q5",
+    "questionText": "你平時照鏡最常做：",
+    "interaction": {
+      "type": "auraField",
+      "confirmMode": "doubleTap",
+      "showAllOptions": true
+    },
+    "options": [
+      {
+        "id": "A",
+        "text": "睇眼神精神狀態",
+        "auraMapping": "glow",
+        "textEn": "My eyes and energy level"
+      },
+      {
+        "id": "B",
+        "text": "睇輪廓線條",
+        "auraMapping": "hidden_aging",
+        "textEn": "My contour and lines"
+      },
+      {
+        "id": "C",
+        "text": "睇毛孔膚質",
+        "auraMapping": "stress",
+        "textEn": "My pores and skin texture"
+      },
+      {
+        "id": "D",
+        "text": "睇有冇浮腫",
+        "auraMapping": "recovery",
+        "textEn": "Whether I look puffy"
+      }
+    ],
+    "questionTextEn": "When looking in the mirror, you usually look at:"
+  },
+  {
+    "id": "q6",
+    "questionText": "最近生活節奏比較似：",
+    "interaction": {
+      "type": "elementStage",
+      "confirmMode": "doubleTap",
+      "showAllOptions": true
+    },
+    "options": [
+      {
+        "id": "A",
+        "text": "長期高速運轉",
+        "auraMapping": "burnout",
+        "textEn": "High-speed and non-stop"
+      },
+      {
+        "id": "B",
+        "text": "不規律漂浮",
+        "auraMapping": "late_night",
+        "textEn": "Irregular and floating"
+      },
+      {
+        "id": "C",
+        "text": "平穩但疲倦",
+        "auraMapping": "overworked",
+        "textEn": "Steady but tiring"
+      },
+      {
+        "id": "D",
+        "text": "努力自律中",
+        "auraMapping": "preventive",
+        "textEn": "Trying to be disciplined"
+      }
+    ],
+    "questionTextEn": "Your recent pace of life feels like:"
+  },
+  {
+    "id": "q7",
+    "questionText": "你最想改善邊種感覺？",
+    "interaction": {
+      "type": "emotionStage",
+      "confirmMode": "doubleTap",
+      "showAllOptions": true
+    },
+    "options": [
+      {
+        "id": "A",
+        "text": "暗沉疲勞",
+        "auraMapping": "overworked",
+        "textEn": "Dullness and fatigue"
+      },
+      {
+        "id": "B",
+        "text": "鬆弛感",
+        "auraMapping": "hidden_aging",
+        "textEn": "Loss of firmness"
+      },
+      {
+        "id": "C",
+        "text": "不穩定敏感",
+        "auraMapping": "stress",
+        "textEn": "Instability and sensitivity"
+      },
+      {
+        "id": "D",
+        "text": "無光澤",
+        "auraMapping": "glow",
+        "textEn": "Lack of radiance"
+      }
+    ],
+    "questionTextEn": "What skin condition do you want to improve most?"
+  },
+  {
+    "id": "q8",
+    "questionText": "你最容易因為咩影響皮膚？",
+    "interaction": {
+      "type": "weatherStage",
+      "confirmMode": "doubleTap",
+      "showAllOptions": true
+    },
+    "options": [
+      {
+        "id": "A",
+        "text": "捱夜",
+        "auraMapping": "late_night",
+        "textEn": "Staying up late"
+      },
+      {
+        "id": "B",
+        "text": "情緒",
+        "auraMapping": "stress",
+        "textEn": "Mood & emotions"
+      },
+      {
+        "id": "C",
+        "text": "壓力",
+        "auraMapping": "burnout",
+        "textEn": "Stress"
+      },
+      {
+        "id": "D",
+        "text": "飲食",
+        "auraMapping": "recovery",
+        "textEn": "Diet"
+      }
+    ],
+    "questionTextEn": "What affects your skin condition the easiest?"
+  },
+  {
+    "id": "q9",
+    "questionText": "你理想中嘅皮膚狀態係：",
+    "interaction": {
+      "type": "auraField",
+      "confirmMode": "doubleTap",
+      "showAllOptions": true
+    },
+    "options": [
+      {
+        "id": "A",
+        "text": "有生命力",
+        "auraMapping": "overworked",
+        "textEn": "Full of vitality"
+      },
+      {
+        "id": "B",
+        "text": "緊緻細滑",
+        "auraMapping": "hidden_aging",
+        "textEn": "Firm and smooth"
+      },
+      {
+        "id": "C",
+        "text": "穩定舒服",
+        "auraMapping": "recovery",
+        "textEn": "Stable and comfortable"
+      },
+      {
+        "id": "D",
+        "text": "發光透明感",
+        "auraMapping": "glow",
+        "textEn": "Radiant and translucent"
+      }
+    ],
+    "questionTextEn": "Your ideal skin state is:"
+  },
+  {
+    "id": "q10",
+    "questionText": "如果而家有一日真正屬於自己，你會：",
+    "interaction": {
+      "type": "ritualStage",
+      "confirmMode": "doubleTap",
+      "showAllOptions": true
+    },
+    "options": [
+      {
+        "id": "A",
+        "text": "好好補眠",
+        "auraMapping": "late_night",
+        "textEn": "Catch up on sleep"
+      },
+      {
+        "id": "B",
+        "text": "去按摩／Spa",
+        "auraMapping": "recovery",
+        "textEn": "Go for a massage/spa"
+      },
+      {
+        "id": "C",
+        "text": "去大自然",
+        "auraMapping": "preventive",
+        "textEn": "Spend time in nature"
+      },
+      {
+        "id": "D",
+        "text": "做 Facial＋Reset",
+        "auraMapping": "glow",
+        "textEn": "Get a facial & reset"
+      }
+    ],
+    "questionTextEn": "If you had a whole day just for yourself, you would:"
+  }
+]
