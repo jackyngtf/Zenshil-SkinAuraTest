@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { seededNumber } from './deterministicMotion';
 
 /* ------------------------------------------------------------------ */
 /*  MorningSunriseScene                                                 */
@@ -58,6 +59,9 @@ function LightMote({
 }: {
   cx: number; cy: number; duration: number; delay: number;
 }) {
+  const driftY = 30 + seededNumber(cx + cy + duration, 0, 20);
+  const driftX = seededNumber(cx + cy + delay, -12.5, 12.5);
+
   return (
     <motion.circle
       cx={cx}
@@ -66,8 +70,8 @@ function LightMote({
       fill={PARTICLE}
       opacity="0"
       animate={{
-        cy: [cy, cy - 30 - Math.random() * 20],
-        cx: [cx, cx + (Math.random() - 0.5) * 25],
+        cy: [cy, cy - driftY],
+        cx: [cx, cx + driftX],
         opacity: [0, 0.7, 0.5, 0],
         r: [1, 2, 1.5, 0.5],
       }}

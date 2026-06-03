@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { seededNumber } from './deterministicMotion';
 
 /* ------------------------------------------------------------------ */
 /*  CloudyVeilScene                                                     */
@@ -69,14 +70,17 @@ function MoistureDrop({
 }: {
   cx: number; cy: number; duration: number; delay: number;
 }) {
+  const driftY = 40 + seededNumber(cx + cy + duration, 0, 30);
+  const driftX = seededNumber(cx + cy + delay, -6, 6);
+
   return (
     <motion.circle
       cx={cx} cy={cy} r={1.2}
       fill={MOISTURE}
       opacity="0"
       animate={{
-        cy: [cy, cy + 40 + Math.random() * 30],
-        cx: [cx, cx + (Math.random() - 0.5) * 12],
+        cy: [cy, cy + driftY],
+        cx: [cx, cx + driftX],
         opacity: [0, 0.45, 0.55, 0.3, 0],
         r: [0.8, 1.4, 1.2, 0.6],
       }}

@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { seededNumber } from './deterministicMotion';
 
 interface AuraFieldMotifProps {
   questionId: string;
@@ -296,18 +297,18 @@ function Q9Radiant({ isConfirming }: { isConfirming: boolean }) {
       {[...Array(6)].map((_, i) => (
         <motion.circle
           key={i}
-          cx={Math.random() * 400}
-          cy={Math.random() * 400}
-          r={Math.random() * 15 + 5}
+          cx={seededNumber(8000 + i, 0, 400)}
+          cy={seededNumber(8100 + i, 0, 400)}
+          r={seededNumber(8200 + i, 5, 20)}
           fill="#fef08a" opacity="0.6"
           filter="url(#q9-flare-blur)"
           animate={{
             scale: [1, 1.5, 1],
             opacity: isConfirming ? 0 : [0.3, 0.8, 0.3],
-            x: [0, Math.random() * 50 - 25, 0],
-            y: [0, Math.random() * -50, 0]
+            x: [0, seededNumber(8300 + i, -25, 25), 0],
+            y: [0, seededNumber(8400 + i, -50, 0), 0]
           }}
-          transition={{ duration: Math.random() * 3 + 3, repeat: Infinity }}
+          transition={{ duration: seededNumber(8500 + i, 3, 6), repeat: Infinity }}
         />
       ))}
     </svg>

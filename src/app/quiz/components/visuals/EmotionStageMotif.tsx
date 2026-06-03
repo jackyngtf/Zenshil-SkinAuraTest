@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { seededNumber } from './deterministicMotion';
 
 interface EmotionStageMotifProps {
   questionId: string;
@@ -89,11 +90,11 @@ function Q3SkinAura({ previewId, isConfirming }: { previewId: string | null; isC
               key={i}
               className="w-1 rounded-full bg-current opacity-50"
               animate={{
-                height: isConfirming ? 4 : [4, 10 + Math.random() * 8, 4],
+                height: isConfirming ? 4 : [4, seededNumber(7000 + i, 10, 18), 4],
                 opacity: isConfirming ? 0 : 0.5,
               }}
               transition={{
-                duration: 1.2 + Math.random(),
+                duration: seededNumber(7100 + i, 1.2, 2.2),
                 repeat: Infinity,
                 ease: "easeInOut",
                 delay: i * 0.15,

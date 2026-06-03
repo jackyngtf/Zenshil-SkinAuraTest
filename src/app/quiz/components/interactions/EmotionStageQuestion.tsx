@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useRef, type MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ConfirmRipple from '../ConfirmRipple';
+import AnswerOptionGrid from '../AnswerOptionGrid';
 import EmotionStageMotif from '../visuals/EmotionStageMotif';
 import SkinVoiceMembrane from '../visuals/SkinVoiceMembrane';
 import { useQuizStore } from '@/store/useQuizStore';
+import { useDoubleTapSelection } from '../useDoubleTapSelection';
 import type { QuizInteractionProps } from '../types';
 
 /* ------------------------------------------------------------------ */
@@ -17,7 +18,6 @@ type EmotionTheme = {
   bgGradient: string;
   buttonBorder: string;
   buttonActiveBg: string;
-  accentDot: string;
   rippleColor: string;
 };
 
@@ -25,7 +25,6 @@ const q3NeutralTheme: EmotionTheme = {
   bgGradient: 'from-stone-50/70 via-slate-50/50 to-stone-100/40',
   buttonBorder: 'border-stone-200/40',
   buttonActiveBg: 'bg-white/50',
-  accentDot: 'bg-stone-300',
   rippleColor: 'rgba(255,255,255,0.85)',
 };
 
@@ -34,42 +33,36 @@ const emotionThemes: Record<string, EmotionTheme> = {
     bgGradient: 'from-purple-50/60 via-slate-50/40 to-stone-100/30',
     buttonBorder: 'border-purple-300/50',
     buttonActiveBg: 'bg-purple-100/60',
-    accentDot: 'bg-purple-400',
     rippleColor: 'rgba(216,180,254,0.85)',
   },
   stress: { // Q3 B (Stressed), Q7 C (Sensitive)
     bgGradient: 'from-rose-50/60 via-stone-50/40 to-red-50/30',
     buttonBorder: 'border-rose-300/50',
     buttonActiveBg: 'bg-rose-100/60',
-    accentDot: 'bg-rose-400',
     rippleColor: 'rgba(254,205,211,0.85)',
   },
   recovery: { // Q3 C (Needs rest)
     bgGradient: 'from-teal-50/60 via-slate-50/40 to-emerald-50/30',
     buttonBorder: 'border-teal-300/50',
     buttonActiveBg: 'bg-teal-100/60',
-    accentDot: 'bg-teal-400',
     rippleColor: 'rgba(153,246,228,0.85)',
   },
   preventive: { // Q3 D (Growth)
     bgGradient: 'from-lime-50/60 via-stone-50/40 to-green-50/30',
     buttonBorder: 'border-amber-300/40',
     buttonActiveBg: 'bg-amber-50/50',
-    accentDot: 'bg-amber-400',
     rippleColor: 'rgba(253,230,138,0.85)',
   },
   hidden_aging: { // Q7 B (Firmness)
     bgGradient: 'from-indigo-50/60 via-purple-50/40 to-stone-100/30',
     buttonBorder: 'border-indigo-300/50',
     buttonActiveBg: 'bg-indigo-100/60',
-    accentDot: 'bg-indigo-400',
     rippleColor: 'rgba(199,210,254,0.85)',
   },
   glow: { // Q7 D (Radiance)
     bgGradient: 'from-amber-50/60 via-yellow-50/40 to-stone-50/30',
     buttonBorder: 'border-amber-300/50',
     buttonActiveBg: 'bg-amber-100/60',
-    accentDot: 'bg-amber-400',
     rippleColor: 'rgba(253,230,138,0.85)',
   },
 };
@@ -194,45 +187,32 @@ export default function EmotionStageQuestion({
   onSelect,
 }: QuizInteractionProps) {
   const language = useQuizStore((state) => state.language);
-  const [previewId, setPreviewId] = useState<string | null>(null);
-  const [confirmedId, setConfirmedId] = useState<string | null>(null);
-  const commitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastTapRef = useRef<{ id: string | null; time: number }>({ id: null, time: 0 });
+  const { previewId, confirmedId, handleOptionTap } = useDoubleTapSelection({
+    onSelect,
+    confirmDelay: 500,
+  });
 
   const selectedOption = question.options.find(o => o.id === previewId);
   const activeTheme = selectedOption?.auraMapping && emotionThemes[selectedOption.auraMapping]
     ? emotionThemes[selectedOption.auraMapping]
     : (question.id === 'q3' ? q3NeutralTheme : emotionThemes['overworked']);
 
-  const handleCommit = (optionId: string) => {
-    if (confirmedId) return;
-    setConfirmedId(optionId);
-    if (commitTimer.current) clearTimeout(commitTimer.current);
-    commitTimer.current = setTimeout(() => onSelect(optionId), 500);
-  };
-
-  const handleTap = (optionId: string, event: MouseEvent<HTMLButtonElement>) => {
-    if (confirmedId) return;
-    const now = event.timeStamp;
-    setPreviewId(optionId);
-
-    if (lastTapRef.current.id === optionId && now - lastTapRef.current.time < 460) {
-      handleCommit(optionId);
-    }
-    lastTapRef.current = { id: optionId, time: now };
+  const handleGridTap = (event: MouseEvent<HTMLButtonElement>) => {
+    const optionId = event.currentTarget.dataset.optionId;
+    if (optionId) handleOptionTap(optionId, event);
   };
 
   // Border and subtle tint styles for Q3 active option choices
   const q3ActiveStyles: Record<string, string> = {
-    A: 'border-purple-300 bg-purple-50/35 -translate-y-[1px] shadow-sm',
-    B: 'border-rose-300 bg-rose-50/35 -translate-y-[1px] shadow-sm',
-    C: 'border-teal-300 bg-teal-50/35 -translate-y-[1px] shadow-sm',
-    D: 'border-amber-300 bg-amber-50/35 -translate-y-[1px] shadow-sm',
+    A: 'border-purple-300/70 bg-purple-50/45 scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.05)]',
+    B: 'border-rose-300/70 bg-rose-50/45 scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.05)]',
+    C: 'border-teal-300/70 bg-teal-50/45 scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.05)]',
+    D: 'border-amber-300/70 bg-amber-50/45 scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.05)]',
   };
 
   return (
     <div
-      className="relative flex h-[100dvh] flex-col overflow-hidden"
+      className="app-screen relative flex flex-col overflow-hidden"
       aria-labelledby={`question-${question.id}`}
     >
       <div className="h-[140px] sm:h-[150px] shrink-0 pointer-events-none" />
@@ -283,8 +263,8 @@ export default function EmotionStageQuestion({
             className="relative overflow-hidden rounded-full flex-shrink-0"
             style={{
               height: '100%', width: '100%', maxWidth: '280px', maxHeight: '280px', aspectRatio: '1 / 1',
-              maskImage: 'radial-gradient(circle at center, black 40%, transparent 72%)',
-              WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 72%)',
+              maskImage: 'radial-gradient(circle at center, black 66%, transparent 70%)',
+              WebkitMaskImage: 'radial-gradient(circle at center, black 66%, transparent 70%)',
             }}
           >
             {/* SVG Visual Component */}
@@ -308,124 +288,38 @@ export default function EmotionStageQuestion({
         )}
       </div>
 
-      {/* Choice buttons grid (2x2 grid is better for short answers like Q3/Q7) */}
-      <motion.div
+      <AnswerOptionGrid
+        options={question.options}
+        language={language}
+        previewId={previewId}
+        confirmedId={confirmedId}
+        onOptionTap={handleGridTap}
+        hintIdle={
+          question.id === 'q3'
+            ? (language === 'en' ? 'Select the whisper that closest matches your skin' : '選擇最貼近皮膚心聲的一句')
+            : undefined
+        }
         className="relative z-[5] px-5 pb-[max(4vh,env(safe-area-inset-bottom))] pt-3"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <div className="mx-auto grid w-full max-w-sm grid-cols-2 gap-2">
-          {question.options.map((option) => {
-            const isQ3 = question.id === 'q3';
-            const theme = option.auraMapping && emotionThemes[option.auraMapping]
-              ? emotionThemes[option.auraMapping]
-              : emotionThemes['overworked'];
-            
-            const isPreviewing = previewId === option.id;
-            const isMuted = confirmedId !== null && confirmedId !== option.id;
+        animationDelay={0.3}
+        getOptionStyle={(option) => {
+          const isQ3 = question.id === 'q3';
+          const theme = option.auraMapping && emotionThemes[option.auraMapping]
+            ? emotionThemes[option.auraMapping]
+            : emotionThemes['overworked'];
 
-            return (
-              <motion.button
-                key={option.id}
-                type="button"
-                onClick={(e) => handleTap(option.id, e)}
-                disabled={confirmedId !== null}
-                className={
-                  isQ3
-                    ? `
-                      relative flex items-center gap-1.5 min-[390px]:gap-2 overflow-hidden border
-                      text-left outline-none transition-all duration-300
-                      backdrop-blur-md px-2.5 min-[390px]:px-3 py-2.5 rounded-xl
-                      focus-visible:ring-2 focus-visible:ring-stone-400/40
-                      ${isPreviewing
-                        ? q3ActiveStyles[option.id]
-                        : `bg-white/55 border-white/60 shadow-[0_4px_16px_rgba(28,25,23,0.02)]`
-                      }
-                      ${isMuted ? 'opacity-40 scale-[0.98]' : 'opacity-100'}
-                    `
-                    : `
-                      relative flex items-center gap-3 overflow-hidden border
-                      text-left outline-none transition-all duration-300
-                      backdrop-blur-sm px-4 py-3.5 rounded-2xl
-                      focus-visible:ring-2 focus-visible:ring-stone-400/40
-                      ${isPreviewing
-                        ? `${theme.buttonActiveBg} ${theme.buttonBorder} scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.06)]`
-                        : `bg-white/50 border-stone-200/40 shadow-[0_2px_12px_rgba(0,0,0,0.03)]`
-                      }
-                      ${isMuted ? 'opacity-40 scale-[0.98]' : 'opacity-100'}
-                    `
-                }
-                whileTap={confirmedId ? undefined : { scale: 0.98 }}
-              >
-                <span
-                  className={
-                    isQ3
-                      ? `flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border text-[10px] font-sans font-medium tracking-normal transition-all duration-300 ${
-                          isPreviewing
-                            ? 'bg-stone-850 border-stone-850 text-white font-semibold'
-                            : 'bg-stone-100/60 border-stone-200/30 text-stone-500'
-                        }`
-                      : `flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[9px] font-medium tracking-normal transition-all duration-300 ${
-                          isPreviewing
-                            ? `${theme.buttonActiveBg} ${theme.buttonBorder} text-stone-750 font-semibold shadow-sm`
-                            : 'bg-white/40 border-stone-200/50 text-stone-400'
-                        }`
-                  }
-                >
-                  {option.id}
-                </span>
-
-                <div className="min-w-0 flex-1">
-                  <p className={`font-serif text-[13px] min-[360px]:text-[14px] min-[390px]:text-[15px] tracking-wider transition-colors duration-300 ${
-                    isPreviewing ? 'text-stone-850 font-medium' : 'text-stone-600'
-                  }`}>
-                    {language === 'en' && option.textEn ? option.textEn : option.text}
-                  </p>
-                </div>
-
-                {confirmedId === option.id && <ConfirmRipple color={theme.rippleColor} />}
-
-                <span
-                  className={`h-2 w-2 shrink-0 rounded-full transition-all duration-300 ${theme.accentDot} ${
-                    isPreviewing ? 'opacity-100 scale-100' : 'opacity-0 scale-50 pointer-events-none'
-                  }`}
-                />
-              </motion.button>
-            );
-          })}
-        </div>
-
-        <AnimatePresence mode="wait">
-          {!previewId ? (
-            <motion.p
-              key="q3-idle-helper"
-              className="mt-2.5 text-center font-sans text-[10px] font-light tracking-[0.18em] text-stone-400"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {question.id === 'q3'
-                ? (language === 'en' ? 'Select the whisper that closest matches your skin' : '選擇最貼近皮膚心聲的一句')
-                : ''
-              }
-            </motion.p>
-          ) : !confirmedId ? (
-            <motion.p
-              key="q3-active-helper"
-              className="mt-2.5 text-center font-sans text-[9px] font-light tracking-[0.3em] text-stone-400"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {language === 'en' ? 'Double tap to confirm' : '雙擊確認選擇'}
-            </motion.p>
-          ) : null}
-        </AnimatePresence>
-      </motion.div>
+          return {
+            activeClassName: isQ3
+              ? q3ActiveStyles[option.id]
+              : `${theme.buttonActiveBg} ${theme.buttonBorder} scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.06)]`,
+            inactiveClassName: isQ3
+              ? 'border-white/60 bg-white/55 shadow-[0_4px_16px_rgba(28,25,23,0.02)]'
+              : 'border-stone-200/40 bg-white/50 shadow-[0_2px_12px_rgba(0,0,0,0.03)]',
+            badgeActiveClassName: 'border-stone-800 bg-stone-800 font-semibold text-white shadow-[0_2px_8px_rgba(28,25,23,0.16)]',
+            badgeInactiveClassName: 'border-stone-300/70 bg-stone-50/85 text-stone-500 shadow-[0_1px_4px_rgba(28,25,23,0.04)]',
+            rippleColor: theme.rippleColor,
+          };
+        }}
+      />
     </div>
   );
 }
-

@@ -1,4 +1,4 @@
-export type QuizInteractionType = 'fullPageScene' | 'weatherMap' | 'weatherStage' | 'elementStage' | 'imageStage' | 'emotionStage' | 'ritualStage' | 'auraField';
+export type QuizInteractionType = 'fullPageScene' | 'weatherMap' | 'weatherStage' | 'elementStage' | 'imageStage' | 'emotionStage' | 'ritualStage' | 'auraField' | 'resourceMeter' | 'mirrorFocus';
 
 export interface QuizInteraction {
   type: QuizInteractionType;

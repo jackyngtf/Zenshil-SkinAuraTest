@@ -11,6 +11,8 @@ import ImageStageQuestion from './interactions/ImageStageQuestion';
 import EmotionStageQuestion from './interactions/EmotionStageQuestion';
 import RitualStageQuestion from './interactions/RitualStageQuestion';
 import AuraFieldQuestion from './interactions/AuraFieldQuestion';
+import ResourceMeterQuestion from './interactions/ResourceMeterQuestion';
+import MirrorFocusQuestion from './interactions/MirrorFocusQuestion';
 import { useQuizStore } from '@/store/useQuizStore';
 import type { QuizQuestion } from './types';
 
@@ -56,7 +58,7 @@ const QuizHeader = memo(({
         <motion.h2
           id={`question-${questionId}`}
           key={questionText}
-          initial={{ opacity: 0, y: 10 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           className="w-full max-w-[320px] text-center font-serif text-[18px] sm:text-[20px] font-normal leading-relaxed tracking-[0.03em] text-stone-800 drop-shadow-sm"
@@ -112,7 +114,7 @@ export default function QuizQuestionRenderer({
       <AnimatePresence mode="wait">
         <motion.div
           key={`question-${question.id}-${interactionType}`}
-          initial={{ opacity: 0 }}
+          initial={false}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.42 }}
@@ -122,6 +124,10 @@ export default function QuizQuestionRenderer({
             <AuraFieldQuestion {...interactionProps} />
           ) : interactionType === 'imageStage' ? (
             <ImageStageQuestion {...interactionProps} />
+          ) : interactionType === 'resourceMeter' ? (
+            <ResourceMeterQuestion {...interactionProps} />
+          ) : interactionType === 'mirrorFocus' ? (
+            <MirrorFocusQuestion {...interactionProps} />
           ) : interactionType === 'elementStage' ? (
             <ElementStageQuestion {...interactionProps} />
           ) : interactionType === 'weatherStage' ? (

@@ -1,9 +1,10 @@
 'use client';
 
-import { type MouseEvent, useRef, useState } from 'react';
+import type { MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ConfirmRipple from '../ConfirmRipple';
+import AnswerOptionGrid from '../AnswerOptionGrid';
 import { useQuizStore } from '@/store/useQuizStore';
+import { useDoubleTapSelection } from '../useDoubleTapSelection';
 import type { QuizInteractionProps } from '../types';
 import AuraGlowPlaceholder from '../visuals/AuraGlowPlaceholder';
 
@@ -27,38 +28,20 @@ export default function ImageStageQuestion({
   onSelect,
 }: QuizInteractionProps) {
   const language = useQuizStore((state) => state.language);
-  const [previewId, setPreviewId] = useState<string | null>(null);
-  const [confirmedId, setConfirmedId] = useState<string | null>(null);
-  const commitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastTapRef = useRef<{ id: string | null; time: number }>({ id: null, time: 0 });
+  const { previewId, confirmedId, handleOptionTap } = useDoubleTapSelection({ onSelect });
 
   const previewOption = previewId
     ? question.options.find((o) => o.id === previewId)
     : null;
 
-  const handleCommit = (optionId: string) => {
-    if (confirmedId) return;
-    setConfirmedId(optionId);
-    if (commitTimer.current) clearTimeout(commitTimer.current);
-    commitTimer.current = setTimeout(() => onSelect(optionId), 450);
-  };
-
-  const handleTap = (optionId: string, event: MouseEvent<HTMLButtonElement>) => {
-    if (confirmedId) return;
-    const now = event.timeStamp;
-
-    setPreviewId(optionId);
-
-    if (lastTapRef.current.id === optionId && now - lastTapRef.current.time < 460) {
-      handleCommit(optionId);
-    }
-
-    lastTapRef.current = { id: optionId, time: now };
+  const handleGridTap = (event: MouseEvent<HTMLButtonElement>) => {
+    const optionId = event.currentTarget.dataset.optionId;
+    if (optionId) handleOptionTap(optionId, event);
   };
 
   return (
     <div
-      className="relative flex h-[100dvh] flex-col overflow-hidden"
+      className="app-screen relative flex flex-col overflow-hidden"
       aria-labelledby={`question-${question.id}`}
     >
       {/* Header spacer to offset the fixed QuizHeader */}
@@ -115,97 +98,21 @@ export default function ImageStageQuestion({
 
 
 
-      {/* ============================================================ */}
-      {/*  BOTTOM ANSWER BUTTONS — always visible, compact pills        */}
-      {/* ============================================================ */}
-      <motion.div
-        className="relative z-[5] px-5 pb-[max(4vh,env(safe-area-inset-bottom))] pt-3"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <div className="mx-auto grid w-full max-w-sm grid-cols-2 gap-2.5">
-          {question.options.map((option) => {
-            const isPreviewing = previewId === option.id;
-            const isMuted = confirmedId !== null && confirmedId !== option.id;
-
-            return (
-              <motion.button
-                key={option.id}
-                type="button"
-                onClick={(event) => handleTap(option.id, event)}
-                disabled={confirmedId !== null}
-                aria-label={option.text}
-                className={`
-                  relative flex items-center gap-3 overflow-hidden rounded-2xl border
-                  px-4 py-3.5 text-left outline-none transition-all duration-300
-                  backdrop-blur-md
-                  focus-visible:ring-2 focus-visible:ring-stone-400/40
-                  ${isPreviewing
-                    ? 'bg-white/80 border-stone-400/40 scale-[1.02] shadow-[0_4px_20px_rgba(0,0,0,0.08)]'
-                    : 'bg-white/50 border-stone-200/30 shadow-[0_2px_12px_rgba(0,0,0,0.04)]'
-                  }
-                  ${isMuted ? 'opacity-40 scale-[0.98]' : 'opacity-100'}
-                `}
-                whileTap={confirmedId ? undefined : { scale: 0.97 }}
-              >
-                {/* Unified Option Badge */}
-                <span
-                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[9px] font-medium tracking-normal transition-all duration-300 ${
-                    isPreviewing
-                      ? 'bg-stone-850 border-stone-850 text-white font-semibold shadow-sm'
-                      : 'bg-white/40 border-stone-200/50 text-stone-400'
-                  }`}
-                >
-                  {option.id}
-                </span>
-
-                {/* Text content */}
-                <div className="min-w-0 flex-1">
-                  <p className={`font-serif text-[14px] tracking-wider transition-colors duration-300 ${
-                    isPreviewing ? 'text-stone-800' : 'text-stone-600'
-                  }`}>
-                    {language === 'en' && option.textEn ? option.textEn : option.text}
-                  </p>
-                </div>
-
-                {/* Confirm Ripple inside button */}
-                {confirmedId === option.id && (
-                  <ConfirmRipple color="rgba(255,255,255,0.6)" />
-                )}
-
-                {/* Previewing indicator */}
-                <AnimatePresence>
-                  {isPreviewing && !confirmedId && (
-                    <motion.span
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0, opacity: 0 }}
-                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                      className="h-2 w-2 shrink-0 rounded-full bg-stone-600 ring-2 ring-white/80"
-                    />
-                  )}
-                </AnimatePresence>
-              </motion.button>
-            );
-          })}
-        </div>
-
-        {/* Confirm hint — appears below buttons after first tap */}
-        <AnimatePresence>
-          {previewId && !confirmedId && (
-            <motion.p
-              className="mt-2 text-center font-sans text-[9px] font-light tracking-[0.3em] text-stone-400"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {language === 'en' ? 'Double tap to confirm' : '雙擊確認選擇'}
-            </motion.p>
-          )}
-        </AnimatePresence>
-      </motion.div>
+      <AnswerOptionGrid
+        options={question.options}
+        language={language}
+        previewId={previewId}
+        confirmedId={confirmedId}
+        onOptionTap={handleGridTap}
+        animationDelay={0.3}
+        getOptionStyle={() => ({
+          activeClassName: 'border-stone-300/50 bg-stone-50/85 scale-[1.02] shadow-[0_4px_20px_rgba(0,0,0,0.06)]',
+          inactiveClassName: 'border-stone-200/30 bg-white/50 shadow-[0_2px_12px_rgba(0,0,0,0.04)]',
+          badgeActiveClassName: 'border-stone-800 bg-stone-800 font-semibold text-white shadow-[0_2px_8px_rgba(28,25,23,0.16)]',
+          badgeInactiveClassName: 'border-stone-300/70 bg-stone-50/85 text-stone-500 shadow-[0_1px_4px_rgba(28,25,23,0.04)]',
+          rippleColor: 'rgba(255,255,255,0.6)',
+        })}
+      />
     </div>
   );
 }

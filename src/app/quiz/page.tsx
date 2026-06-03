@@ -64,7 +64,7 @@ export default function QuizQuestionScreen() {
 
   if (isAnalyzing) {
     return (
-      <main className="relative flex min-h-[100dvh] touch-manipulation flex-col items-center justify-center overflow-hidden bg-stone-900 text-stone-100">
+      <main className="app-min-screen relative flex touch-manipulation flex-col items-center justify-center overflow-hidden bg-stone-900 text-stone-100">
         <div className="noise-overlay absolute inset-0 z-0" />
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -89,7 +89,7 @@ export default function QuizQuestionScreen() {
   }
 
   return (
-    <main className="relative h-[100dvh] w-full touch-manipulation overflow-hidden bg-stone-50 selection:bg-rose-200">
+    <main className="app-screen relative w-full touch-manipulation overflow-hidden bg-stone-50 selection:bg-rose-200">
       <QuizQuestionRenderer
         question={currentQuestion}
         currentQuestionIndex={currentIndex}

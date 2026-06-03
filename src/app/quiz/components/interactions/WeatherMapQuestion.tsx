@@ -88,7 +88,7 @@ export default function WeatherMapQuestion({
 
   return (
     <div
-      className="relative min-h-[100dvh] overflow-hidden bg-gradient-to-b from-[#fbf6f4] via-[#f7f8f5] to-[#eef8f4] px-5 pb-8 pt-[23vh]"
+      className="app-min-screen relative overflow-hidden bg-gradient-to-b from-[#fbf6f4] via-[#f7f8f5] to-[#eef8f4] px-5 pb-8 pt-[23vh]"
       aria-labelledby={`question-${question.id}`}
     >
       <div className="absolute inset-0 noise-overlay opacity-[0.07]" />

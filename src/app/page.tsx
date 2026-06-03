@@ -8,7 +8,7 @@ export default function LandingPage() {
   const language = useQuizStore((state) => state.language);
 
   return (
-    <main className="relative flex flex-col items-center justify-center min-h-[100dvh] overflow-hidden bg-stone-50 selection:bg-rose-200 touch-manipulation">
+    <main className="app-min-screen relative flex flex-col items-center justify-center overflow-hidden bg-stone-50 selection:bg-rose-200 touch-manipulation">
       {/* Noise Texture Overlay */}
       <div className="absolute inset-0 z-0 noise-overlay" />
 

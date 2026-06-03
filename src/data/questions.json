@@ -115,7 +115,7 @@
     "id": "q4",
     "questionText": "你最近最缺乏：",
     "interaction": {
-      "type": "elementStage",
+      "type": "resourceMeter",
       "confirmMode": "doubleTap",
       "showAllOptions": true
     },
@@ -151,7 +151,7 @@
     "id": "q5",
     "questionText": "你平時照鏡最常做：",
     "interaction": {
-      "type": "auraField",
+      "type": "mirrorFocus",
       "confirmMode": "doubleTap",
       "showAllOptions": true
     },

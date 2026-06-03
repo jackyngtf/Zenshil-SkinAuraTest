@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuizStore } from '@/store/useQuizStore';
 import { calculateResult } from '@/lib/quizLogic';
@@ -19,19 +19,16 @@ export default function ResultPage() {
   const router = useRouter();
   const { answers } = useQuizStore();
   const language = useQuizStore((state) => state.language);
-  const [result, setResult] = useState<ReturnType<typeof calculateResult> | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
+  const hasAnswers = Object.keys(answers).length > 0;
+  const result = hasAnswers ? calculateResult(answers) : null;
 
   useEffect(() => {
-    setIsMounted(true);
-    if (Object.keys(answers).length === 0) {
+    if (!hasAnswers) {
       router.replace('/');
-      return;
     }
-    setResult(calculateResult(answers));
-  }, [answers, router]);
+  }, [hasAnswers, router]);
 
-  if (!isMounted || !result) return null;
+  if (!result) return null;
 
   const { primaryAura, primaryPercentage, secondaryAura, secondaryPercentage, calculatedStats } = result;
 

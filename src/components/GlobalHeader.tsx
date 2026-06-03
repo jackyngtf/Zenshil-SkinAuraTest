@@ -1,7 +1,6 @@
 'use client';
 
 import { useQuizStore } from '@/store/useQuizStore';
-import { motion } from 'framer-motion';
 
 function ZenshilLogo() {
   return (

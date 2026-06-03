@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { seededNumber } from './deterministicMotion';
 
 /* ------------------------------------------------------------------ */
 /*  DryAutumnScene                                                      */
@@ -20,7 +21,6 @@ const DUNE_FAR   = '#d4b88a';
 const DUNE_MID   = '#c9a876';
 const DUNE_NEAR  = '#b89460';
 const DUNE_FRONT = '#a8804e';
-const EARTH      = '#9a7248';
 const TREE_TRUNK = '#6b5240';
 const TREE_BRANCH= '#7d6350';
 const LEAF_A     = '#c97b3a';
@@ -77,6 +77,8 @@ function DustMote({
 }: {
   cx: number; cy: number; r: number; duration: number; delay: number;
 }) {
+  const driftX = 20 + seededNumber(cx + cy + duration, 0, 15);
+
   return (
     <motion.circle
       cx={cx}
@@ -85,7 +87,7 @@ function DustMote({
       fill={DUST}
       opacity="0.3"
       animate={{
-        cx: [cx, cx + 20 + Math.random() * 15, cx - 10, cx],
+        cx: [cx, cx + driftX, cx - 10, cx],
         cy: [cy, cy - 8, cy + 5, cy],
         opacity: [0.15, 0.55, 0.35, 0.15],
         r: [r, r * 1.4, r * 0.8, r],

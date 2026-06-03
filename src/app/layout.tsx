@@ -33,9 +33,9 @@ export default function RootLayout({
   return (
     <html
       lang="zh-HK"
-      className={`${inter.variable} ${playfair.variable} h-[100dvh] antialiased`}
+      className={`${inter.variable} ${playfair.variable} antialiased`}
     >
-      <body className="min-h-[100dvh] flex flex-col selection:bg-rose-200 selection:text-black">
+      <body className="app-min-screen flex flex-col selection:bg-rose-200 selection:text-black">
         <GlobalHeader />
         {children}
       </body>

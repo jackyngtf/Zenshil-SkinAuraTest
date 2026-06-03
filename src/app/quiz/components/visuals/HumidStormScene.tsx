@@ -32,9 +32,9 @@ const DROPLET     = '#b8a8d8';
 
 /* ── Lightning bolt component ── */
 function LightningBolt({
-  path, duration, delay, flashDuration, width,
+  path, duration, delay, width,
 }: {
-  path: string; duration: number; delay: number; flashDuration: number; width: number;
+  path: string; duration: number; delay: number; width: number;
 }) {
   // Build a sparse keyframe array: mostly 0 opacity with brief flashes
   const opacityKeys = [0, 0, 0, 0.9, 1, 0.5, 0, 0, 0, 0, 0, 0.7, 0.3, 0, 0, 0, 0, 0, 0, 0];
@@ -234,18 +234,18 @@ export default function HumidStormScene() {
         {/* Main bolt — left side */}
         <LightningBolt
           path="M120 95 L115 130 L128 128 L118 165 L132 162 L110 210"
-          duration={9} delay={0} flashDuration={0.15} width={2.5}
+          duration={9} delay={0} width={2.5}
         />
         {/* Branch bolt */}
         <LightningBolt
           path="M118 165 L140 155 L148 180"
-          duration={9} delay={0} flashDuration={0.1} width={1.5}
+          duration={9} delay={0} width={1.5}
         />
 
         {/* Secondary bolt — right side */}
         <LightningBolt
           path="M290 85 L285 118 L298 115 L288 152 L302 148 L282 195"
-          duration={12} delay={4} flashDuration={0.15} width={2}
+          duration={12} delay={4} width={2}
         />
 
         {/* Subtle sheet lightning — background glow */}

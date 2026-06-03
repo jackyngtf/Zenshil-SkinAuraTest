@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useRef, type MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ConfirmRipple from '../ConfirmRipple';
+import AnswerOptionGrid from '../AnswerOptionGrid';
 import ElementStageMotif from '../visuals/ElementStageMotif';
 import { useQuizStore } from '@/store/useQuizStore';
+import { useDoubleTapSelection } from '../useDoubleTapSelection';
 import type { QuizInteractionProps } from '../types';
 
 /* ------------------------------------------------------------------ */
@@ -14,7 +15,6 @@ type ElementTheme = {
   bgGradient: string;
   buttonBorder: string;
   buttonActiveBg: string;
-  accentDot: string;
   rippleColor: string;
   auraTint: string;
   auraSecondary: string;
@@ -25,7 +25,6 @@ const elementThemes: Record<string, ElementTheme> = {
     bgGradient: 'from-blue-900/40 via-indigo-900/30 to-slate-900/40',
     buttonBorder: 'border-blue-300/40',
     buttonActiveBg: 'bg-blue-100/30',
-    accentDot: 'bg-blue-400',
     rippleColor: 'rgba(147,197,253,0.6)',
     auraTint: 'rgba(30, 58, 138, 0.45)',
     auraSecondary: 'rgba(15, 23, 42, 0.3)',
@@ -34,7 +33,6 @@ const elementThemes: Record<string, ElementTheme> = {
     bgGradient: 'from-orange-50/60 via-red-50/40 to-stone-100/30',
     buttonBorder: 'border-orange-300/50',
     buttonActiveBg: 'bg-orange-100/60',
-    accentDot: 'bg-orange-400',
     rippleColor: 'rgba(253,186,116,0.85)',
     auraTint: 'rgba(251, 146, 60, 0.45)',
     auraSecondary: 'rgba(252, 211, 77, 0.3)',
@@ -43,7 +41,6 @@ const elementThemes: Record<string, ElementTheme> = {
     bgGradient: 'from-cyan-50/60 via-sky-50/40 to-stone-100/30',
     buttonBorder: 'border-cyan-300/50',
     buttonActiveBg: 'bg-cyan-100/60',
-    accentDot: 'bg-cyan-400',
     rippleColor: 'rgba(103,232,249,0.85)',
     auraTint: 'rgba(56, 189, 248, 0.45)',
     auraSecondary: 'rgba(125, 211, 252, 0.3)',
@@ -52,11 +49,54 @@ const elementThemes: Record<string, ElementTheme> = {
     bgGradient: 'from-yellow-50/60 via-amber-50/40 to-stone-100/30',
     buttonBorder: 'border-yellow-300/50',
     buttonActiveBg: 'bg-yellow-100/60',
-    accentDot: 'bg-yellow-400',
     rippleColor: 'rgba(253,224,71,0.85)',
     auraTint: 'rgba(230, 210, 170, 0.5)',
     auraSecondary: 'rgba(210, 190, 160, 0.35)',
   },
+};
+
+const q4ResourceThemes: Record<string, ElementTheme> = {
+  A: {
+    bgGradient: 'from-slate-50/80 via-indigo-50/45 to-stone-50/30',
+    buttonBorder: 'border-indigo-300/60',
+    buttonActiveBg: 'bg-indigo-50/70',
+    rippleColor: 'rgba(199,210,254,0.86)',
+    auraTint: 'rgba(165, 180, 252, 0.38)',
+    auraSecondary: 'rgba(191, 219, 254, 0.24)',
+  },
+  B: {
+    bgGradient: 'from-rose-50/65 via-violet-50/35 to-stone-50/35',
+    buttonBorder: 'border-rose-300/60',
+    buttonActiveBg: 'bg-rose-50/70',
+    rippleColor: 'rgba(254,205,211,0.86)',
+    auraTint: 'rgba(244, 114, 182, 0.3)',
+    auraSecondary: 'rgba(196, 181, 253, 0.24)',
+  },
+  C: {
+    bgGradient: 'from-cyan-50/65 via-sky-50/35 to-stone-50/35',
+    buttonBorder: 'border-cyan-300/60',
+    buttonActiveBg: 'bg-cyan-50/70',
+    rippleColor: 'rgba(103,232,249,0.82)',
+    auraTint: 'rgba(34, 211, 238, 0.28)',
+    auraSecondary: 'rgba(125, 211, 252, 0.24)',
+  },
+  D: {
+    bgGradient: 'from-amber-50/70 via-yellow-50/35 to-stone-50/35',
+    buttonBorder: 'border-amber-300/60',
+    buttonActiveBg: 'bg-amber-50/75',
+    rippleColor: 'rgba(253,230,138,0.86)',
+    auraTint: 'rgba(251, 191, 36, 0.32)',
+    auraSecondary: 'rgba(254, 240, 138, 0.24)',
+  },
+};
+
+const q4IdleTheme: ElementTheme = {
+  bgGradient: 'from-stone-50/75 via-rose-50/25 to-teal-50/25',
+  buttonBorder: 'border-stone-200/40',
+  buttonActiveBg: 'bg-white/55',
+  rippleColor: 'rgba(255,255,255,0.86)',
+  auraTint: 'rgba(220, 210, 200, 0.28)',
+  auraSecondary: 'rgba(210, 225, 220, 0.22)',
 };
 
 export default function ElementStageQuestion({
@@ -64,37 +104,26 @@ export default function ElementStageQuestion({
   onSelect,
 }: QuizInteractionProps) {
   const language = useQuizStore((state) => state.language);
-  const [previewId, setPreviewId] = useState<string | null>(null);
-  const [confirmedId, setConfirmedId] = useState<string | null>(null);
-  const commitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastTapRef = useRef<{ id: string | null; time: number }>({ id: null, time: 0 });
+  const { previewId, confirmedId, handleOptionTap } = useDoubleTapSelection({ onSelect });
+  const isQ4 = question.id === 'q4';
 
   const selectedOption = question.options.find(o => o.id === previewId);
-  const activeTheme = selectedOption?.auraMapping && elementThemes[selectedOption.auraMapping]
+  const activeTheme = isQ4 && previewId
+    ? q4ResourceThemes[previewId]
+    : isQ4
+    ? q4IdleTheme
+    : selectedOption?.auraMapping && elementThemes[selectedOption.auraMapping]
     ? elementThemes[selectedOption.auraMapping]
     : elementThemes['overworked'];
 
-  const handleCommit = (optionId: string) => {
-    if (confirmedId) return;
-    setConfirmedId(optionId);
-    if (commitTimer.current) clearTimeout(commitTimer.current);
-    commitTimer.current = setTimeout(() => onSelect(optionId), 450);
-  };
-
-  const handleTap = (optionId: string, event: MouseEvent<HTMLButtonElement>) => {
-    if (confirmedId) return;
-    const now = event.timeStamp;
-    setPreviewId(optionId);
-
-    if (lastTapRef.current.id === optionId && now - lastTapRef.current.time < 460) {
-      handleCommit(optionId);
-    }
-    lastTapRef.current = { id: optionId, time: now };
+  const handleGridTap = (event: MouseEvent<HTMLButtonElement>) => {
+    const optionId = event.currentTarget.dataset.optionId;
+    if (optionId) handleOptionTap(optionId, event);
   };
 
   return (
     <div
-      className="relative flex h-[100dvh] flex-col overflow-hidden"
+      className="app-screen relative flex flex-col overflow-hidden"
       aria-labelledby={`question-${question.id}`}
     >
       <div className="h-[140px] sm:h-[150px] shrink-0 pointer-events-none" />
@@ -151,8 +180,8 @@ export default function ElementStageQuestion({
           className="relative overflow-hidden rounded-full flex-shrink-0"
           style={{
             height: '100%', width: '100%', maxWidth: '280px', maxHeight: '280px', aspectRatio: '1 / 1',
-            maskImage: 'radial-gradient(circle at center, black 40%, transparent 72%)',
-            WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 72%)',
+            maskImage: 'radial-gradient(circle at center, black 66%, transparent 70%)',
+            WebkitMaskImage: 'radial-gradient(circle at center, black 66%, transparent 70%)',
           }}
         >
           {/* SVG Visual Component */}
@@ -175,85 +204,29 @@ export default function ElementStageQuestion({
         </div>
       </div>
 
-      {/* Choice buttons grid (2x2) */}
-      <motion.div
-        className="relative z-[5] px-5 pb-[max(4vh,env(safe-area-inset-bottom))] pt-3"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <div className="mx-auto grid w-full max-w-sm grid-cols-2 gap-2.5">
-          {question.options.map((option) => {
-            const theme = option.auraMapping && elementThemes[option.auraMapping]
-              ? elementThemes[option.auraMapping]
-              : elementThemes['overworked'];
-            
-            const isPreviewing = previewId === option.id;
-            const isMuted = confirmedId !== null && confirmedId !== option.id;
+      <AnswerOptionGrid
+        options={question.options}
+        language={language}
+        previewId={previewId}
+        confirmedId={confirmedId}
+        onOptionTap={handleGridTap}
+        animationDelay={0.3}
+        getOptionStyle={(option) => {
+          const theme = isQ4
+            ? q4ResourceThemes[option.id]
+            : option.auraMapping && elementThemes[option.auraMapping]
+            ? elementThemes[option.auraMapping]
+            : elementThemes['overworked'];
 
-            return (
-              <motion.button
-                key={option.id}
-                type="button"
-                onClick={(e) => handleTap(option.id, e)}
-                disabled={confirmedId !== null}
-                className={`
-                  relative flex items-center gap-3 overflow-hidden rounded-2xl border
-                  px-4 py-3.5 text-left outline-none transition-all duration-300
-                  backdrop-blur-sm
-                  focus-visible:ring-2 focus-visible:ring-stone-400/40
-                  ${isPreviewing
-                    ? `${theme.buttonActiveBg} ${theme.buttonBorder} scale-[1.02] shadow-[0_4px_20px_rgba(0,0,0,0.06)]`
-                    : `bg-white/50 border-stone-200/40 shadow-[0_2px_12px_rgba(0,0,0,0.03)]`
-                  }
-                  ${isMuted ? 'opacity-40 scale-[0.98]' : 'opacity-100'}
-                `}
-                whileTap={confirmedId ? undefined : { scale: 0.97 }}
-              >
-                <span
-                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[9px] font-medium tracking-normal transition-all duration-300 ${
-                    isPreviewing
-                      ? `${theme.buttonActiveBg} ${theme.buttonBorder} text-stone-750 font-semibold shadow-sm`
-                      : 'bg-white/40 border-stone-200/50 text-stone-400'
-                  }`}
-                >
-                  {option.id}
-                </span>
-
-                <div className="min-w-0 flex-1">
-                  <p className={`font-serif text-[15px] tracking-wider transition-colors duration-300 ${
-                    isPreviewing ? 'text-stone-800' : 'text-stone-600'
-                  }`}>
-                    {language === 'en' && option.textEn ? option.textEn : option.text}
-                  </p>
-                </div>
-
-                {confirmedId === option.id && <ConfirmRipple color={theme.rippleColor} />}
-
-                <span
-                  className={`h-2.5 w-2.5 shrink-0 rounded-full transition-all duration-300 ${theme.accentDot} ${
-                    isPreviewing ? 'opacity-100 scale-110' : 'opacity-50'
-                  }`}
-                />
-              </motion.button>
-            );
-          })}
-        </div>
-
-        <AnimatePresence>
-          {previewId && !confirmedId && (
-            <motion.p
-              className="mt-2 text-center font-sans text-[9px] font-light tracking-[0.3em] text-stone-400"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {language === 'en' ? 'Double tap to confirm' : '雙擊確認選擇'}
-            </motion.p>
-          )}
-        </AnimatePresence>
-      </motion.div>
+          return {
+            activeClassName: `${theme.buttonActiveBg} ${theme.buttonBorder} scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.05)]`,
+            inactiveClassName: 'border-stone-200/40 bg-white/50 shadow-[0_2px_12px_rgba(0,0,0,0.03)]',
+            badgeActiveClassName: 'border-stone-800 bg-stone-800 font-semibold text-white shadow-[0_2px_8px_rgba(28,25,23,0.16)]',
+            badgeInactiveClassName: 'border-stone-300/70 bg-stone-50/85 text-stone-500 shadow-[0_1px_4px_rgba(28,25,23,0.04)]',
+            rippleColor: theme.rippleColor,
+          };
+        }}
+      />
     </div>
   );
 }

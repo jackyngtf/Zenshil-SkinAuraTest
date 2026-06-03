@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { seededNumber } from './deterministicMotion';
 
 interface RitualStageMotifProps {
   questionId: string;
@@ -45,14 +46,14 @@ function Q10Sleep({ isConfirming }: { isConfirming: boolean }) {
       {[...Array(20)].map((_, i) => (
         <motion.circle
           key={i}
-          cx={Math.random() * 400}
-          cy={Math.random() * 400}
-          r={Math.random() * 2 + 0.5}
+          cx={seededNumber(9000 + i, 0, 400)}
+          cy={seededNumber(9100 + i, 0, 400)}
+          r={seededNumber(9200 + i, 0.5, 2.5)}
           fill="#ffffff"
           animate={{
             opacity: isConfirming ? 0 : [0.2, 1, 0.2]
           }}
-          transition={{ duration: Math.random() * 3 + 2, repeat: Infinity }}
+          transition={{ duration: seededNumber(9300 + i, 2, 5), repeat: Infinity }}
         />
       ))}
     </svg>
