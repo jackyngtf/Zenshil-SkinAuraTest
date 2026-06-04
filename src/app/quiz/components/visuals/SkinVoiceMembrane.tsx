@@ -270,7 +270,7 @@ export default function SkinVoiceMembrane({
                 animate={{ opacity: 1, filter: 'blur(0px)', y: 0, scale: 1 }}
                 exit={{ opacity: 0, filter: 'blur(7px)', y: -4, scale: 0.985 }}
                 transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-                className={`mx-auto font-serif font-medium text-stone-850 ${
+                className={`mx-auto font-serif font-medium text-stone-900 ${
                   isEnglish
                     ? 'max-w-[188px] px-1 text-[15px] leading-snug tracking-normal text-pretty'
                     : 'max-w-[210px] px-2 text-[17px] leading-relaxed tracking-wider sm:text-[18px]'

@@ -106,7 +106,7 @@ export default function ImageStageQuestion({
         onOptionTap={handleGridTap}
         animationDelay={0.3}
         getOptionStyle={() => ({
-          activeClassName: 'border-stone-300/50 bg-stone-50/85 scale-[1.02] shadow-[0_4px_20px_rgba(0,0,0,0.06)]',
+          activeClassName: 'border-stone-300/50 bg-stone-50/85 -translate-y-px shadow-[0_4px_20px_rgba(0,0,0,0.06)]',
           inactiveClassName: 'border-stone-200/30 bg-white/50 shadow-[0_2px_12px_rgba(0,0,0,0.04)]',
           badgeActiveClassName: 'border-stone-800 bg-stone-800 font-semibold text-white shadow-[0_2px_8px_rgba(28,25,23,0.16)]',
           badgeInactiveClassName: 'border-stone-300/70 bg-stone-50/85 text-stone-500 shadow-[0_1px_4px_rgba(28,25,23,0.04)]',

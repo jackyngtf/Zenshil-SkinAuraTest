@@ -29,9 +29,9 @@ type AnswerOptionGridProps = {
   animationDelay?: number;
 };
 
-const defaultInactiveClassName = 'border-white/60 bg-white/55 shadow-[0_4px_16px_rgba(28,25,23,0.02)]';
+const defaultInactiveClassName = 'border-white/65 bg-white/60 shadow-[0_8px_22px_rgba(28,25,23,0.035)]';
 const defaultBadgeInactiveClassName = 'bg-white/40 border-stone-200/50 text-stone-400';
-const defaultBadgeActiveClassName = 'bg-stone-850 border-stone-850 text-white font-semibold shadow-sm';
+const defaultBadgeActiveClassName = 'bg-stone-900 border-stone-900 text-white font-semibold shadow-sm';
 
 export default function AnswerOptionGrid({
   options,
@@ -43,8 +43,8 @@ export default function AnswerOptionGrid({
   hintIdle,
   hintActive,
   className = 'relative z-[5] px-5 pb-[max(4vh,env(safe-area-inset-bottom))] pt-3',
-  buttonBaseClassName = 'relative flex min-h-[54px] items-center gap-2 overflow-hidden rounded-2xl border px-3 py-3.5 text-left outline-none transition-all duration-300 backdrop-blur-md min-[390px]:gap-3 min-[390px]:px-4 focus-visible:ring-2 focus-visible:ring-stone-400/40',
-  textClassName = 'font-serif text-[13px] leading-tight tracking-[0.04em] transition-colors duration-300 min-[390px]:text-[14px]',
+  buttonBaseClassName = 'relative flex min-h-[56px] touch-manipulation select-none items-center gap-2 overflow-hidden rounded-2xl border px-3 py-3.5 text-left outline-none transition-all duration-200 backdrop-blur-sm min-[390px]:min-h-[58px] min-[390px]:gap-3 min-[390px]:px-4 focus-visible:ring-2 focus-visible:ring-stone-400/40',
+  textClassName = 'font-serif text-[13px] leading-tight tracking-[0.04em] transition-colors duration-200 min-[390px]:text-[14px]',
   animationDelay = 0.25,
 }: AnswerOptionGridProps) {
   const activeHint = hintActive ?? (language === 'en' ? 'Double tap to confirm' : '雙擊確認選擇');
@@ -75,12 +75,12 @@ export default function AnswerOptionGrid({
               className={`
                 ${buttonBaseClassName}
                 ${isPreviewing ? style.activeClassName : (style.inactiveClassName ?? defaultInactiveClassName)}
-                ${isMuted ? (style.mutedClassName ?? 'opacity-40 scale-[0.98]') : 'opacity-100'}
+                ${isMuted ? (style.mutedClassName ?? 'opacity-45') : 'opacity-100'}
               `}
-              whileTap={confirmedId ? undefined : { scale: 0.98 }}
+              whileTap={confirmedId ? undefined : { y: 1 }}
             >
               <span
-                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[9px] font-medium tracking-normal transition-all duration-300 ${
+                className={`flex size-5 shrink-0 items-center justify-center rounded-full border text-[9px] font-medium tracking-normal transition-all duration-200 ${
                   isPreviewing
                     ? (style.badgeActiveClassName ?? defaultBadgeActiveClassName)
                     : (style.badgeInactiveClassName ?? defaultBadgeInactiveClassName)

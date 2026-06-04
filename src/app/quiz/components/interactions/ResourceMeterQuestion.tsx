@@ -139,7 +139,7 @@ export default function ResourceMeterQuestion({
           const theme = resourceOptionThemes[resourceId];
 
           return {
-            activeClassName: `${theme.buttonActiveBg} ${theme.buttonBorder} scale-[1.01] shadow-[0_4px_20px_rgba(28,25,23,0.05)]`,
+            activeClassName: `${theme.buttonActiveBg} ${theme.buttonBorder} -translate-y-px shadow-[0_4px_20px_rgba(28,25,23,0.05)]`,
             badgeActiveClassName: 'border-stone-800 bg-stone-800 font-semibold text-white shadow-[0_2px_8px_rgba(28,25,23,0.16)]',
             badgeInactiveClassName: 'border-stone-300/70 bg-stone-50/85 text-stone-500 shadow-[0_1px_4px_rgba(28,25,23,0.04)]',
             rippleColor: theme.rippleColor,

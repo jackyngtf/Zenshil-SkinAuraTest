@@ -116,8 +116,8 @@ export default function WeatherMapQuestion({
               onClick={(event) => handleSelect(option.id, event)}
               disabled={confirmedId !== null}
               aria-label={`${option.text}，${visual.description}，${language === 'en' ? 'double tap to confirm' : '雙擊確認'}`}
-              className={`relative min-h-[204px] overflow-hidden rounded-[26px] border bg-gradient-to-br ${visual.background} ${visual.border} px-4 pb-4 pt-4 text-left shadow-[0_16px_44px_rgba(80,64,56,0.08)] outline-none transition duration-300 focus-visible:ring-2 focus-visible:ring-stone-500/40 active:scale-[0.985] ${isPreviewing ? 'scale-[1.015] border-stone-500/45 bg-white/80' : ''} ${isMuted ? 'scale-[0.98] opacity-[0.42]' : 'opacity-100'}`}
-              whileTap={confirmedId ? undefined : { scale: 0.985 }}
+              className={`relative min-h-[204px] overflow-hidden rounded-[26px] border bg-gradient-to-br ${visual.background} ${visual.border} px-4 pb-4 pt-4 text-left shadow-[0_16px_44px_rgba(80,64,56,0.08)] outline-none transition duration-300 focus-visible:ring-2 focus-visible:ring-stone-500/40 active:translate-y-px ${isPreviewing ? '-translate-y-px border-stone-500/45 bg-white/80' : ''} ${isMuted ? 'opacity-[0.45]' : 'opacity-100'}`}
+              whileTap={confirmedId ? undefined : { y: 1 }}
             >
               <div className="pointer-events-none absolute inset-0 bg-white/28 backdrop-blur-[1px]" />
               <div className="pointer-events-none absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent" />

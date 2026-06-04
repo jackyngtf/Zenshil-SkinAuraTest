@@ -204,10 +204,10 @@ export default function EmotionStageQuestion({
 
   // Border and subtle tint styles for Q3 active option choices
   const q3ActiveStyles: Record<string, string> = {
-    A: 'border-purple-300/70 bg-purple-50/45 scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.05)]',
-    B: 'border-rose-300/70 bg-rose-50/45 scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.05)]',
-    C: 'border-teal-300/70 bg-teal-50/45 scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.05)]',
-    D: 'border-amber-300/70 bg-amber-50/45 scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.05)]',
+    A: 'border-purple-300/70 bg-purple-50/45 -translate-y-px shadow-[0_4px_20px_rgba(0,0,0,0.05)]',
+    B: 'border-rose-300/70 bg-rose-50/45 -translate-y-px shadow-[0_4px_20px_rgba(0,0,0,0.05)]',
+    C: 'border-teal-300/70 bg-teal-50/45 -translate-y-px shadow-[0_4px_20px_rgba(0,0,0,0.05)]',
+    D: 'border-amber-300/70 bg-amber-50/45 -translate-y-px shadow-[0_4px_20px_rgba(0,0,0,0.05)]',
   };
 
   return (
@@ -308,7 +308,7 @@ export default function EmotionStageQuestion({
           return {
             activeClassName: isQ3
               ? q3ActiveStyles[option.id]
-              : `${theme.buttonActiveBg} ${theme.buttonBorder} scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.06)]`,
+              : `${theme.buttonActiveBg} ${theme.buttonBorder} -translate-y-px shadow-[0_4px_20px_rgba(0,0,0,0.06)]`,
             inactiveClassName: isQ3
               ? 'border-white/60 bg-white/55 shadow-[0_4px_16px_rgba(28,25,23,0.02)]'
               : 'border-stone-200/40 bg-white/50 shadow-[0_2px_12px_rgba(0,0,0,0.03)]',

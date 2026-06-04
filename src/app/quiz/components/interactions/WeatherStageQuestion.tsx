@@ -235,7 +235,7 @@ export default function WeatherStageQuestion({
           if (isQ2) {
             const visual = weatherOptions[option.id] ?? weatherOptions.A;
             return {
-              activeClassName: `${visual.buttonActiveBg} ${visual.buttonBorder} scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.05)]`,
+              activeClassName: `${visual.buttonActiveBg} ${visual.buttonBorder} -translate-y-px shadow-[0_4px_20px_rgba(0,0,0,0.05)]`,
               inactiveClassName: 'border-stone-200/40 bg-white/55 shadow-[0_2px_10px_rgba(0,0,0,0.02)]',
               badgeActiveClassName: 'border-stone-800 bg-stone-800 font-semibold text-white shadow-[0_2px_8px_rgba(28,25,23,0.16)]',
               badgeInactiveClassName: 'border-stone-300/70 bg-stone-50/85 text-stone-500 shadow-[0_1px_4px_rgba(28,25,23,0.04)]',
@@ -248,7 +248,7 @@ export default function WeatherStageQuestion({
             : auraThemes['late_night'];
 
           return {
-            activeClassName: `${theme.buttonActiveBg} ${theme.buttonBorder} scale-[1.01] shadow-[0_4px_20px_rgba(0,0,0,0.05)]`,
+            activeClassName: `${theme.buttonActiveBg} ${theme.buttonBorder} -translate-y-px shadow-[0_4px_20px_rgba(0,0,0,0.05)]`,
             inactiveClassName: 'border-stone-200/40 bg-white/55 shadow-[0_2px_10px_rgba(0,0,0,0.02)]',
             badgeActiveClassName: 'border-stone-800 bg-stone-800 font-semibold text-white shadow-[0_2px_8px_rgba(28,25,23,0.16)]',
             badgeInactiveClassName: 'border-stone-300/70 bg-stone-50/85 text-stone-500 shadow-[0_1px_4px_rgba(28,25,23,0.04)]',

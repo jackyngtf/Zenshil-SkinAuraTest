@@ -49,7 +49,7 @@ function LightningBolt({
       opacity="0"
       filter="url(#storm-glow)"
       animate={{ opacity: opacityKeys }}
-      transition={{ duration, delay, repeat: Infinity, ease: 'linear', times: undefined }}
+      transition={{ duration, delay, repeat: Infinity, ease: 'linear' }}
     />
   );
 }
@@ -287,48 +287,33 @@ export default function HumidStormScene() {
           d="M-30 310 C20 295 60 308 110 292 C160 278 200 300 260 285 C310 272 350 295 410 280 L410 340 L-30 340 Z"
           fill={WAVE_DARK}
           opacity="0.7"
-          animate={{
-            d: [
-              'M-30 310 C20 295 60 308 110 292 C160 278 200 300 260 285 C310 272 350 295 410 280 L410 340 L-30 340 Z',
-              'M-30 308 C20 298 60 302 110 296 C160 282 200 296 260 288 C310 276 350 292 410 284 L410 340 L-30 340 Z',
-              'M-30 310 C20 295 60 308 110 292 C160 278 200 300 260 285 C310 272 350 295 410 280 L410 340 L-30 340 Z',
-            ],
-          }}
+          animate={{ y: [0, -3, 0], scaleY: [1, 0.985, 1] }}
           transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ transformOrigin: '200px 330px' }}
         />
         {/* Mid wave */}
         <motion.path
           d="M-20 330 C30 315 70 328 130 312 C190 298 230 320 290 305 C340 292 380 315 430 300 L430 370 L-20 370 Z"
           fill={WAVE_MID}
           opacity="0.8"
-          animate={{
-            d: [
-              'M-20 330 C30 315 70 328 130 312 C190 298 230 320 290 305 C340 292 380 315 430 300 L430 370 L-20 370 Z',
-              'M-20 326 C30 318 70 322 130 316 C190 302 230 316 290 308 C340 296 380 312 430 304 L430 370 L-20 370 Z',
-              'M-20 330 C30 315 70 328 130 312 C190 298 230 320 290 305 C340 292 380 315 430 300 L430 370 L-20 370 Z',
-            ],
-          }}
+          animate={{ y: [0, 3, 0], scaleY: [1, 1.012, 1] }}
           transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ transformOrigin: '200px 352px' }}
         />
         {/* Near wave with foam */}
         <motion.path
           d="M-10 355 C40 342 80 358 140 340 C200 325 250 348 310 332 C360 320 400 340 440 330 L440 410 L-10 410 Z"
           fill={WAVE_DARK}
           opacity="0.92"
-          animate={{
-            d: [
-              'M-10 355 C40 342 80 358 140 340 C200 325 250 348 310 332 C360 320 400 340 440 330 L440 410 L-10 410 Z',
-              'M-10 350 C40 345 80 350 140 344 C200 330 250 344 310 336 C360 324 400 336 440 334 L440 410 L-10 410 Z',
-              'M-10 355 C40 342 80 358 140 340 C200 325 250 348 310 332 C360 320 400 340 440 330 L440 410 L-10 410 Z',
-            ],
-          }}
+          animate={{ y: [0, -4, 0], scaleY: [1, 0.99, 1] }}
           transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ transformOrigin: '200px 388px' }}
         />
         {/* Foam highlights on wave crests */}
         {[
-          { d1: 'M60 352 C90 345 110 350 140 342', d2: 'M60 348 C90 348 110 345 140 346', dur: 3.5 },
-          { d1: 'M200 338 C230 330 260 340 290 332', d2: 'M200 335 C230 334 260 336 290 336', dur: 3 },
-          { d1: 'M340 330 C370 322 390 332 420 325', d2: 'M340 328 C370 326 390 328 420 328', dur: 3.8 },
+          { d1: 'M60 352 C90 345 110 350 140 342', dur: 3.5 },
+          { d1: 'M200 338 C230 330 260 340 290 332', dur: 3 },
+          { d1: 'M340 330 C370 322 390 332 420 325', dur: 3.8 },
         ].map((foam, i) => (
           <motion.path
             key={`foam-${i}`}
@@ -339,7 +324,8 @@ export default function HumidStormScene() {
             strokeLinecap="round"
             opacity="0.4"
             animate={{
-              d: [foam.d1, foam.d2, foam.d1],
+              x: [0, i % 2 === 0 ? 5 : -5, 0],
+              y: [0, -3, 0],
               opacity: [0.25, 0.55, 0.25],
             }}
             transition={{ duration: foam.dur, repeat: Infinity, ease: 'easeInOut' }}
@@ -394,11 +380,12 @@ export default function HumidStormScene() {
             opacity="0.15"
             filter="url(#storm-mist-blur)"
             animate={{
-              cy: [m.cy, m.cy - 18, m.cy],
+              y: [0, -18, 0],
               opacity: [0.1, 0.25, 0.1],
-              rx: [m.rx, m.rx + 15, m.rx],
+              scaleX: [1, 1.16, 1],
             }}
             transition={{ duration: m.dur, delay: m.delay, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ transformOrigin: `${m.cx}px ${m.cy}px` }}
           />
         ))}
 
@@ -418,13 +405,13 @@ export default function HumidStormScene() {
           <motion.circle
             key={`splash-${i}`}
             cx={splash.cx} cy={splash.cy}
-            r="1"
+            r="14"
             fill="none"
             stroke={DROPLET}
             strokeWidth="0.8"
             opacity="0"
             animate={{
-              r: [1, 8, 14],
+              scale: [0.08, 0.58, 1],
               opacity: [0.5, 0.3, 0],
               strokeWidth: [1, 0.5, 0.2],
             }}
@@ -434,6 +421,7 @@ export default function HumidStormScene() {
               repeat: Infinity,
               ease: 'easeOut',
             }}
+            style={{ transformOrigin: `${splash.cx}px ${splash.cy}px` }}
           />
         ))}
 
@@ -456,8 +444,7 @@ export default function HumidStormScene() {
             strokeLinecap="round"
             opacity="0"
             animate={{
-              x1: [-40, 440],
-              x2: [40, 520],
+              x: [0, 480],
               opacity: [0, 0.3, 0.4, 0.2, 0],
             }}
             transition={{ duration: w.dur, delay: w.delay, repeat: Infinity, ease: 'easeIn' }}

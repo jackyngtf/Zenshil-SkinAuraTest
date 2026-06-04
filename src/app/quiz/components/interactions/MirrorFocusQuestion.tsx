@@ -119,7 +119,7 @@ export default function MirrorFocusQuestion({
           const theme = mirrorOptionThemes[mirrorId];
 
           return {
-            activeClassName: `${theme.buttonActiveBg} ${theme.buttonBorder} scale-[1.01] shadow-[0_4px_20px_rgba(28,25,23,0.05)]`,
+            activeClassName: `${theme.buttonActiveBg} ${theme.buttonBorder} -translate-y-px shadow-[0_4px_20px_rgba(28,25,23,0.05)]`,
             inactiveClassName: 'border-stone-200/40 bg-white/58 shadow-[0_6px_20px_rgba(28,25,23,0.04)]',
             badgeActiveClassName: 'border-stone-800 bg-stone-800 font-semibold text-white shadow-[0_2px_8px_rgba(28,25,23,0.16)]',
             badgeInactiveClassName: 'border-stone-300/70 bg-stone-50/85 text-stone-500 shadow-[0_1px_4px_rgba(28,25,23,0.04)]',
