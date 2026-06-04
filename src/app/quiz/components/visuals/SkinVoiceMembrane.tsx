@@ -18,6 +18,8 @@ export default function SkinVoiceMembrane({
   language,
   isConfirming,
 }: SkinVoiceMembraneProps) {
+  const isEnglish = language === 'en';
+
   // Color values for dynamic confirm ripple effect
   const confirmRippleColor = useMemo(() => {
     switch (moodState) {
@@ -229,9 +231,13 @@ export default function SkinVoiceMembrane({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -2 }}
                 transition={{ duration: 0.4 }}
-                className="font-serif text-[12px] leading-relaxed tracking-[0.22em] text-stone-600/85"
+                className={`font-serif leading-relaxed text-stone-600/85 ${
+                  isEnglish
+                    ? 'text-[10px] tracking-[0.16em]'
+                    : 'text-[12px] tracking-[0.22em]'
+                }`}
               >
-                {language === 'en' ? 'LISTENING TO YOUR SKIN' : '細聽肌膚的聲音'}
+                {isEnglish ? 'LISTENING TO YOUR SKIN' : '細聽肌膚的聲音'}
               </motion.span>
             ) : (
               <motion.span
@@ -240,9 +246,13 @@ export default function SkinVoiceMembrane({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -2 }}
                 transition={{ duration: 0.4 }}
-                className="font-sans text-[9.5px] tracking-[0.2em] text-stone-400/85 font-normal uppercase"
+                className={`font-sans font-normal uppercase text-stone-400/85 ${
+                  isEnglish
+                    ? 'text-[8.5px] tracking-[0.14em]'
+                    : 'text-[9.5px] tracking-[0.2em]'
+                }`}
               >
-                {language === 'en' ? 'A MESSAGE FROM YOUR SKIN' : '來自肌膚的聲音'}
+                {isEnglish ? 'A MESSAGE FROM YOUR SKIN' : '來自肌膚的聲音'}
               </motion.span>
             )}
           </AnimatePresence>
@@ -260,7 +270,11 @@ export default function SkinVoiceMembrane({
                 animate={{ opacity: 1, filter: 'blur(0px)', y: 0, scale: 1 }}
                 exit={{ opacity: 0, filter: 'blur(7px)', y: -4, scale: 0.985 }}
                 transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-                className="font-serif text-[17px] sm:text-[18px] leading-relaxed tracking-wider text-stone-850 font-medium px-2"
+                className={`mx-auto font-serif font-medium text-stone-850 ${
+                  isEnglish
+                    ? 'max-w-[188px] px-1 text-[15px] leading-snug tracking-normal text-pretty'
+                    : 'max-w-[210px] px-2 text-[17px] leading-relaxed tracking-wider sm:text-[18px]'
+                }`}
               >
                 {quote}
               </motion.p>

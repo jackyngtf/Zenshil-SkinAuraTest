@@ -63,6 +63,91 @@
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  .skin-aura-orb-clip {
+    overflow: hidden;
+    border-radius: 9999px;
+    clip-path: circle(50% at 50% 50%);
+    isolation: isolate;
+    transform: translateZ(0);
+  }
+
+  .skin-aura-orb-clip > svg,
+  .skin-aura-orb-clip > div {
+    border-radius: inherit;
+  }
+
+  .landing-aura-motion {
+    contain: layout paint;
+  }
+
+  .landing-aura-orb {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    width: min(78vw, 370px);
+    aspect-ratio: 1;
+    border-radius: 9999px;
+    opacity: 0.82;
+    mix-blend-mode: screen;
+    transform: translate3d(-50%, -50%, 0) scale(1);
+    background:
+      radial-gradient(circle at 48% 43%, rgba(255, 255, 255, 0.7) 0 8%, rgba(255, 255, 255, 0) 26%),
+      radial-gradient(circle at 34% 40%, rgba(245, 198, 211, 0.34) 0 18%, rgba(245, 198, 211, 0) 48%),
+      radial-gradient(circle at 68% 49%, rgba(188, 229, 220, 0.36) 0 18%, rgba(188, 229, 220, 0) 50%),
+      radial-gradient(circle at 52% 54%, rgba(248, 228, 190, 0.2) 0 20%, rgba(248, 228, 190, 0) 58%);
+    animation: landingAuraBreath 8s ease-in-out infinite;
+  }
+
+  .landing-aura-ribbon {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    width: min(86vw, 410px);
+    height: min(25vw, 112px);
+    border-radius: 9999px;
+    opacity: 0.38;
+    mix-blend-mode: screen;
+    mask-image: radial-gradient(ellipse at center, black 22%, transparent 72%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 22%, transparent 72%);
+  }
+
+  .landing-aura-ribbon-rose {
+    background: linear-gradient(90deg, transparent 0%, rgba(245, 196, 207, 0.42) 28%, rgba(255, 255, 255, 0.46) 52%, rgba(218, 232, 224, 0.2) 76%, transparent 100%);
+    animation: landingRibbonRose 11s ease-in-out infinite;
+  }
+
+  .landing-aura-ribbon-mint {
+    top: 48%;
+    background: linear-gradient(90deg, transparent 0%, rgba(205, 230, 225, 0.34) 24%, rgba(255, 255, 255, 0.42) 48%, rgba(242, 204, 217, 0.3) 74%, transparent 100%);
+    animation: landingRibbonMint 13s ease-in-out infinite;
+  }
+
+  .landing-aura-glint {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    width: 10px;
+    aspect-ratio: 1;
+    border-radius: 9999px;
+    opacity: 0;
+    mix-blend-mode: screen;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0 18%, rgba(255, 255, 255, 0.36) 28%, rgba(255, 255, 255, 0) 70%);
+  }
+
+  .landing-aura-glint-one {
+    animation: landingGlintOne 7s ease-in-out infinite;
+  }
+
+  .landing-aura-glint-two {
+    width: 7px;
+    animation: landingGlintTwo 8.5s ease-in-out infinite;
+  }
+
+  .landing-aura-glint-three {
+    width: 8px;
+    animation: landingGlintThree 9.5s ease-in-out infinite;
+  }
 }
 
 @keyframes morph {
@@ -81,6 +166,123 @@
   100% {
     border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%;
     transform: rotate(0deg) scale(1);
+  }
+}
+
+@keyframes landingAuraBreath {
+  0%,
+  100% {
+    transform: translate3d(-50%, -50%, 0) scale(0.985);
+    opacity: 0.66;
+  }
+
+  50% {
+    transform: translate3d(-50%, -50%, 0) scale(1.035);
+    opacity: 0.9;
+  }
+}
+
+@keyframes landingRibbonRose {
+  0%,
+  100% {
+    transform: translate3d(-52%, -51%, 0) rotate(-11deg) scaleX(0.94);
+    opacity: 0.22;
+  }
+
+  50% {
+    transform: translate3d(-47%, -49%, 0) rotate(-5deg) scaleX(1.06);
+    opacity: 0.46;
+  }
+}
+
+@keyframes landingRibbonMint {
+  0%,
+  100% {
+    transform: translate3d(-48%, -50%, 0) rotate(14deg) scaleX(1.02);
+    opacity: 0.2;
+  }
+
+  50% {
+    transform: translate3d(-53%, -47%, 0) rotate(7deg) scaleX(0.95);
+    opacity: 0.42;
+  }
+}
+
+@keyframes landingGlintOne {
+  0%,
+  18%,
+  100% {
+    transform: translate3d(112px, -44px, 0) scale(0.6);
+    opacity: 0;
+  }
+
+  36%,
+  48% {
+    transform: translate3d(84px, -58px, 0) scale(1);
+    opacity: 0.76;
+  }
+
+  66% {
+    transform: translate3d(48px, -50px, 0) scale(0.72);
+    opacity: 0;
+  }
+}
+
+@keyframes landingGlintTwo {
+  0%,
+  34%,
+  100% {
+    transform: translate3d(-128px, 24px, 0) scale(0.65);
+    opacity: 0;
+  }
+
+  52%,
+  62% {
+    transform: translate3d(-96px, -8px, 0) scale(0.95);
+    opacity: 0.52;
+  }
+
+  80% {
+    transform: translate3d(-54px, -22px, 0) scale(0.72);
+    opacity: 0;
+  }
+}
+
+@keyframes landingGlintThree {
+  0%,
+  48%,
+  100% {
+    transform: translate3d(28px, 108px, 0) scale(0.6);
+    opacity: 0;
+  }
+
+  64%,
+  74% {
+    transform: translate3d(66px, 72px, 0) scale(1);
+    opacity: 0.42;
+  }
+
+  88% {
+    transform: translate3d(92px, 46px, 0) scale(0.7);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fluid-blob,
+  .landing-aura-orb,
+  .landing-aura-ribbon,
+  .landing-aura-glint {
+    animation: none;
+  }
+
+  .landing-aura-orb {
+    opacity: 0.62;
+  }
+
+  .landing-aura-ribbon,
+  .landing-aura-glint {
+    opacity: 0;
   }
 }
 

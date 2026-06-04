@@ -13,7 +13,7 @@
         "text": "海邊／溫泉",
         "auraMapping": "recovery",
         "imageUrl": "/assets/quiz/q01/a-coastal-wellness.png",
-        "textEn": "Seaside / Hot Spring"
+        "textEn": "Coastal Spa"
       },
       {
         "id": "B",
@@ -27,7 +27,7 @@
         "text": "Staycation瞓覺",
         "auraMapping": "preventive",
         "imageUrl": "/assets/quiz/q01/c-hotel-staycation-rest.png",
-        "textEn": "Staycation & Sleep"
+        "textEn": "Staycation Rest"
       },
       {
         "id": "D",
@@ -37,7 +37,7 @@
         "textEn": "Bustling City"
       }
     ],
-    "questionTextEn": "Where is your dream vacation destination?"
+    "questionTextEn": "Where would you go on a day off?"
   },
   {
     "id": "q2",
@@ -58,7 +58,7 @@
         "id": "B",
         "text": "悶熱暴風雨",
         "auraMapping": "stress",
-        "textEn": "Humid & Stormy"
+        "textEn": "Humid Pressure"
       },
       {
         "id": "C",
@@ -88,25 +88,25 @@
         "id": "A",
         "text": "我好攰",
         "auraMapping": "overworked",
-        "textEn": "I'm so exhausted"
+        "textEn": "I'm exhausted"
       },
       {
         "id": "B",
         "text": "我頂唔順",
         "auraMapping": "stress",
-        "textEn": "I can't take it anymore"
+        "textEn": "I can't cope"
       },
       {
         "id": "C",
         "text": "我想休息",
         "auraMapping": "recovery",
-        "textEn": "I need a break"
+        "textEn": "I need rest"
       },
       {
         "id": "D",
         "text": "我想變更好",
         "auraMapping": "preventive",
-        "textEn": "I want to be better"
+        "textEn": "I want to improve"
       }
     ],
     "questionTextEn": "If your skin had feelings, it would say:"
@@ -145,7 +145,7 @@
         "textEn": "Energy"
       }
     ],
-    "questionTextEn": "What do you lack the most recently?"
+    "questionTextEn": "What have you been missing most?"
   },
   {
     "id": "q5",
@@ -160,28 +160,28 @@
         "id": "A",
         "text": "睇眼神精神狀態",
         "auraMapping": "glow",
-        "textEn": "My eyes and energy level"
+        "textEn": "Eye energy"
       },
       {
         "id": "B",
         "text": "睇輪廓線條",
         "auraMapping": "hidden_aging",
-        "textEn": "My contour and lines"
+        "textEn": "Facial contour"
       },
       {
         "id": "C",
         "text": "睇毛孔膚質",
         "auraMapping": "stress",
-        "textEn": "My pores and skin texture"
+        "textEn": "Pores / texture"
       },
       {
         "id": "D",
         "text": "睇有冇浮腫",
         "auraMapping": "recovery",
-        "textEn": "Whether I look puffy"
+        "textEn": "Puffiness"
       }
     ],
-    "questionTextEn": "When looking in the mirror, you usually look at:"
+    "questionTextEn": "In the mirror, you usually check:"
   },
   {
     "id": "q6",
@@ -196,13 +196,13 @@
         "id": "A",
         "text": "長期高速運轉",
         "auraMapping": "burnout",
-        "textEn": "High-speed and non-stop"
+        "textEn": "Always rushing"
       },
       {
         "id": "B",
         "text": "不規律漂浮",
         "auraMapping": "late_night",
-        "textEn": "Irregular and floating"
+        "textEn": "Irregular flow"
       },
       {
         "id": "C",
@@ -214,7 +214,7 @@
         "id": "D",
         "text": "努力自律中",
         "auraMapping": "preventive",
-        "textEn": "Trying to be disciplined"
+        "textEn": "Self-disciplined"
       }
     ],
     "questionTextEn": "Your recent pace of life feels like:"
@@ -232,7 +232,7 @@
         "id": "A",
         "text": "暗沉疲勞",
         "auraMapping": "overworked",
-        "textEn": "Dullness and fatigue"
+        "textEn": "Dull fatigue"
       },
       {
         "id": "B",
@@ -244,7 +244,7 @@
         "id": "C",
         "text": "不穩定敏感",
         "auraMapping": "stress",
-        "textEn": "Instability and sensitivity"
+        "textEn": "Sensitive flare-ups"
       },
       {
         "id": "D",
@@ -274,7 +274,7 @@
         "id": "B",
         "text": "情緒",
         "auraMapping": "stress",
-        "textEn": "Mood & emotions"
+        "textEn": "Mood shifts"
       },
       {
         "id": "C",
@@ -289,7 +289,7 @@
         "textEn": "Diet"
       }
     ],
-    "questionTextEn": "What affects your skin condition the easiest?"
+    "questionTextEn": "What affects your skin most easily?"
   },
   {
     "id": "q9",
@@ -316,13 +316,13 @@
         "id": "C",
         "text": "穩定舒服",
         "auraMapping": "recovery",
-        "textEn": "Stable and comfortable"
+        "textEn": "Calm and stable"
       },
       {
         "id": "D",
         "text": "發光透明感",
         "auraMapping": "glow",
-        "textEn": "Radiant and translucent"
+        "textEn": "Clear radiance"
       }
     ],
     "questionTextEn": "Your ideal skin state is:"
@@ -340,27 +340,27 @@
         "id": "A",
         "text": "好好補眠",
         "auraMapping": "late_night",
-        "textEn": "Catch up on sleep"
+        "textEn": "Sleep in"
       },
       {
         "id": "B",
         "text": "去按摩／Spa",
         "auraMapping": "recovery",
-        "textEn": "Go for a massage/spa"
+        "textEn": "Massage / Spa"
       },
       {
         "id": "C",
         "text": "去大自然",
         "auraMapping": "preventive",
-        "textEn": "Spend time in nature"
+        "textEn": "Nature time"
       },
       {
         "id": "D",
         "text": "做 Facial＋Reset",
         "auraMapping": "glow",
-        "textEn": "Get a facial & reset"
+        "textEn": "Facial Reset"
       }
     ],
-    "questionTextEn": "If you had a whole day just for yourself, you would:"
+    "questionTextEn": "If one day were truly yours, you would:"
   }
 ]

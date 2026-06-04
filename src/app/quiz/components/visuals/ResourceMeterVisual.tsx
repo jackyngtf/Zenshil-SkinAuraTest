@@ -65,6 +65,10 @@ const visualStates: Record<ResourceMeterOptionId | 'idle', ResourceVisualState> 
   },
 };
 
+const preloadImageUrls = Object.values(visualStates)
+  .map((state) => state.image)
+  .filter((image): image is string => Boolean(image));
+
 function getOptionId(optionId: ResourceMeterOptionId | null): ResourceMeterOptionId | 'idle' {
   return optionId ?? 'idle';
 }
@@ -651,6 +655,12 @@ export default function ResourceMeterVisual({
 
   return (
     <div className="relative flex h-full w-full items-center justify-center overflow-visible" aria-hidden="true">
+      <div className="pointer-events-none absolute size-px overflow-hidden opacity-0">
+        {preloadImageUrls.map((image) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img key={image} src={image} alt="" loading="eager" decoding="async" />
+        ))}
+      </div>
       <AmbientBackdrop state={state} reduceMotion={reduceMotion} />
 
       <AnimatePresence mode="wait">

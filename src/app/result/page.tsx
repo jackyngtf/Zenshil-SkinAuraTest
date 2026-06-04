@@ -33,9 +33,10 @@ export default function ResultPage() {
   const { primaryAura, primaryPercentage, secondaryAura, secondaryPercentage, calculatedStats } = result;
 
   return (
-    <main className="min-h-[100dvh] bg-[#f8f7f5] text-stone-900 pb-8 relative overflow-x-hidden selection:bg-rose-200 touch-manipulation">
+    <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#f8f5ef] pb-8 text-stone-900 selection:bg-rose-200 touch-manipulation">
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.92),transparent_42%),radial-gradient(circle_at_20%_45%,rgba(244,214,204,0.18),transparent_32%),radial-gradient(circle_at_82%_58%,rgba(201,211,226,0.18),transparent_32%)]" />
       {/* Noise texture overlay */}
-      <div className="absolute inset-0 z-0 noise-overlay" />
+      <div className="absolute inset-0 z-0 noise-overlay opacity-70" />
 
       {/* All content layered above noise */}
       <div className="relative z-10">
@@ -73,7 +74,10 @@ export default function ResultPage() {
         <RitualCTASection auraId={primaryAura.id} />
 
         {/* Section 8 — Bottom Action Row */}
-        <ResultActionRow />
+        <ResultActionRow
+          aura={primaryAura}
+          matchPercentage={primaryPercentage}
+        />
 
         {/* Section 9 — Brand Footer */}
         <BrandFooter />

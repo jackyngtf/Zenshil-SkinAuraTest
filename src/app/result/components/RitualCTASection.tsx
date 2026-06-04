@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useQuizStore } from '@/store/useQuizStore';
 import { auraOrbColors } from './resultData';
+import { WHATSAPP_BOOKING_URL } from './resultLinks';
 
 interface RitualCTASectionProps {
   auraId: string;
@@ -70,13 +71,19 @@ export default function RitualCTASection({ auraId }: RitualCTASectionProps) {
               : '個人化諮詢 × 深層修復療程 × 專屬護理計畫'}
           </p>
 
-          {/* CTA Button */}
-          <button className="w-full inline-flex items-center justify-center px-6 py-4 bg-white text-stone-900 font-sans text-[11px] font-semibold uppercase tracking-[0.25em] rounded-full hover:bg-stone-50 transition-all duration-300 shadow-[0_4px_24px_rgba(255,255,255,0.15)] active:scale-[0.98]">
+          {/* CTA Link */}
+          <a
+            href={WHATSAPP_BOOKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={language === 'en' ? 'Book your Zenshil skin ritual on WhatsApp' : '透過 WhatsApp 預約 Zenshil 肌膚諮詢'}
+            className="w-full inline-flex items-center justify-center px-6 py-4 bg-white text-stone-900 font-sans text-[11px] font-semibold uppercase tracking-[0.25em] rounded-full hover:bg-stone-50 transition-all duration-300 shadow-[0_4px_24px_rgba(255,255,255,0.15)] active:scale-[0.98]"
+          >
             {language === 'en' ? 'BOOK YOUR RITUAL' : '預約專屬儀式'}
             <svg className="w-4 h-4 ml-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-          </button>
+          </a>
         </div>
       </div>
     </motion.section>

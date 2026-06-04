@@ -91,8 +91,10 @@ export default function AnswerOptionGrid({
 
               <div className="min-w-0 flex-1">
                 <p
-                  className={`${textClassName} ${
-                    language === 'zh' ? 'whitespace-nowrap' : ''
+                  className={`${textClassName} max-w-full ${
+                    language === 'zh'
+                      ? 'whitespace-nowrap'
+                      : 'text-pretty break-words leading-snug [overflow-wrap:anywhere]'
                   } ${isPreviewing ? 'text-stone-800' : 'text-stone-600'}`}
                 >
                   {optionText}

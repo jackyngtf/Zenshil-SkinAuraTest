@@ -21,21 +21,20 @@ export default function PersonalitySkinBlock({ description, auraId }: Personalit
       transition={{ duration: 0.7 }}
       className="w-full max-w-md mx-auto px-5 mb-5"
     >
-      <div className="bg-white/60 backdrop-blur-sm border border-white/50 rounded-3xl p-7 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
-        {/* Section title */}
-        <h3 className="text-[10px] font-sans font-semibold uppercase tracking-[0.25em] text-stone-900 mb-5">
-          {language === 'en' ? 'PERSONALITY & SKIN' : '個性與肌膚'}
-        </h3>
+      <div className="rounded-[30px] border border-white/60 bg-[#fefcf8]/60 p-7 shadow-sm backdrop-blur-sm">
+        <div className="mb-5 flex items-center justify-between">
+          <h3 className="text-[10px] font-semibold uppercase tracking-[0.22em] text-stone-900">
+            {language === 'en' ? 'PERSONALITY & SKIN' : '個性與肌膚'}
+          </h3>
+          <span className="h-px w-12 bg-stone-200/80" />
+        </div>
 
-        {/* Summary paragraph */}
-        <p className="text-stone-600 font-sans leading-relaxed text-[13px] mb-7 font-light">
+        <p className="mb-7 text-[13px] font-light leading-relaxed text-stone-600 text-pretty">
           {description}
         </p>
 
-        {/* Divider */}
-        <div className="w-8 h-px bg-stone-200 mb-6" />
+        <div className="mb-6 h-px w-full bg-stone-200/55" />
 
-        {/* Insight items */}
         <div className="space-y-5">
           {insights.map((insight, i) => (
             <motion.div
@@ -46,14 +45,14 @@ export default function PersonalitySkinBlock({ description, auraId }: Personalit
               transition={{ duration: 0.4, delay: 0.1 + i * 0.1 }}
               className="flex items-start gap-4"
             >
-              <span className="text-lg mt-0.5 flex-shrink-0 w-7 h-7 flex items-center justify-center bg-stone-50 rounded-xl">
-                {insight.icon}
+              <span className="mt-0.5 flex size-8 flex-shrink-0 items-center justify-center rounded-full border border-stone-200/70 bg-white/60 font-serif text-[11px] text-stone-500 tabular-nums shadow-sm">
+                {String(i + 1).padStart(2, '0')}
               </span>
               <div>
-                <h4 className="text-[12px] font-sans font-semibold text-stone-800 tracking-wide mb-0.5">
+                <h4 className="mb-1 text-[12px] font-semibold tracking-wide text-stone-800">
                   {language === 'en' ? insight.titleEn : insight.titleZh}
                 </h4>
-                <p className="text-[11px] font-sans text-stone-500 leading-relaxed font-light">
+                <p className="text-[11px] font-light leading-relaxed text-stone-500 text-pretty">
                   {language === 'en' ? insight.descEn : insight.descZh}
                 </p>
               </div>

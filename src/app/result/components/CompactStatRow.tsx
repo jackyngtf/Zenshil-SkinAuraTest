@@ -22,7 +22,22 @@ export default function CompactStatRow({ stats, auraId }: CompactStatRowProps) {
       transition={{ duration: 0.6 }}
       className="w-full max-w-md mx-auto px-5 mb-5"
     >
-      <div className="grid grid-cols-4 gap-2">
+      <div className="relative overflow-hidden rounded-[28px] border border-white/65 bg-white/55 px-3 py-4 shadow-sm backdrop-blur-sm">
+        <div
+          className="absolute left-6 right-6 top-0 h-px opacity-60"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${orb.inner}, ${orb.mid}, ${orb.outer}, transparent)`,
+          }}
+        />
+        <div className="mb-3 flex items-center justify-between px-1">
+          <p className="text-[9px] font-medium uppercase tracking-[0.24em] text-stone-400">
+            {language === 'en' ? 'Clinical Aura Index' : '肌膚氣場指標'}
+          </p>
+          <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-stone-400">
+            Zenshil
+          </p>
+        </div>
+        <div className="grid grid-cols-4">
         {statLabels.map((stat, i) => (
           <motion.div
             key={stat.key}
@@ -30,27 +45,19 @@ export default function CompactStatRow({ stats, auraId }: CompactStatRowProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: i * 0.08 }}
-            className="relative bg-white/70 backdrop-blur-sm border border-white/50 rounded-2xl py-4 px-2 text-center overflow-hidden"
+            className="relative px-2 py-1 text-center"
           >
-            {/* Subtle tinted top bar */}
-            <div
-              className="absolute top-0 left-2 right-2 h-px opacity-40"
-              style={{
-                background: `linear-gradient(90deg, transparent, ${orb.mid}, transparent)`,
-              }}
-            />
+            {i > 0 && <div className="absolute left-0 top-2 bottom-2 w-px bg-stone-200/55" />}
 
-            <p className="text-[7px] font-sans font-medium tracking-[0.25em] uppercase text-stone-400 mb-1.5">
-              {language === 'en' ? 'INDEX' : '指標'}
-            </p>
-            <p className="text-2xl font-serif tracking-tight text-stone-800 mb-1">
+            <p className="mb-1 font-serif text-[24px] leading-none text-stone-800 tabular-nums">
               {stats[stat.key]}%
             </p>
-            <p className="text-[8px] font-sans tracking-[0.15em] uppercase text-stone-400 font-light">
+            <p className="text-[8px] font-medium uppercase tracking-[0.12em] text-stone-400">
               {language === 'en' ? stat.nameEn : stat.nameZh}
             </p>
           </motion.div>
         ))}
+        </div>
       </div>
     </motion.section>
   );

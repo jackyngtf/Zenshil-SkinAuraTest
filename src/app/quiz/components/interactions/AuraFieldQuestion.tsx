@@ -141,11 +141,9 @@ export default function AuraFieldQuestion({ question, onSelect }: QuizInteractio
 
         {/* Soft aura mask container */}
         <div
-          className="relative overflow-hidden rounded-full flex-shrink-0"
+          className="skin-aura-orb-clip relative flex-shrink-0"
           style={{
             height: '100%', width: '100%', maxWidth: '280px', maxHeight: '280px', aspectRatio: '1 / 1',
-            maskImage: 'radial-gradient(circle at center, black 66%, transparent 70%)',
-            WebkitMaskImage: 'radial-gradient(circle at center, black 66%, transparent 70%)',
           }}
         >
           {/* SVG Visual Component */}

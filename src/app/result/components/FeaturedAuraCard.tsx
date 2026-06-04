@@ -22,98 +22,99 @@ export default function FeaturedAuraCard({ aura, matchPercentage }: FeaturedAura
   const meta = auraNumbers[aura.id] ?? { number: '000', colorLabel: '—', colorLabelEn: '—' };
   const keywords = auraKeywordsDisplay[aura.id] ?? { zh: '', en: '' };
   const orb = auraOrbColors[aura.id] ?? { inner: '#c4b5fd', mid: '#f9a8d4', outer: '#93c5fd' };
+  const quote = language === 'en' && aura.quoteEn ? aura.quoteEn : aura.quote;
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full max-w-md mx-auto px-5 pt-12 pb-6"
+      transition={{ duration: 0.9, ease: 'easeOut' }}
+      className="relative mx-auto flex min-h-[100svh] w-full max-w-md flex-col overflow-hidden px-5 pb-8 pt-[max(2rem,env(safe-area-inset-top))]"
     >
-      <div className="relative bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl shadow-[0_8px_48px_rgba(0,0,0,0.06)] overflow-hidden">
-        {/* Subtle top gradient accent */}
-        <div
-          className="absolute top-0 left-0 right-0 h-px"
-          style={{
-            background: `linear-gradient(90deg, transparent, ${orb.inner}, ${orb.mid}, ${orb.outer}, transparent)`,
-          }}
-        />
+      <div
+        className="absolute inset-0 opacity-90"
+        style={{
+          background: [
+            `radial-gradient(circle at 50% 28%, ${orb.inner}38 0%, transparent 35%)`,
+            `radial-gradient(circle at 18% 62%, ${orb.mid}24 0%, transparent 34%)`,
+            `radial-gradient(circle at 82% 68%, ${orb.outer}24 0%, transparent 36%)`,
+          ].join(', '),
+        }}
+      />
+      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#fbfaf7] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#f8f5ef] to-transparent" />
 
-        <div className="px-7 pt-8 pb-10 flex flex-col items-center text-center">
-          {/* Top labels */}
-          <span className="text-[9px] font-sans font-medium tracking-[0.35em] uppercase text-stone-400 mb-1">
-            SKIN AURA REPORT
-          </span>
-          <span className="text-[10px] font-serif tracking-[0.5em] uppercase text-stone-500/60 mb-8">
-            ZENSHIL
-          </span>
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center pb-7 pt-24 text-center">
+        <div className="relative mb-8 flex size-[min(78vw,318px)] items-center justify-center">
+          <div
+            className="absolute inset-0 rounded-full opacity-45 blur-3xl"
+            style={{ background: `radial-gradient(circle, ${orb.outer} 0%, transparent 68%)` }}
+          />
+          <motion.div
+            animate={{ opacity: [0.72, 0.9, 0.72], scale: [0.985, 1.01, 0.985] }}
+            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute inset-[7%] rounded-full border border-white/65 bg-white/20 shadow-[inset_0_1px_24px_rgba(255,255,255,0.75),0_20px_70px_rgba(120,100,90,0.12)] backdrop-blur-[1px]"
+          />
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
+            className="absolute inset-[10%] rounded-full opacity-30"
+            style={{
+              background: `conic-gradient(from 90deg, transparent 0deg, ${orb.inner} 78deg, ${orb.mid} 150deg, transparent 230deg, ${orb.outer} 310deg, transparent 360deg)`,
+              filter: 'blur(10px)',
+            }}
+          />
+          <div
+            className="absolute inset-[16%] rounded-full opacity-80"
+            style={{
+              background: `radial-gradient(circle at 48% 42%, white 0%, ${orb.inner} 28%, ${orb.mid} 58%, transparent 78%)`,
+              filter: 'blur(14px)',
+            }}
+          />
+          <div
+            className="absolute inset-[24%] rounded-full opacity-65"
+            style={{
+              background: `radial-gradient(circle, white 0%, ${orb.inner} 52%, transparent 72%)`,
+              filter: 'blur(5px)',
+            }}
+          />
+          <div className="absolute left-[20%] top-[24%] h-20 w-1/2 rotate-[-18deg] rounded-full bg-white/35 blur-xl" />
+          <div className="absolute inset-[12%] rounded-full border border-white/55" />
+          <div className="absolute inset-[22%] rounded-full border border-white/25" />
+        </div>
 
-          {/* Aura Orb */}
-          <div className="relative w-48 h-48 mb-10 flex items-center justify-center">
-            {/* Outer glow */}
-            <div
-              className="absolute inset-0 rounded-full opacity-30 blur-3xl"
-              style={{
-                background: `radial-gradient(circle, ${orb.outer} 0%, transparent 70%)`,
-              }}
-            />
-            {/* Mid layer */}
-            <div
-              className="absolute inset-4 rounded-full opacity-50 blur-2xl"
-              style={{
-                background: `radial-gradient(circle, ${orb.mid} 0%, transparent 70%)`,
-              }}
-            />
-            {/* Inner glow */}
-            <div
-              className="absolute inset-8 rounded-full opacity-60 blur-xl"
-              style={{
-                background: `radial-gradient(circle, ${orb.inner} 0%, transparent 70%)`,
-              }}
-            />
-            {/* Core bright spot */}
-            <div
-              className="absolute w-16 h-16 rounded-full opacity-80 blur-md"
-              style={{
-                background: `radial-gradient(circle, white 0%, ${orb.inner} 50%, transparent 100%)`,
-              }}
-            />
-            {/* Dreamy animated ring */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-2 rounded-full opacity-20"
-              style={{
-                background: `conic-gradient(from 0deg, ${orb.inner}, ${orb.mid}, ${orb.outer}, ${orb.inner})`,
-                filter: 'blur(8px)',
-              }}
-            />
-          </div>
-
-          {/* Aura Name */}
-          <h1 className="text-3xl sm:text-4xl font-serif uppercase tracking-wide text-stone-900 leading-tight mb-2">
+        <div className="max-w-[340px]">
+          <p className="mb-4 text-center text-[11px] font-medium text-stone-500 tabular-nums">
+            {language === 'en' ? `Aura match ${matchPercentage}%` : `氣場吻合度 ${matchPercentage}%`}
+          </p>
+          <h1 className="font-serif text-[34px] uppercase leading-[0.95] text-stone-900 text-balance sm:text-[40px]">
             {aura.name}
           </h1>
-
-          {/* Chinese subtitle */}
-          <p className="text-sm font-serif text-stone-500 tracking-[0.3em] mb-6 italic font-light">
+          <p className="mt-4 font-serif text-sm italic text-stone-500 text-balance">
             {aura.chineseName}
           </p>
-
-          {/* Metadata row */}
-          <div className="flex items-center gap-3 text-[10px] font-sans text-stone-400 tracking-wider mb-5">
-            <span>Aura No. {meta.number}</span>
-            <span className="text-stone-300">|</span>
-            <span>{language === 'en' ? 'Match' : '吻合度'} {matchPercentage}%</span>
-            <span className="text-stone-300">|</span>
-            <span>{language === 'en' ? 'Color' : '氣場色'} {language === 'en' ? meta.colorLabelEn : meta.colorLabel}</span>
-          </div>
-
-          {/* Keywords row */}
-          <p className="text-[11px] font-sans text-stone-500/80 tracking-[0.15em] font-light">
-            {language === 'en' ? keywords.en : keywords.zh}
+          <p className="mx-auto mt-5 max-w-[310px] font-serif text-[15px] leading-relaxed text-stone-600 text-pretty">
+            &ldquo;{quote}&rdquo;
           </p>
         </div>
+
+        <div className="mt-7 flex flex-wrap justify-center gap-2">
+          <span className="rounded-full border border-white/65 bg-white/45 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.18em] text-stone-500 shadow-sm backdrop-blur-sm">
+            Aura No. {meta.number}
+          </span>
+          <span className="rounded-full border border-white/65 bg-white/45 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.18em] text-stone-500 shadow-sm backdrop-blur-sm">
+            {language === 'en' ? meta.colorLabelEn : meta.colorLabel}
+          </span>
+          <span className="rounded-full border border-white/65 bg-white/45 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.18em] text-stone-500 shadow-sm backdrop-blur-sm">
+            {language === 'en' ? keywords.en : keywords.zh}
+          </span>
+        </div>
+      </div>
+
+      <div className="relative z-10 pb-2 text-center">
+        <p className="text-[9px] font-medium uppercase tracking-[0.28em] text-stone-400">
+          {language === 'en' ? 'Personalized Skin Aura Analysis' : '個人化肌膚氣場分析'}
+        </p>
       </div>
     </motion.section>
   );
