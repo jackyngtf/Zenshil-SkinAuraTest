@@ -168,6 +168,151 @@ function Q10Facial({ isConfirming }: { isConfirming: boolean }) {
   );
 }
 
+function Q10IdleRitualAura() {
+  const particles = Array.from({ length: 12 }).map((_, i) => ({
+    cx: seededNumber(9800 + i, 118, 282),
+    cy: seededNumber(9900 + i, 112, 282),
+    r: seededNumber(10000 + i, 0.7, 1.8),
+    drift: seededNumber(10100 + i, -10, 10),
+    delay: seededNumber(10200 + i, 0, 4),
+    duration: seededNumber(10300 + i, 5.5, 8.5),
+  }));
+
+  return (
+    <svg
+      viewBox="0 0 400 400"
+      className="absolute inset-0 h-full w-full"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      <defs>
+        <radialGradient id="q10-idle-pearl-field" cx="50%" cy="48%" r="58%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.94" />
+          <stop offset="38%" stopColor="#f5f7f8" stopOpacity="0.86" />
+          <stop offset="72%" stopColor="#e6f1ef" stopOpacity="0.48" />
+          <stop offset="100%" stopColor="#dbeafe" stopOpacity="0.18" />
+        </radialGradient>
+        <radialGradient id="q10-idle-blush-bloom" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#fde2e8" stopOpacity="0.54" />
+          <stop offset="62%" stopColor="#fff7ed" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="q10-idle-mint-bloom" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#cdeee8" stopOpacity="0.5" />
+          <stop offset="64%" stopColor="#e0f2fe" stopOpacity="0.14" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="q10-idle-inner-light" cx="48%" cy="46%" r="46%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.86" />
+          <stop offset="55%" stopColor="#edf7f5" stopOpacity="0.2" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="q10-idle-silk-line" x1="0%" x2="100%" y1="0%" y2="0%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="48%" stopColor="#c7d2d8" stopOpacity="0.42" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </linearGradient>
+        <filter id="q10-idle-soften" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="5" />
+        </filter>
+      </defs>
+
+      <rect width="400" height="400" fill="url(#q10-idle-pearl-field)" opacity="0.92" />
+
+      <motion.circle
+        cx="168"
+        cy="178"
+        r="104"
+        fill="url(#q10-idle-blush-bloom)"
+        animate={{ x: [-5, 6, -5], y: [4, -3, 4], opacity: [0.28, 0.46, 0.28] }}
+        transition={{ duration: 8.4, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      <motion.circle
+        cx="232"
+        cy="212"
+        r="112"
+        fill="url(#q10-idle-mint-bloom)"
+        animate={{ x: [6, -5, 6], y: [-3, 4, -3], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 9.2, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      <motion.circle
+        cx="200"
+        cy="194"
+        r="128"
+        fill="url(#q10-idle-inner-light)"
+        animate={{ scale: [0.985, 1.025, 0.985], opacity: [0.52, 0.74, 0.52] }}
+        transition={{ duration: 7.2, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ transformOrigin: '200px 194px' }}
+      />
+
+      <motion.circle
+        cx="200"
+        cy="200"
+        r="118"
+        fill="none"
+        stroke="#ffffff"
+        strokeWidth="1.2"
+        opacity="0.44"
+        animate={{ scale: [0.99, 1.025, 0.99], opacity: [0.28, 0.5, 0.28] }}
+        transition={{ duration: 7.6, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ transformOrigin: '200px 200px' }}
+      />
+
+      {[126, 158, 196, 232].map((y, index) => (
+        <motion.path
+          key={`ritual-idle-flow-${y}`}
+          d={`M74 ${y} C122 ${y - 10}, 160 ${y + 11}, 204 ${y - 3} S286 ${y + 8}, 326 ${y - 6}`}
+          fill="none"
+          stroke="url(#q10-idle-silk-line)"
+          strokeWidth={index === 1 ? 1.4 : 1}
+          strokeLinecap="round"
+          opacity="0.48"
+          filter="url(#q10-idle-soften)"
+          animate={{ x: [index % 2 === 0 ? -5 : 5, index % 2 === 0 ? 6 : -6, index % 2 === 0 ? -5 : 5], opacity: [0.2, 0.44, 0.2] }}
+          transition={{ duration: 6.5 + index * 0.7, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      ))}
+
+      {particles.map((particle, index) => (
+        <motion.circle
+          key={`ritual-idle-particle-${index}`}
+          cx={particle.cx}
+          cy={particle.cy}
+          r={particle.r}
+          fill="#ffffff"
+          opacity="0.36"
+          animate={{
+            y: [0, -14, 0],
+            x: [0, particle.drift, 0],
+            opacity: [0.08, 0.46, 0.08],
+            scale: [0.8, 1.12, 0.8],
+          }}
+          transition={{
+            duration: particle.duration,
+            delay: particle.delay,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+      ))}
+
+      <motion.circle
+        cx="200"
+        cy="200"
+        r="154"
+        fill="none"
+        stroke="#ffffff"
+        strokeWidth="1"
+        opacity="0.52"
+        animate={{ opacity: [0.32, 0.58, 0.32] }}
+        transition={{ duration: 6.8, repeat: Infinity, ease: 'easeInOut' }}
+      />
+    </svg>
+  );
+}
+
 export default function RitualStageMotif({
   questionId,
   previewId,
@@ -200,22 +345,7 @@ export default function RitualStageMotif({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          {/* Neutral idle texture */}
-          <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full">
-            <defs>
-              <filter id="ritual-idle">
-                <feTurbulence type="fractalNoise" baseFrequency="0.04" result="noise" />
-                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 -0.1" />
-                <feGaussianBlur stdDeviation="10" />
-              </filter>
-            </defs>
-            <rect width="400" height="400" fill="#f8fafc" />
-            <motion.circle
-              cx="200" cy="200" r="120" fill="#cbd5e1" filter="url(#ritual-idle)"
-              animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-            />
-          </svg>
+          <Q10IdleRitualAura />
         </motion.div>
       )}
     </div>

@@ -77,77 +77,189 @@
     border-radius: inherit;
   }
 
-  .landing-aura-motion {
-    contain: layout paint;
-  }
-
-  .landing-aura-orb {
+  .landing-ivory-field {
+    pointer-events: none;
     position: absolute;
-    left: 50%;
-    top: 46%;
-    width: min(78vw, 370px);
-    aspect-ratio: 1;
-    border-radius: 9999px;
-    opacity: 0.82;
-    mix-blend-mode: screen;
-    transform: translate3d(-50%, -50%, 0) scale(1);
+    inset: 0;
     background:
-      radial-gradient(circle at 48% 43%, rgba(255, 255, 255, 0.7) 0 8%, rgba(255, 255, 255, 0) 26%),
-      radial-gradient(circle at 34% 40%, rgba(245, 198, 211, 0.34) 0 18%, rgba(245, 198, 211, 0) 48%),
-      radial-gradient(circle at 68% 49%, rgba(188, 229, 220, 0.36) 0 18%, rgba(188, 229, 220, 0) 50%),
-      radial-gradient(circle at 52% 54%, rgba(248, 228, 190, 0.2) 0 20%, rgba(248, 228, 190, 0) 58%);
-    animation: landingAuraBreath 8s ease-in-out infinite;
+      radial-gradient(circle at 28% 18%, rgba(255, 255, 255, 0.78) 0 18%, rgba(255, 255, 255, 0) 44%),
+      radial-gradient(circle at 72% 15%, rgba(229, 190, 166, 0.46) 0 16%, rgba(229, 190, 166, 0) 46%),
+      radial-gradient(circle at 18% 72%, rgba(164, 205, 196, 0.5) 0 15%, rgba(164, 205, 196, 0) 42%),
+      radial-gradient(circle at 80% 78%, rgba(229, 174, 197, 0.52) 0 16%, rgba(229, 174, 197, 0) 46%),
+      linear-gradient(180deg, #fbf4ec 0%, #f5eee6 48%, #fbf5ef 100%);
   }
 
-  .landing-aura-ribbon {
+  .landing-light-field {
+    pointer-events: none;
     position: absolute;
-    left: 50%;
-    top: 46%;
-    width: min(86vw, 410px);
-    height: min(25vw, 112px);
-    border-radius: 9999px;
-    opacity: 0.38;
-    mix-blend-mode: screen;
-    mask-image: radial-gradient(ellipse at center, black 22%, transparent 72%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 22%, transparent 72%);
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    isolation: isolate;
   }
 
-  .landing-aura-ribbon-rose {
-    background: linear-gradient(90deg, transparent 0%, rgba(245, 196, 207, 0.42) 28%, rgba(255, 255, 255, 0.46) 52%, rgba(218, 232, 224, 0.2) 76%, transparent 100%);
-    animation: landingRibbonRose 11s ease-in-out infinite;
-  }
-
-  .landing-aura-ribbon-mint {
-    top: 48%;
-    background: linear-gradient(90deg, transparent 0%, rgba(205, 230, 225, 0.34) 24%, rgba(255, 255, 255, 0.42) 48%, rgba(242, 204, 217, 0.3) 74%, transparent 100%);
-    animation: landingRibbonMint 13s ease-in-out infinite;
-  }
-
-  .landing-aura-glint {
+  .landing-light-layer {
     position: absolute;
-    left: 50%;
-    top: 46%;
-    width: 10px;
-    aspect-ratio: 1;
     border-radius: 9999px;
     opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .landing-light-rose {
+    left: -32%;
+    top: 20%;
+    width: min(104vw, 500px);
+    height: 64%;
+    background: radial-gradient(ellipse at center, rgba(222, 150, 181, 0.58) 0 18%, rgba(222, 150, 181, 0.28) 31%, rgba(222, 150, 181, 0) 68%);
+    mix-blend-mode: multiply;
+    animation: landingFieldRose 18s ease-in-out infinite;
+  }
+
+  .landing-light-mint {
+    right: -38%;
+    top: 16%;
+    width: min(108vw, 520px);
+    height: 70%;
+    background: radial-gradient(ellipse at center, rgba(143, 195, 185, 0.58) 0 18%, rgba(143, 195, 185, 0.28) 34%, rgba(143, 195, 185, 0) 70%);
+    mix-blend-mode: multiply;
+    animation: landingFieldMint 20s ease-in-out infinite;
+  }
+
+  .landing-light-champagne {
+    left: -24%;
+    top: 53%;
+    width: 148%;
+    height: 25%;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, rgba(247, 226, 190, 0) 0%, rgba(216, 174, 117, 0.32) 32%, rgba(255, 255, 255, 0.5) 51%, rgba(204, 164, 146, 0.28) 70%, rgba(236, 218, 204, 0) 100%);
     mix-blend-mode: screen;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0 18%, rgba(255, 255, 255, 0.36) 28%, rgba(255, 255, 255, 0) 70%);
+    mask-image: radial-gradient(ellipse at center, black 18%, transparent 74%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 18%, transparent 74%);
+    animation: landingFieldChampagne 16s ease-in-out infinite;
   }
 
-  .landing-aura-glint-one {
-    animation: landingGlintOne 7s ease-in-out infinite;
+  .landing-light-pearl {
+    left: 12%;
+    top: 3%;
+    width: 76%;
+    height: 34%;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.72) 0 16%, rgba(255, 255, 255, 0.2) 34%, rgba(255, 255, 255, 0) 70%);
+    mix-blend-mode: screen;
+    animation: landingFieldPearl 14s ease-in-out infinite;
   }
 
-  .landing-aura-glint-two {
-    width: 7px;
-    animation: landingGlintTwo 8.5s ease-in-out infinite;
+  .landing-light-ribbons {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    opacity: 1;
+    mix-blend-mode: screen;
   }
 
-  .landing-aura-glint-three {
-    width: 8px;
-    animation: landingGlintThree 9.5s ease-in-out infinite;
+  .landing-light-ribbon {
+    transform-box: fill-box;
+    transform-origin: center;
   }
+
+  .landing-light-ribbon-one {
+    animation: landingFullRibbonOne 18s ease-in-out infinite;
+  }
+
+  .landing-light-ribbon-two {
+    animation: landingFullRibbonTwo 22s ease-in-out infinite;
+  }
+
+  .landing-light-breath {
+    position: absolute;
+    inset: 17% 10% 16%;
+    border-radius: 9999px;
+    background:
+      radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.34) 0 12%, rgba(255, 255, 255, 0.1) 34%, rgba(255, 255, 255, 0) 68%),
+      radial-gradient(circle at 43% 54%, rgba(244, 205, 219, 0.12) 0 22%, rgba(244, 205, 219, 0) 62%),
+      radial-gradient(circle at 62% 52%, rgba(202, 228, 222, 0.12) 0 24%, rgba(202, 228, 222, 0) 64%);
+    opacity: 0.5;
+    mix-blend-mode: screen;
+    animation: landingScreenBreath 12s ease-in-out infinite;
+  }
+
+  .landing-aura-stage {
+    position: relative;
+    width: min(68vw, 268px);
+    aspect-ratio: 1;
+    contain: layout;
+    isolation: isolate;
+    overflow: visible;
+    transform: translateZ(0);
+  }
+
+  .landing-aura-field {
+    position: absolute;
+    inset: 6%;
+    border-radius: 9999px;
+    overflow: hidden;
+    clip-path: circle(50% at 50% 50%);
+    -webkit-clip-path: circle(50% at 50% 50%);
+    mask-image: radial-gradient(circle at center, black 0 69%, transparent 74%);
+    -webkit-mask-image: radial-gradient(circle at center, black 0 69%, transparent 74%);
+    background:
+      radial-gradient(ellipse at 51% 50%, rgba(230, 165, 196, 0.25) 0 28%, rgba(230, 165, 196, 0) 66%),
+      radial-gradient(ellipse at 36% 54%, rgba(224, 135, 173, 0.54) 0 27%, rgba(224, 135, 173, 0) 66%),
+      radial-gradient(ellipse at 68% 48%, rgba(120, 202, 186, 0.56) 0 30%, rgba(120, 202, 186, 0) 68%),
+      radial-gradient(circle at 53% 72%, rgba(219, 172, 103, 0.34) 0 23%, rgba(219, 172, 103, 0) 62%),
+      radial-gradient(circle at 46% 38%, rgba(193, 185, 220, 0.28) 0 27%, rgba(193, 185, 220, 0) 66%),
+      radial-gradient(circle at 50% 50%, rgba(252, 244, 236, 0.12) 0 45%, rgba(255, 255, 255, 0) 78%);
+    box-shadow:
+      0 24px 82px rgba(118, 98, 84, 0.13);
+    opacity: 0.96;
+    animation: landingLensBreath 8s ease-in-out infinite;
+  }
+
+  .landing-aura-wash {
+    position: absolute;
+    inset: -24%;
+    border-radius: inherit;
+    pointer-events: none;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .landing-aura-wash-one {
+    background:
+      radial-gradient(ellipse at 22% 50%, rgba(225, 128, 169, 0.52) 0 21%, rgba(225, 128, 169, 0) 50%),
+      radial-gradient(ellipse at 74% 45%, rgba(105, 194, 179, 0.5) 0 24%, rgba(105, 194, 179, 0) 54%),
+      radial-gradient(ellipse at 51% 78%, rgba(226, 180, 108, 0.36) 0 18%, rgba(226, 180, 108, 0) 48%);
+    opacity: 0.6;
+    animation: landingAuraWashOne 5.6s ease-in-out infinite;
+  }
+
+  .landing-aura-wash-two {
+    background:
+      radial-gradient(ellipse at 32% 36%, rgba(255, 255, 255, 0.24) 0 18%, rgba(255, 255, 255, 0) 48%),
+      radial-gradient(ellipse at 68% 66%, rgba(242, 204, 216, 0.3) 0 22%, rgba(242, 204, 216, 0) 52%),
+      radial-gradient(ellipse at 56% 42%, rgba(204, 232, 225, 0.32) 0 20%, rgba(204, 232, 225, 0) 54%);
+    opacity: 0.6;
+    animation: landingAuraWashTwo 4.8s ease-in-out infinite;
+  }
+
+  .landing-aura-halo {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    opacity: 0.34;
+    mix-blend-mode: multiply;
+  }
+
+  .landing-aura-halo-rose {
+    background: radial-gradient(circle at 34% 46%, rgba(218, 157, 181, 0.28) 0 18%, rgba(218, 157, 181, 0) 56%);
+    animation: landingHaloRose 10s ease-in-out infinite;
+  }
+
+  .landing-aura-halo-mint {
+    background: radial-gradient(circle at 68% 54%, rgba(150, 203, 192, 0.26) 0 20%, rgba(150, 203, 192, 0) 58%);
+    animation: landingHaloMint 12s ease-in-out infinite;
+  }
+
 }
 
 @keyframes morph {
@@ -169,119 +281,211 @@
   }
 }
 
-@keyframes landingAuraBreath {
+@keyframes landingFieldRose {
   0%,
   100% {
-    transform: translate3d(-50%, -50%, 0) scale(0.985);
-    opacity: 0.66;
+    transform: translate3d(-5%, 4%, 0) scale(0.96);
+    opacity: 0.26;
   }
 
-  50% {
-    transform: translate3d(-50%, -50%, 0) scale(1.035);
-    opacity: 0.9;
+  46% {
+    transform: translate3d(16%, -3%, 0) scale(1.08);
+    opacity: 0.48;
+  }
+
+  72% {
+    transform: translate3d(8%, 7%, 0) scale(1);
+    opacity: 0.34;
   }
 }
 
-@keyframes landingRibbonRose {
+@keyframes landingFieldMint {
   0%,
   100% {
-    transform: translate3d(-52%, -51%, 0) rotate(-11deg) scaleX(0.94);
-    opacity: 0.22;
+    transform: translate3d(8%, -2%, 0) scale(0.98);
+    opacity: 0.24;
   }
 
-  50% {
-    transform: translate3d(-47%, -49%, 0) rotate(-5deg) scaleX(1.06);
+  42% {
+    transform: translate3d(-16%, 5%, 0) scale(1.06);
     opacity: 0.46;
   }
+
+  74% {
+    transform: translate3d(-5%, -6%, 0) scale(1.02);
+    opacity: 0.32;
+  }
 }
 
-@keyframes landingRibbonMint {
+@keyframes landingFieldChampagne {
+  0%,
+  18%,
+  100% {
+    transform: translate3d(-8%, 16%, 0) rotate(-16deg) scaleX(0.92);
+    opacity: 0;
+  }
+
+  48%,
+  62% {
+    transform: translate3d(4%, -2%, 0) rotate(-12deg) scaleX(1.02);
+    opacity: 0.46;
+  }
+
+  82% {
+    transform: translate3d(14%, -10%, 0) rotate(-9deg) scaleX(0.95);
+    opacity: 0;
+  }
+}
+
+@keyframes landingFieldPearl {
   0%,
   100% {
-    transform: translate3d(-48%, -50%, 0) rotate(14deg) scaleX(1.02);
+    transform: translate3d(0, -6%, 0) scale(0.96);
     opacity: 0.2;
   }
 
   50% {
-    transform: translate3d(-53%, -47%, 0) rotate(7deg) scaleX(0.95);
-    opacity: 0.42;
+    transform: translate3d(0, 4%, 0) scale(1.04);
+    opacity: 0.44;
   }
 }
 
-@keyframes landingGlintOne {
+@keyframes landingFullRibbonOne {
   0%,
-  18%,
   100% {
-    transform: translate3d(112px, -44px, 0) scale(0.6);
-    opacity: 0;
+    transform: translate3d(-6%, 4%, 0) rotate(-2deg) scaleX(0.96);
+    opacity: 0.28;
   }
 
-  36%,
-  48% {
-    transform: translate3d(84px, -58px, 0) scale(1);
-    opacity: 0.76;
-  }
-
-  66% {
-    transform: translate3d(48px, -50px, 0) scale(0.72);
-    opacity: 0;
+  50% {
+    transform: translate3d(5%, -5%, 0) rotate(2deg) scaleX(1.04);
+    opacity: 0.62;
   }
 }
 
-@keyframes landingGlintTwo {
+@keyframes landingFullRibbonTwo {
   0%,
-  34%,
   100% {
-    transform: translate3d(-128px, 24px, 0) scale(0.65);
-    opacity: 0;
+    transform: translate3d(6%, -4%, 0) rotate(2deg) scaleX(1.02);
+    opacity: 0.22;
   }
 
-  52%,
-  62% {
-    transform: translate3d(-96px, -8px, 0) scale(0.95);
+  50% {
+    transform: translate3d(-5%, 5%, 0) rotate(-2deg) scaleX(0.96);
     opacity: 0.52;
   }
+}
 
-  80% {
-    transform: translate3d(-54px, -22px, 0) scale(0.72);
-    opacity: 0;
+@keyframes landingScreenBreath {
+  0%,
+  100% {
+    transform: scale(0.98);
+    opacity: 0.34;
+  }
+
+  50% {
+    transform: scale(1.04);
+    opacity: 0.58;
   }
 }
 
-@keyframes landingGlintThree {
+@keyframes landingLensBreath {
   0%,
-  48%,
   100% {
-    transform: translate3d(28px, 108px, 0) scale(0.6);
-    opacity: 0;
+    transform: scale(0.985);
+    opacity: 0.8;
   }
 
-  64%,
-  74% {
-    transform: translate3d(66px, 72px, 0) scale(1);
-    opacity: 0.42;
+  50% {
+    transform: scale(1.018);
+    opacity: 0.94;
+  }
+}
+
+@keyframes landingAuraWashOne {
+  0%,
+  100% {
+    transform: translate3d(-9%, 3%, 0) scale(1.02) rotate(-8deg);
+    opacity: 0.5;
   }
 
-  88% {
-    transform: translate3d(92px, 46px, 0) scale(0.7);
-    opacity: 0;
+  45% {
+    transform: translate3d(10%, -5%, 0) scale(1.1) rotate(7deg);
+    opacity: 0.7;
+  }
+
+  72% {
+    transform: translate3d(3%, 8%, 0) scale(1.06) rotate(2deg);
+    opacity: 0.62;
+  }
+}
+
+@keyframes landingAuraWashTwo {
+  0%,
+  100% {
+    transform: translate3d(8%, -6%, 0) scale(1.08) rotate(9deg);
+    opacity: 0.44;
+  }
+
+  48% {
+    transform: translate3d(-8%, 5%, 0) scale(1.14) rotate(-6deg);
+    opacity: 0.68;
+  }
+
+  76% {
+    transform: translate3d(-2%, -2%, 0) scale(1.04) rotate(-2deg);
+    opacity: 0.54;
+  }
+}
+
+@keyframes landingHaloRose {
+  0%,
+  100% {
+    transform: translate3d(-2%, 1%, 0) scale(0.98);
+    opacity: 0.22;
+  }
+
+  50% {
+    transform: translate3d(2%, -1%, 0) scale(1.04);
+    opacity: 0.38;
+  }
+}
+
+@keyframes landingHaloMint {
+  0%,
+  100% {
+    transform: translate3d(2%, -1%, 0) scale(1);
+    opacity: 0.18;
+  }
+
+  50% {
+    transform: translate3d(-2%, 1%, 0) scale(1.05);
+    opacity: 0.34;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .fluid-blob,
-  .landing-aura-orb,
-  .landing-aura-ribbon,
-  .landing-aura-glint {
+  .landing-light-layer,
+  .landing-light-ribbon,
+  .landing-light-breath,
+  .landing-aura-field,
+  .landing-aura-wash,
+  .landing-aura-halo {
     animation: none;
   }
 
-  .landing-aura-orb {
-    opacity: 0.62;
+  .landing-aura-field {
+    opacity: 0.88;
   }
 
-  .landing-aura-ribbon,
-  .landing-aura-glint {
+  .landing-light-rose,
+  .landing-light-mint {
+    opacity: 0.14;
+  }
+
+  .landing-light-champagne,
+  .landing-light-pearl {
     opacity: 0;
   }
 }
