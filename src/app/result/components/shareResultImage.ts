@@ -1,11 +1,8 @@
 import {
-  auraKeywordsDisplay,
   auraNumbers,
   auraOrbColors,
-  getAuraFamily,
+  auraSymbols,
   getAuraIdentity,
-  skinAuraFamilies,
-  type AuraFamilyId,
 } from './resultData';
 
 export interface ShareAuraProfile {
@@ -27,7 +24,6 @@ interface ShareImageOptions {
 const CARD_WIDTH = 1080;
 const CARD_HEIGHT = 1920;
 const OFFICIAL_LOGO_PATH = '/assets/brand/zenshil-logo-official-share.png';
-const SHARE_FAMILY_ORDER: AuraFamilyId[] = ['recovery', 'pressure', 'radiance', 'rhythm'];
 
 function hexToRgb(hex: string) {
   const normalized = hex.replace('#', '');
@@ -276,73 +272,6 @@ function drawCenteredPillRow(
   });
 }
 
-function drawFamilyStrip(
-  ctx: CanvasRenderingContext2D,
-  activeFamilyId: AuraFamilyId | undefined,
-  language: ShareLanguage,
-  orb: { inner: string; mid: string; outer: string },
-  y: number
-) {
-  const stripWidth = 760;
-  const stripHeight = 52;
-  const startX = (CARD_WIDTH - stripWidth) / 2;
-  const itemWidth = stripWidth / SHARE_FAMILY_ORDER.length;
-
-  ctx.save();
-  ctx.shadowColor = 'rgba(120, 96, 72, 0.08)';
-  ctx.shadowBlur = 16;
-  ctx.shadowOffsetY = 7;
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.36)';
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.72)';
-  ctx.lineWidth = 1.5;
-  roundedRectPath(ctx, startX, y - stripHeight / 2, stripWidth, stripHeight, stripHeight / 2);
-  ctx.fill();
-  ctx.stroke();
-  ctx.shadowColor = 'transparent';
-  ctx.restore();
-
-  SHARE_FAMILY_ORDER.forEach((familyId, index) => {
-    const family = skinAuraFamilies[familyId];
-    const isActive = familyId === activeFamilyId;
-    const x = startX + index * itemWidth;
-    const centerX = x + itemWidth / 2;
-
-    ctx.save();
-
-    if (isActive) {
-      const activeWidth = itemWidth - 12;
-      ctx.shadowColor = rgba(orb.mid, 0.18);
-      ctx.shadowBlur = 14;
-      ctx.shadowOffsetY = 5;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.78)';
-      roundedRectPath(ctx, centerX - activeWidth / 2, y - 19, activeWidth, 38, 19);
-      ctx.fill();
-      ctx.shadowColor = 'transparent';
-    }
-
-    ctx.fillStyle = isActive ? orb.mid : 'rgba(168, 162, 158, 0.48)';
-    ctx.beginPath();
-    ctx.arc(centerX - 48, y, isActive ? 7 : 5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = isActive ? '#57534e' : '#a8a29e';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const label = language === 'en' ? family.name.replace(' Family', '') : family.nameZh;
-    drawFittedSingleLineText(
-      ctx,
-      label,
-      centerX + 13,
-      y + 1,
-      itemWidth - 72,
-      isActive ? 20 : 18,
-      14,
-      'Arial, sans-serif'
-    );
-    ctx.restore();
-  });
-}
-
 function drawAuraBlob(
   ctx: CanvasRenderingContext2D,
   color: string,
@@ -427,25 +356,31 @@ function drawShareAuraCloud(
 
 function drawShareCard(
   ctx: CanvasRenderingContext2D,
-  { aura, matchPercentage, language }: ShareImageOptions,
+  { aura, language }: ShareImageOptions,
   officialLogo: HTMLImageElement | null
 ) {
   const orb = auraOrbColors[aura.id] ?? { inner: '#f9a8d4', mid: '#e9d5ff', outer: '#fbcfe8' };
   const meta = auraNumbers[aura.id] ?? { number: '000', colorLabel: '—', colorLabelEn: '—' };
-  const keywords = auraKeywordsDisplay[aura.id] ?? { zh: '', en: '' };
   const identity = getAuraIdentity(aura.id);
-  const family = getAuraFamily(aura.id);
-  const title = identity?.displayName ?? aura.name;
-  const subtitle = language === 'en'
-    ? family?.name ?? aura.chineseName
+  const symbol = auraSymbols[aura.id] ?? {
+    labelZh: '氣場核心',
+    labelEn: 'Aura Core',
+    coreZh: '個人節奏',
+    coreEn: 'Personal Rhythm',
+  };
+  const title = language === 'en'
+    ? identity?.displayName ?? aura.name
     : identity?.displayNameZh ?? aura.chineseName;
+  const subtitle = language === 'en'
+    ? identity?.displayNameZh ?? aura.chineseName
+    : identity?.displayName ?? aura.name;
   const quote = identity
-    ? language === 'en' ? identity.shareLine : identity.shareLineZh
+    ? language === 'en' ? identity.shortLine : identity.shortLineZh
     : language === 'en' && aura.quoteEn ? aura.quoteEn : aura.quote;
-  const keywordText = language === 'en' ? keywords.en : keywords.zh;
-  const colorLabel = language === 'en' ? meta.colorLabelEn : meta.colorLabel;
-  const matchLabel = language === 'en' ? `Aura match ${matchPercentage}%` : `氣場吻合度 ${matchPercentage}%`;
-  const footerLabel = language === 'en' ? 'Personalized Skin Aura Analysis' : '個人化肌膚氣場分析';
+  const symbolLabel = language === 'en' ? symbol.labelEn : symbol.labelZh;
+  const auraCore = language === 'en' ? symbol.coreEn : symbol.coreZh;
+  const reportLabel = language === 'en' ? 'SKIN AURA IDENTITY' : 'SKIN AURA IDENTITY';
+  const footerLabel = language === 'en' ? 'Personal Skin & Lifestyle Discovery' : '個人化肌膚氣場探索';
   const ctaLabel = language === 'en' ? 'Zenshil Skin Aura Test' : 'Zenshil 肌膚氣場測試';
 
   ctx.clearRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
@@ -481,11 +416,9 @@ function drawShareCard(
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#a8a29e';
   ctx.font = '500 22px Arial, sans-serif';
-  ctx.fillText('SKIN AURA REPORT', 540, 326);
+  ctx.fillText(reportLabel, 540, 326);
 
-  drawPill(ctx, matchLabel, 540, 450);
-
-  drawShareAuraCloud(ctx, orb, 540, 815, 292);
+  drawShareAuraCloud(ctx, orb, 540, 752, 286);
 
   ctx.fillStyle = '#1c1917';
   ctx.textAlign = 'center';
@@ -494,10 +427,10 @@ function drawShareCard(
     ctx,
     title,
     540,
-    1226,
+    1164,
     920,
-    84,
-    54,
+    language === 'en' ? 78 : 86,
+    language === 'en' ? 48 : 56,
     'Georgia, "Times New Roman", serif'
   );
 
@@ -506,22 +439,10 @@ function drawShareCard(
     ctx,
     subtitle,
     540,
-    1310,
+    1248,
     790,
-    language === 'en' ? 34 : 38,
+    language === 'en' ? 34 : 36,
     26,
-    'Georgia, "Times New Roman", serif'
-  );
-
-  ctx.fillStyle = '#57534e';
-  drawFittedSingleLineText(
-    ctx,
-    `“${quote}”`,
-    540,
-    1414,
-    910,
-    language === 'en' ? 30 : 36,
-    language === 'en' ? 22 : 27,
     'Georgia, "Times New Roman", serif'
   );
 
@@ -529,25 +450,43 @@ function drawShareCard(
     ctx,
     [
       { text: `AURA NO. ${meta.number}`, paddingX: 38, maxWidth: 330 },
-      { text: colorLabel, paddingX: 38, maxWidth: 330 },
+      { text: symbolLabel, paddingX: 38, maxWidth: 340 },
     ],
     540,
-    1522,
+    1342,
     24
   );
 
-  ctx.font = '500 28px Arial, sans-serif';
-  drawPill(ctx, keywordText, 540, 1606, 42, 760, language === 'en' ? 24 : 28, 18);
+  drawPill(
+    ctx,
+    language === 'en' ? `Aura Core · ${auraCore}` : `Aura Core · ${auraCore}`,
+    540,
+    1426,
+    42,
+    760,
+    language === 'en' ? 24 : 28,
+    18
+  );
 
-  drawFamilyStrip(ctx, identity?.familyId, language, orb, 1684);
+  ctx.fillStyle = '#57534e';
+  drawFittedSingleLineText(
+    ctx,
+    `“${quote}”`,
+    540,
+    1538,
+    language === 'en' ? 860 : 900,
+    language === 'en' ? 30 : 35,
+    language === 'en' ? 22 : 27,
+    'Georgia, "Times New Roman", serif'
+  );
 
   ctx.fillStyle = '#a8a29e';
   ctx.font = '500 22px Arial, sans-serif';
-  ctx.fillText(footerLabel, 540, 1804);
+  ctx.fillText(footerLabel, 540, 1744);
 
   ctx.fillStyle = '#78716c';
   ctx.font = '500 26px Georgia, serif';
-  ctx.fillText(ctaLabel, 540, 1846);
+  ctx.fillText(ctaLabel, 540, 1788);
 }
 
 export async function createResultShareImage(options: ShareImageOptions) {

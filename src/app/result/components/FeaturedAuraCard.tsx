@@ -4,9 +4,9 @@ import { motion } from 'framer-motion';
 import { useQuizStore } from '@/store/useQuizStore';
 import SoftAuraCloud, { auraCloudPaletteFromOrb } from '@/components/SoftAuraCloud';
 import {
-  auraKeywordsDisplay,
   auraNumbers,
   auraOrbColors,
+  auraSymbols,
   getAuraFamily,
   getAuraIdentity,
 } from './resultData';
@@ -27,7 +27,12 @@ interface FeaturedAuraCardProps {
 export default function FeaturedAuraCard({ aura, matchPercentage }: FeaturedAuraCardProps) {
   const language = useQuizStore((state) => state.language);
   const meta = auraNumbers[aura.id] ?? { number: '000', colorLabel: '—', colorLabelEn: '—' };
-  const keywords = auraKeywordsDisplay[aura.id] ?? { zh: '', en: '' };
+  const symbol = auraSymbols[aura.id] ?? {
+    labelZh: '氣場核心',
+    labelEn: 'Aura Core',
+    coreZh: '個人節奏',
+    coreEn: 'Personal Rhythm',
+  };
   const orb = auraOrbColors[aura.id] ?? { inner: '#c4b5fd', mid: '#f9a8d4', outer: '#93c5fd' };
   const identity = getAuraIdentity(aura.id);
   const family = getAuraFamily(aura.id);
@@ -37,28 +42,19 @@ export default function FeaturedAuraCard({ aura, matchPercentage }: FeaturedAura
   const displayName = identity
     ? language === 'en' ? identity.displayName : identity.displayNameZh
     : language === 'en' ? aura.name : aura.chineseName;
+  const secondaryName = identity
+    ? language === 'en' ? identity.displayNameZh : identity.displayName
+    : language === 'en' ? aura.chineseName : aura.name;
   const familyName = family
     ? language === 'en' ? family.name : family.nameZh
     : language === 'en' ? 'Skin Aura Family' : '肌膚氣場家族';
+  const symbolLabel = language === 'en' ? symbol.labelEn : symbol.labelZh;
+  const symbolCore = language === 'en' ? symbol.coreEn : symbol.coreZh;
   const titleSizeClass = language === 'en' && displayName.length > 13
-    ? 'text-[34px] sm:text-[38px]'
-    : 'text-[40px] sm:text-[44px]';
-  const summaryItems = identity
-    ? [
-      {
-        label: language === 'en' ? 'Main skin signal' : '主要肌膚訊號',
-        value: language === 'en' ? identity.skinState : identity.skinStateZh,
-      },
-      {
-        label: language === 'en' ? 'Priority focus' : '優先改善',
-        value: language === 'en' ? identity.primaryNeed : identity.primaryNeedZh,
-      },
-      {
-        label: language === 'en' ? 'Lifestyle profile' : '生活輪廓',
-        value: language === 'en' ? identity.demographic : identity.demographicZh,
-      },
-    ]
-    : [];
+    ? 'text-[32px] sm:text-[36px]'
+    : language === 'en'
+      ? 'text-[42px] sm:text-[46px]'
+      : 'text-[44px] sm:text-[48px]';
 
   return (
     <motion.section
@@ -81,7 +77,7 @@ export default function FeaturedAuraCard({ aura, matchPercentage }: FeaturedAura
       <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#f8f5ef] to-transparent" />
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center pb-7 pt-24 text-center">
-        <div className="mb-5 flex items-center justify-center gap-2 rounded-full border border-white/70 bg-white/55 px-4 py-2 shadow-sm backdrop-blur-sm">
+        <div className="mb-6 flex items-center justify-center gap-2 rounded-full border border-white/70 bg-white/55 px-4 py-2 shadow-sm backdrop-blur-sm">
           <span
             className="size-2 rounded-full"
             style={{ backgroundColor: orb.mid }}
@@ -92,57 +88,44 @@ export default function FeaturedAuraCard({ aura, matchPercentage }: FeaturedAura
           </span>
         </div>
 
-        <SoftAuraCloud
-          className="mb-7 size-[min(68vw,276px)]"
-          palette={auraCloudPaletteFromOrb(orb)}
-        />
+        <div className="relative mb-7">
+          <SoftAuraCloud
+            className="size-[min(67vw,284px)]"
+            palette={auraCloudPaletteFromOrb(orb)}
+          />
+          <div className="absolute inset-x-0 -bottom-3 mx-auto h-10 w-36 rounded-full bg-stone-300/10 blur-2xl" aria-hidden="true" />
+        </div>
 
         <div className="max-w-[340px]">
-          <p className="mb-3 text-center text-[10px] font-medium uppercase tracking-[0.26em] text-stone-400">
-            {language === 'en' ? 'You belong to' : '你屬於'}
+          <p className="mb-3 text-center text-[10px] font-semibold uppercase tracking-[0.28em] text-stone-400">
+            {language === 'en' ? 'Your Skin Aura Identity' : '你的 Skin Aura 身份'}
           </p>
-          <p className="mb-3 font-serif text-[17px] italic text-stone-500 text-balance">
-            {familyName}
+          <p className="mb-2 font-serif text-[17px] italic text-stone-500 text-balance">
+            {language === 'en' ? `${familyName} Society` : `${familyName} Society`}
           </p>
           <h1 className={`font-serif ${titleSizeClass} uppercase leading-[0.96] text-stone-950 text-balance`}>
             {displayName}
           </h1>
-          <p className="mt-3 text-[10px] font-medium uppercase tracking-[0.22em] text-stone-400">
-            {language === 'en' ? 'Specific Skin Aura Type' : '具體 Skin Aura 類型'}
+          <p className="mt-3 font-serif text-[18px] leading-tight text-stone-500 text-balance">
+            {secondaryName}
           </p>
-          <p className="mx-auto mt-5 max-w-[318px] font-serif text-[17px] leading-relaxed text-stone-700 text-pretty">
+
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            <span className="rounded-full border border-white/70 bg-white/55 px-3.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.16em] text-stone-500 shadow-sm backdrop-blur-sm">
+              Aura No. {meta.number}
+            </span>
+            <span className="rounded-full border border-white/70 bg-white/55 px-3.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-stone-500 shadow-sm backdrop-blur-sm">
+              {symbolLabel}
+            </span>
+          </div>
+
+          <p className="mx-auto mt-5 max-w-[318px] font-serif text-[18px] leading-relaxed text-stone-700 text-pretty">
             &ldquo;{quote}&rdquo;
           </p>
-        </div>
 
-        {summaryItems.length > 0 && (
-          <div className="mt-6 grid w-full max-w-[338px] gap-2">
-            {summaryItems.map((item) => (
-              <div
-                key={item.label}
-                className="rounded-2xl border border-white/70 bg-white/48 px-4 py-3 text-left shadow-sm backdrop-blur-sm"
-              >
-                <p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.22em] text-stone-400">
-                  {item.label}
-                </p>
-                <p className="text-[13px] font-medium leading-snug text-stone-700 text-pretty">
-                  {item.value}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className="mt-5 flex flex-wrap justify-center gap-2">
-          <span className="rounded-full border border-white/65 bg-white/45 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.16em] text-stone-500 shadow-sm backdrop-blur-sm">
-            Aura No. {meta.number}
-          </span>
-          <span className="rounded-full border border-white/65 bg-white/45 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.16em] text-stone-500 shadow-sm backdrop-blur-sm">
-            {language === 'en' ? meta.colorLabelEn : meta.colorLabel}
-          </span>
-          <span className="max-w-[320px] rounded-full border border-white/65 bg-white/45 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.14em] text-stone-500 shadow-sm backdrop-blur-sm">
-            {language === 'en' ? keywords.en : keywords.zh}
-          </span>
+          <p className="mx-auto mt-4 max-w-[278px] text-[10px] font-medium uppercase tracking-[0.22em] text-stone-400">
+            {language === 'en' ? `Aura core · ${symbolCore}` : `Aura Core · ${symbolCore}`}
+          </p>
         </div>
       </div>
 

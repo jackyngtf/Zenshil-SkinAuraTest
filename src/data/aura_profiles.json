@@ -1,16 +1,16 @@
 {
   "overworked": {
     "id": "overworked",
-    "name": "LOW BATTERY GLOW",
-    "chineseName": "低電發光型",
+    "name": "QUIET RECHARGE",
+    "chineseName": "靜默充電者",
     "colorTheme": "from-blue-900 via-indigo-900 to-purple-900",
-    "quote": "你不是不夠亮，而是肌膚能量需要回補。",
+    "quote": "你不是失去光，只是正在靜靜回補能量。",
     "keywords": [
-      "低電量",
-      "暗沉缺水",
-      "修復需求"
+      "靜默回補",
+      "能量重整",
+      "溫柔恢復"
     ],
-    "description": "你看起來仍然精神得體，但肌膚底層其實有低電量訊號。長期高輸出令水分、光澤與恢復速度一起下降，最需要的是把能量慢慢補回來。",
+    "description": "你看起來仍然得體，但肌膚正在提醒你慢慢回補。這不是失去光澤，而是身心能量需要重新整理，讓皮膚有空間恢復柔和明亮。",
     "skinNeeds": [
       "Deep Hydration",
       "Skin Recovery",
@@ -22,26 +22,26 @@
       "stress": 80,
       "recoveryNeeded": 85
     },
-    "quoteEn": "You are not losing your glow; your skin energy needs replenishment.",
+    "quoteEn": "You are not losing your glow. You are quietly recharging.",
     "keywordsEn": [
-      "Low Energy",
-      "Dullness",
-      "Recovery Need"
+      "Quiet Recharge",
+      "Energy Reset",
+      "Gentle Recovery"
     ],
-    "descriptionEn": "You still look polished, but your skin is showing low-energy signals underneath. A high-output lifestyle is slowing hydration, radiance, and recovery, so replenishment matters more than extra stimulation."
+    "descriptionEn": "You still look composed, but your skin is asking for replenishment. This is not about losing radiance; it is about giving your energy system enough room to recover softly."
   },
   "stress": {
     "id": "stress",
-    "name": "STRESS REACTIVE SKIN",
-    "chineseName": "壓力泛紅型",
+    "name": "HIGH SENSITIVITY OPERATOR",
+    "chineseName": "高感知運轉者",
     "colorTheme": "from-orange-800 via-red-900 to-rose-900",
-    "quote": "你的壓力，正透過泛紅與敏感說話。",
+    "quote": "你不是太敏感，你只是接收得比別人更多。",
     "keywords": [
-      "壓力反應",
-      "泛紅敏感",
-      "屏障受壓"
+      "高感知",
+      "情緒接收",
+      "需要安定"
     ],
-    "description": "你的壓力訊號主要出現在泛紅、敏感與屏障受壓上。這不是單純「皮膚差」，而是肌膚正在對高壓與過度刺激作出反應。",
+    "description": "你的肌膚感知力很高，容易把生活中的壓力與刺激轉化成可見訊號。這不是脆弱，而是你的身心系統接收得更細、更快。",
     "skinNeeds": [
       "Calming & Cooling",
       "Barrier Repair",
@@ -53,26 +53,26 @@
       "stress": 92,
       "recoveryNeeded": 75
     },
-    "quoteEn": "Your pressure is speaking through redness and sensitivity.",
+    "quoteEn": "You are not too sensitive. You simply receive more than most.",
     "keywordsEn": [
-      "Stress Response",
-      "Redness",
-      "Barrier Pressure"
+      "High Sensitivity",
+      "Emotional Reception",
+      "Grounding"
     ],
-    "descriptionEn": "Your stress signals show through redness, sensitivity, and barrier pressure. This is not simply bad skin; it is your skin reacting to overload and overstimulation."
+    "descriptionEn": "Your skin is highly perceptive, translating pressure and stimulation into visible signals quickly. This is not weakness; it is a finely tuned system asking for calm."
   },
   "hidden_aging": {
     "id": "hidden_aging",
-    "name": "CONTOUR SAVER",
-    "chineseName": "輪廓守護型",
+    "name": "STRUCTURED LIVING",
+    "chineseName": "規律生活者",
     "colorTheme": "from-stone-300 via-rose-200 to-orange-100",
-    "quote": "輪廓的細微變化，是肌膚提醒你開始守護。",
+    "quote": "你看見細節，是因為你正在為未來留位置。",
     "keywords": [
-      "輪廓下降",
-      "膠原流失",
-      "細紋初現"
+      "規律節奏",
+      "細節覺察",
+      "長期守護"
     ],
-    "description": "你的膚質狀況大致良好，但你已經開始察覺輪廓、彈性與細紋的微小變化。這不是要焦慮老化，而是提早守住膠原與線條。",
+    "description": "你對細節與節奏有很高覺察，會比別人更早看見面部狀態的微小變化。這不是焦慮，而是一種長線照顧自己的能力。",
     "skinNeeds": [
       "Collagen Support",
       "Contour Lifting",
@@ -84,26 +84,26 @@
       "stress": 55,
       "recoveryNeeded": 60
     },
-    "quoteEn": "Subtle contour changes are your skin asking for protection.",
+    "quoteEn": "You notice subtle shifts because you are making room for the future.",
     "keywordsEn": [
-      "Contour Shift",
-      "Collagen Loss",
-      "Elasticity Drop"
+      "Structured Rhythm",
+      "Detail Awareness",
+      "Long-Term Care"
     ],
-    "descriptionEn": "Your skin is generally in good condition, but subtle contour, elasticity, and fine-line changes are becoming noticeable. This is not about fear; it is the right moment to protect collagen and definition early."
+    "descriptionEn": "You are sensitive to detail and timing, noticing subtle facial shifts early. This is not anxiety; it is a long-game approach to caring for your future self."
   },
   "recovery": {
     "id": "recovery",
-    "name": "RECOVERY RHYTHM",
-    "chineseName": "循環修復型",
+    "name": "RECOVERY MODE",
+    "chineseName": "修復模式者",
     "colorTheme": "from-cyan-900 via-teal-800 to-emerald-900",
-    "quote": "讓循環重新開始，就是你目前最好的修復。",
+    "quote": "休息不是停下來，而是肌膚正在重建。",
     "keywords": [
-      "循環慢",
-      "吸收弱",
-      "需要修復"
+      "修復模式",
+      "循環重啟",
+      "慢慢回穩"
     ],
-    "description": "你的肌膚最明顯的訊號是循環與吸收變慢。與其加入更多強效活性成分，不如先讓肌膚重新放鬆、呼吸和恢復節奏。",
+    "description": "你的肌膚正在進入修復模式，最需要的不是加快，而是讓身體重新呼吸、循環和回穩。當節奏慢下來，皮膚才有力重新建立狀態。",
     "skinNeeds": [
       "Better Circulation",
       "Detoxification",
@@ -115,26 +115,26 @@
       "stress": 70,
       "recoveryNeeded": 95
     },
-    "quoteEn": "Restarting circulation is the repair your skin needs most.",
+    "quoteEn": "Rest is not stopping. It is your skin rebuilding.",
     "keywordsEn": [
-      "Slow Circulation",
-      "Weak Absorption",
-      "Recovery Need"
+      "Recovery Mode",
+      "Flow Reset",
+      "Returning Balance"
     ],
-    "descriptionEn": "Your clearest signal is slow circulation and weaker absorption. Before adding stronger active formulas, your skin needs relaxation, breathing room, and a healthier recovery rhythm."
+    "descriptionEn": "Your skin is entering recovery mode. Instead of pushing harder, it needs breathing room, circulation, and a slower rhythm so it can rebuild its condition."
   },
   "preventive": {
     "id": "preventive",
-    "name": "BARRIER KEEPER",
-    "chineseName": "穩定屏障型",
+    "name": "BALANCE BUILDER",
+    "chineseName": "平衡建立者",
     "colorTheme": "from-green-100 via-emerald-50 to-teal-100",
-    "quote": "你的好狀態，值得被穩定守住。",
+    "quote": "你的穩定，是一種值得被守住的光。",
     "keywords": [
-      "屏障穩定",
-      "抗氧保養",
+      "平衡建立",
+      "穩定守護",
       "長期維持"
     ],
-    "description": "你的肌膚狀態相對穩定，重點不是大幅改造，而是維持屏障、抗氧化與長期狀態。你適合以預防式保養把好狀態留住。",
+    "description": "你的肌膚狀態有一種安定感，重點不是大幅改造，而是把平衡慢慢建立得更穩。穩定本身，就是你最值得保護的光。",
     "skinNeeds": [
       "Antioxidant Protection",
       "Maintenance",
@@ -146,26 +146,26 @@
       "stress": 30,
       "recoveryNeeded": 20
     },
-    "quoteEn": "Your good skin state deserves to be kept stable.",
+    "quoteEn": "Your steadiness is a glow worth protecting.",
     "keywordsEn": [
-      "Stable Barrier",
-      "Antioxidant Care",
+      "Balance Builder",
+      "Steady Care",
       "Long-Term Maintenance"
     ],
-    "descriptionEn": "Your skin is relatively stable, so the goal is not dramatic change. Preventive care should maintain barrier health, antioxidant support, and long-term skin quality."
+    "descriptionEn": "Your skin carries a steady quality. The goal is not dramatic transformation, but building balance carefully so your good condition can last."
   },
   "glow": {
     "id": "glow",
-    "name": "GLOW SEEKER",
-    "chineseName": "水光追求型",
+    "name": "GLOW EXPLORER",
+    "chineseName": "光感探索者",
     "colorTheme": "from-pink-200 via-rose-100 to-fuchsia-200",
-    "quote": "你追求的是乾淨透亮、真正接住光的皮膚。",
+    "quote": "你追求的不是完美，而是皮膚真正接住光。",
     "keywords": [
-      "水光追求",
-      "透亮膚質",
-      "細節精緻"
+      "光感探索",
+      "透亮美學",
+      "細節自信"
     ],
-    "description": "你追求的是乾淨、透亮、細緻而有水光的膚質。你的重點不是遮蓋問題，而是令皮膚本身看起來更清澈、更有光。",
+    "description": "你對光、透明感與細節有很強的審美直覺。你追求的不是完美無瑕，而是皮膚本身能乾淨、清澈地接住光。",
     "skinNeeds": [
       "Ultimate Brightening",
       "Glass Skin Effect",
@@ -177,26 +177,26 @@
       "stress": 40,
       "recoveryNeeded": 35
     },
-    "quoteEn": "You are chasing skin that looks clear, refined, and lit from within.",
+    "quoteEn": "You are not chasing perfection; you are following the way your skin catches light.",
     "keywordsEn": [
-      "Glow Goal",
-      "Radiant Texture",
-      "Refined Detail"
+      "Glow Explorer",
+      "Radiance Sense",
+      "Refined Confidence"
     ],
-    "descriptionEn": "You are looking for skin that appears clear, refined, hydrated, and luminous. The goal is not to cover problems, but to make the skin itself look brighter and more transparent."
+    "descriptionEn": "You have a strong instinct for light, clarity, and detail. You are not chasing flawlessness; you are exploring how your skin can look clearer and more naturally radiant."
   },
   "burnout": {
     "id": "burnout",
-    "name": "BURNOUT SKIN",
-    "chineseName": "透支過熱型",
+    "name": "CONSTANT ACCELERATOR",
+    "chineseName": "長期高速運轉者",
     "colorTheme": "from-purple-900 via-fuchsia-900 to-orange-800",
-    "quote": "你的皮膚正在過熱，需要一場完整重啟。",
+    "quote": "你不是不夠努力，你只是一直在高速前進。",
     "keywords": [
-      "高壓過熱",
-      "能量透支",
-      "需要重啟"
+      "高速運轉",
+      "能量重啟",
+      "節奏調整"
     ],
-    "description": "你的皮膚像長時間處於高壓過熱狀態，能量被快速消耗，容易出現暗黃、疲態與屏障不穩。最需要的是先重啟節奏，再談進階改善。",
+    "description": "你的生活節奏長期維持高速，皮膚也一直在努力追上。現在最需要的不是再加速，而是重新調整節奏，讓能量慢慢回到身體裏。",
     "skinNeeds": [
       "Total Reset",
       "Intensive Repair",
@@ -208,26 +208,26 @@
       "stress": 95,
       "recoveryNeeded": 90
     },
-    "quoteEn": "Your skin is overheating and asking for a complete reset.",
+    "quoteEn": "You are not behind. You have been moving at high speed for too long.",
     "keywordsEn": [
-      "Overheated Stress",
-      "Energy Depletion",
-      "Reset Needed"
+      "Constant Motion",
+      "Energy Reset",
+      "Rhythm Adjustment"
     ],
-    "descriptionEn": "Your skin feels overheated by prolonged pressure. Energy is being depleted quickly, showing as dullness, fatigue, and barrier instability. A full reset should come before advanced correction."
+    "descriptionEn": "Your lifestyle has been moving at high speed, and your skin is trying to keep up. What it needs now is not more acceleration, but a slower rhythm that lets energy return."
   },
   "late_night": {
     "id": "late_night",
-    "name": "LATE NIGHT SKIN",
-    "chineseName": "夜貓倦容型",
+    "name": "NIGHT OWL CREATOR",
+    "chineseName": "夜行創作者",
     "colorTheme": "from-slate-900 via-blue-900 to-indigo-900",
-    "quote": "夜晚的欠債，會先出現在眼周與氣色。",
+    "quote": "夜晚給你靈感，也提醒你的肌膚需要節奏。",
     "keywords": [
-      "熬夜作息",
-      "眼周疲態",
-      "慢代謝"
+      "夜間靈感",
+      "作息重整",
+      "醒膚節奏"
     ],
-    "description": "你的作息節奏令夜晚的欠債累積在眼周與氣色上。黑眼圈、浮腫、暗沉與慢代謝，是肌膚提醒你需要重新校準睡眠節奏。",
+    "description": "你在夜晚擁有靈感與專注力，但肌膚同時需要更清晰的節奏。當作息被重新校準，眼周、氣色與精神感會更容易被喚醒。",
     "skinNeeds": [
       "De-puffing",
       "Awakening & Brightening",
@@ -239,12 +239,12 @@
       "stress": 65,
       "recoveryNeeded": 80
     },
-    "quoteEn": "Late-night debt shows first around the eyes and complexion.",
+    "quoteEn": "The night gives you ideas; your skin is asking for rhythm.",
     "keywordsEn": [
-      "Late-Night Rhythm",
-      "Eye Fatigue",
-      "Slow Metabolism"
+      "Night Inspiration",
+      "Rhythm Reset",
+      "Skin Awakening"
     ],
-    "descriptionEn": "Late-night rhythm is showing through the eyes and complexion. Dark circles, puffiness, dullness, and slow metabolism are signals that your skin needs a clearer sleep rhythm reset."
+    "descriptionEn": "The night gives you focus and imagination, but your skin is asking for a clearer rhythm. With a steadier reset, your eyes and complexion can wake up more easily."
   }
 }
