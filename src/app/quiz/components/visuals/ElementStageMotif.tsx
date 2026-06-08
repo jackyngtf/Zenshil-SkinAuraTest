@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { seededNumber } from './deterministicMotion';
 
@@ -569,140 +570,460 @@ function Q4ResourceMeter({
 }
 
 /* ================================================================== */
-/*  Q6 SCENES: "Pace of life" (Flow & Kinetic Forces)                 */
+/*  Q6 SCENES: "Pace of life" (Skin Rhythm Field)                     */
 /* ================================================================== */
 
-function Q6HighSpeed({ isConfirming }: { isConfirming: boolean }) {
-  // Fast-moving, motion-blurred light trails
+type Q6RhythmId = 'idle' | 'A' | 'B' | 'C' | 'D';
+
+type Q6RhythmState = {
+  id: Q6RhythmId;
+  base: string;
+  wash: string;
+  washSoft: string;
+  accent: string;
+  secondary: string;
+  line: string;
+};
+
+const q6RhythmStates: Record<Q6RhythmId, Q6RhythmState> = {
+  idle: {
+    id: 'idle',
+    base: '#fbf8f3',
+    wash: '#dbeafe',
+    washSoft: '#fce7f3',
+    accent: '#c7d2fe',
+    secondary: '#ccfbf1',
+    line: 'rgba(120, 113, 108, 0.22)',
+  },
+  A: {
+    id: 'A',
+    base: '#fff7ed',
+    wash: '#fed7aa',
+    washSoft: '#fecdd3',
+    accent: '#f59e0b',
+    secondary: '#fb7185',
+    line: 'rgba(180, 83, 9, 0.34)',
+  },
+  B: {
+    id: 'B',
+    base: '#f7f7ff',
+    wash: '#bfdbfe',
+    washSoft: '#ddd6fe',
+    accent: '#7dd3fc',
+    secondary: '#a78bfa',
+    line: 'rgba(79, 70, 229, 0.28)',
+  },
+  C: {
+    id: 'C',
+    base: '#fafaf7',
+    wash: '#dbeafe',
+    washSoft: '#fde68a',
+    accent: '#93c5fd',
+    secondary: '#d6d3d1',
+    line: 'rgba(87, 83, 78, 0.22)',
+  },
+  D: {
+    id: 'D',
+    base: '#f4fffb',
+    wash: '#a7f3d0',
+    washSoft: '#fef3c7',
+    accent: '#14b8a6',
+    secondary: '#fbbf24',
+    line: 'rgba(20, 113, 94, 0.27)',
+  },
+};
+
+const q6SoftFilterId = (id: Q6RhythmId) => `q6-rhythm-soft-${id}`;
+const q6FieldId = (id: Q6RhythmId) => `q6-rhythm-field-${id}`;
+const q6VeilId = (id: Q6RhythmId) => `q6-rhythm-veil-${id}`;
+const q6SheenId = (id: Q6RhythmId) => `q6-rhythm-sheen-${id}`;
+
+function Q6RhythmStage({
+  state,
+  isConfirming,
+  children,
+}: {
+  state: Q6RhythmState;
+  isConfirming: boolean;
+  children?: ReactNode;
+}) {
   return (
     <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice">
       <defs>
-        <filter id="q6-speed-blur" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="0 15" /> {/* Horizontal blur only */}
+        <radialGradient id={q6FieldId(state.id)} cx="50%" cy="46%" r="64%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.92" />
+          <stop offset="38%" stopColor={state.wash} stopOpacity="0.62" />
+          <stop offset="74%" stopColor={state.washSoft} stopOpacity="0.34" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id={q6VeilId(state.id)} cx="52%" cy="62%" r="58%">
+          <stop offset="0%" stopColor={state.secondary} stopOpacity="0.5" />
+          <stop offset="62%" stopColor={state.wash} stopOpacity="0.18" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id={q6SheenId(state.id)} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="45%" stopColor="#ffffff" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </linearGradient>
+        <filter id={q6SoftFilterId(state.id)} x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="12" />
         </filter>
       </defs>
-      <rect width="400" height="400" fill="#020617" />
-      
-      {Array.from({ length: 8 }, (_, i) => ({
-        y1: seededNumber(12000 + i, 0, 400),
-        y2: seededNumber(12100 + i, 0, 400),
-        strokeWidth: seededNumber(12200 + i, 2, 8),
-        duration: seededNumber(12300 + i, 0.3, 0.8),
-        delay: seededNumber(12400 + i, 0, 1),
-      })).map((line, i) => (
-        <motion.line
-          key={i}
-          x1="-100" y1={line.y1}
-          x2="-50" y2={line.y2}
-          stroke={i % 2 === 0 ? "#f97316" : "#e2e8f0"}
-          strokeWidth={line.strokeWidth}
-          filter="url(#q6-speed-blur)"
-          animate={{
-            x1: isConfirming ? 500 : [-100, 500],
-            x2: isConfirming ? 600 : [-50, 600],
-            opacity: isConfirming ? 0 : [0, 1, 0]
-          }}
-          transition={{
-            duration: line.duration,
-            repeat: Infinity,
-            ease: "linear",
-            delay: line.delay
-          }}
+
+      <rect width="400" height="400" fill={state.base} />
+
+      <motion.circle
+        cx="200"
+        cy="194"
+        r="152"
+        fill={`url(#${q6FieldId(state.id)})`}
+        filter={`url(#${q6SoftFilterId(state.id)})`}
+        animate={{
+          scale: isConfirming ? 1.08 : [1, 1.035, 1],
+          opacity: isConfirming ? 0.92 : [0.76, 0.92, 0.76],
+        }}
+        transition={{ duration: 7, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      />
+      <motion.circle
+        cx="210"
+        cy="224"
+        r="122"
+        fill={`url(#${q6VeilId(state.id)})`}
+        filter={`url(#${q6SoftFilterId(state.id)})`}
+        animate={{
+          x: isConfirming ? 0 : [-6, 8, -6],
+          y: isConfirming ? -4 : [5, -5, 5],
+          opacity: isConfirming ? 0.68 : [0.38, 0.58, 0.38],
+        }}
+        transition={{ duration: 9.5, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      />
+
+      <motion.g
+        opacity="0.5"
+        animate={{ y: isConfirming ? -2 : [0, 4, 0] }}
+        transition={{ duration: 6.5, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      >
+        <path
+          d="M42 246 C96 228 130 239 179 220 C232 199 275 210 342 184"
+          fill="none"
+          stroke="rgba(255,255,255,0.6)"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <path
+          d="M50 282 C104 266 148 277 192 258 C234 241 278 244 344 222"
+          fill="none"
+          stroke={state.line}
+          strokeWidth="1"
+          strokeLinecap="round"
+        />
+      </motion.g>
+
+      {children}
+
+      <motion.g
+        style={{ transformOrigin: '200px 200px' }}
+        animate={{ x: isConfirming ? 220 : [-190, 240] }}
+        transition={{ duration: 8.5, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+        opacity="0.36"
+      >
+        <rect
+          x="8"
+          y="-20"
+          width="42"
+          height="455"
+          rx="22"
+          fill={`url(#${q6SheenId(state.id)})`}
+          transform="rotate(17 29 200)"
+        />
+      </motion.g>
+
+      <motion.circle
+        cx="200"
+        cy="200"
+        r="158"
+        fill="none"
+        stroke="rgba(255,255,255,0.62)"
+        strokeWidth="1"
+        animate={{ opacity: isConfirming ? 0.72 : [0.42, 0.66, 0.42] }}
+        transition={{ duration: 6.5, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      />
+    </svg>
+  );
+}
+
+function Q6Idle({ isConfirming }: { isConfirming: boolean }) {
+  const state = q6RhythmStates.idle;
+  return (
+    <Q6RhythmStage state={state} isConfirming={isConfirming}>
+      {[150, 188, 226].map((y, index) => (
+        <motion.path
+          key={y}
+          d={`M72 ${y} C126 ${y - 14}, 166 ${y + 10}, 210 ${y - 2} S286 ${y + 8}, 330 ${y - 10}`}
+          fill="none"
+          stroke={index === 1 ? state.accent : 'rgba(255,255,255,0.56)'}
+          strokeWidth={index === 1 ? 2 : 1.2}
+          strokeLinecap="round"
+          opacity={index === 1 ? 0.34 : 0.32}
+          animate={{ y: [0, index === 1 ? 4 : 2, 0], opacity: [0.2, 0.42, 0.2] }}
+          transition={{ duration: 6 + index, repeat: Infinity, ease: 'easeInOut' }}
         />
       ))}
-    </svg>
+    </Q6RhythmStage>
+  );
+}
+
+function Q6HighSpeed({ isConfirming }: { isConfirming: boolean }) {
+  const state = q6RhythmStates.A;
+  const orbitals = [
+    { rx: 128, ry: 38, rotate: -18, duration: 2.6, planetX: 328, planetY: 196, radius: 7, fill: state.secondary },
+    { rx: 96, ry: 30, rotate: 24, duration: 1.9, planetX: 292, planetY: 194, radius: 5, fill: state.accent },
+    { rx: 62, ry: 20, rotate: -42, duration: 1.35, planetX: 262, planetY: 196, radius: 4, fill: '#ffffff' },
+  ];
+
+  return (
+    <Q6RhythmStage state={state} isConfirming={isConfirming}>
+      <motion.circle
+        cx="200"
+        cy="196"
+        r="34"
+        fill="#fff7ed"
+        filter={`url(#${q6SoftFilterId(state.id)})`}
+        animate={{ scale: isConfirming ? 1.1 : [1, 1.08, 1], opacity: [0.78, 1, 0.78] }}
+        transition={{ duration: 2.4, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      />
+      <circle cx="200" cy="196" r="18" fill={state.accent} opacity="0.42" />
+
+      {orbitals.map((orbit, index) => (
+        <g key={`${orbit.rx}-${orbit.rotate}`} transform={`rotate(${orbit.rotate} 200 196)`}>
+          <ellipse
+            cx="200"
+            cy="196"
+            rx={orbit.rx}
+            ry={orbit.ry}
+            fill="none"
+            stroke={index === 0 ? 'rgba(255,255,255,0.62)' : state.line}
+            strokeWidth={index === 0 ? 1.2 : 1}
+            strokeDasharray={index === 2 ? '5 10' : undefined}
+          />
+          <motion.g
+            style={{ transformOrigin: '200px 196px' }}
+            animate={{ rotate: isConfirming ? 280 : [0, 360] }}
+            transition={{ duration: orbit.duration, repeat: isConfirming ? 0 : Infinity, ease: 'linear' }}
+          >
+            <circle
+              cx={orbit.planetX}
+              cy={orbit.planetY}
+              r={orbit.radius}
+              fill={orbit.fill}
+              filter={`url(#${q6SoftFilterId(state.id)})`}
+              opacity="0.78"
+            />
+            <circle cx={orbit.planetX} cy={orbit.planetY} r={Math.max(2.5, orbit.radius - 2)} fill="rgba(255,255,255,0.72)" />
+          </motion.g>
+        </g>
+      ))}
+
+      {[0, 1, 2, 3].map((index) => (
+        <motion.path
+          key={index}
+          d={`M${72 + index * 9} ${256 - index * 28} C${126 + index * 14} ${230 - index * 16}, ${164 + index * 18} ${222 - index * 26}, ${324 - index * 22} ${170 - index * 10}`}
+          fill="none"
+          stroke={index % 2 === 0 ? state.secondary : '#ffffff'}
+          strokeWidth={index === 0 ? 3 : 1.4}
+          strokeLinecap="round"
+          filter={`url(#${q6SoftFilterId(state.id)})`}
+          animate={{
+            pathLength: isConfirming ? 0.9 : [0.08, 0.72, 0.08],
+            opacity: isConfirming ? 0.25 : [0, 0.42, 0],
+          }}
+          transition={{ duration: 1.35 + index * 0.22, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut', delay: index * 0.16 }}
+        />
+      ))}
+    </Q6RhythmStage>
   );
 }
 
 function Q6Irregular({ isConfirming }: { isConfirming: boolean }) {
-  // Choppy, conflicting ocean waves colliding
+  const state = q6RhythmStates.B;
+  const waves = [
+    { y: 220, amp: 16, color: '#93c5fd', duration: 4.8, opacity: 0.46 },
+    { y: 246, amp: -22, color: '#c4b5fd', duration: 3.9, opacity: 0.4 },
+    { y: 276, amp: 12, color: '#ffffff', duration: 5.6, opacity: 0.34 },
+  ];
+
   return (
-    <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <filter id="q6-choppy">
-          <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="4" result="noise">
-            <animate attributeName="baseFrequency" values="0.06; 0.1; 0.06" dur="2s" repeatCount="indefinite" />
-          </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="60" xChannelSelector="R" yChannelSelector="G" />
-          <feSpecularLighting surfaceScale="8" specularConstant="1.5" specularExponent="20" lightingColor="#e0f2fe">
-            <fePointLight x="200" y="200" z="50" />
-          </feSpecularLighting>
-          <feComposite operator="arithmetic" k1="0" k2="1" k3="1" k4="0" in="SourceGraphic" in2="specOut" />
-        </filter>
-      </defs>
-      <rect width="400" height="400" fill="#0369a1" />
-      <motion.rect
-        width="400" height="400" fill="#0ea5e9" filter="url(#q6-choppy)"
-        animate={{ scale: isConfirming ? 1.5 : [1, 1.1, 1], opacity: isConfirming ? 0 : 0.9 }}
-        transition={{ duration: 2, repeat: Infinity }}
+    <Q6RhythmStage state={state} isConfirming={isConfirming}>
+      <motion.path
+        d="M0 246 C46 212 84 254 128 228 C170 202 214 256 258 222 C302 190 338 250 400 218 L400 400 L0 400 Z"
+        fill="#bfdbfe"
+        opacity="0.34"
+        animate={{ y: isConfirming ? 0 : [0, -12, 8, 0] }}
+        transition={{ duration: 5.4, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
       />
-    </svg>
+      <motion.path
+        d="M0 288 C54 268 86 294 132 278 C178 262 208 292 254 272 C304 250 340 284 400 260 L400 400 L0 400 Z"
+        fill="#ddd6fe"
+        opacity="0.26"
+        animate={{ y: isConfirming ? 0 : [10, -8, 12, 10], x: isConfirming ? 0 : [0, -18, 12, 0] }}
+        transition={{ duration: 4.2, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      />
+
+      {waves.map((wave, index) => (
+        <motion.path
+          key={wave.y}
+          d={`M38 ${wave.y} C86 ${wave.y + wave.amp}, 126 ${wave.y - wave.amp}, 172 ${wave.y + wave.amp * 0.6} S262 ${wave.y - wave.amp * 0.8}, 342 ${wave.y + wave.amp * 0.5}`}
+          fill="none"
+          stroke={wave.color}
+          strokeWidth={index === 0 ? 3 : 1.7}
+          strokeLinecap="round"
+          filter={`url(#${q6SoftFilterId(state.id)})`}
+          animate={{
+            x: isConfirming ? 0 : [0, index % 2 === 0 ? 28 : -18, 0],
+            y: isConfirming ? 0 : [0, index === 1 ? -15 : 10, 0],
+            opacity: isConfirming ? wave.opacity : [wave.opacity * 0.55, wave.opacity, wave.opacity * 0.55],
+          }}
+          transition={{ duration: wave.duration, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut', delay: index * 0.32 }}
+        />
+      ))}
+
+      {[112, 186, 274].map((cx, index) => (
+        <motion.circle
+          key={cx}
+          cx={cx}
+          cy={index === 1 ? 238 : 258}
+          r={index === 1 ? 4.5 : 3.5}
+          fill="rgba(255,255,255,0.74)"
+          animate={{
+            y: isConfirming ? 0 : [0, index === 0 ? -24 : 18, index === 2 ? -14 : 8, 0],
+            opacity: [0.18, 0.58, 0.25, 0.18],
+          }}
+          transition={{ duration: 4.6 + index * 0.7, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut', delay: index * 0.35 }}
+        />
+      ))}
+    </Q6RhythmStage>
   );
 }
 
 function Q6Steady({ isConfirming }: { isConfirming: boolean }) {
-  // Heavy, repetitive cascading waterfall
+  const state = q6RhythmStates.C;
   return (
-    <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <filter id="q6-waterfall">
-          <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="2" result="noise">
-            <animate attributeName="baseFrequency" values="0.01 0.1; 0.015 0.15; 0.01 0.1" dur="4s" repeatCount="indefinite" />
-          </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="30" />
-          <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 2 -0.2" />
-        </filter>
-        <linearGradient id="q6-fall-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#cbd5e1" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#f8fafc" stopOpacity="0.9" />
-        </linearGradient>
-      </defs>
-      <rect width="400" height="400" fill="#334155" />
-      
-      <motion.rect
-        width="400" height="800" y="-400"
-        fill="url(#q6-fall-grad)"
-        filter="url(#q6-waterfall)"
-        animate={{
-          y: isConfirming ? 400 : [-400, 0],
-          opacity: isConfirming ? 0 : 1
-        }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+    <Q6RhythmStage state={state} isConfirming={isConfirming}>
+      <path
+        d="M0 244 C64 230 114 248 184 236 C256 224 314 242 400 228 L400 400 L0 400 Z"
+        fill="#dbeafe"
+        opacity="0.3"
       />
-    </svg>
+      <path
+        d="M0 286 C72 276 134 286 202 278 C274 268 330 280 400 270 L400 400 L0 400 Z"
+        fill="#e7e5e4"
+        opacity="0.24"
+      />
+      {[222, 252, 282].map((y, index) => (
+        <motion.path
+          key={y}
+          d={`M52 ${y} C110 ${y + 4}, 148 ${y - 4}, 204 ${y + 2} S292 ${y - 3}, 348 ${y + 3}`}
+          fill="none"
+          stroke={index === 1 ? state.accent : 'rgba(255,255,255,0.66)'}
+          strokeWidth={index === 1 ? 2 : 1.2}
+          strokeLinecap="round"
+          animate={{ y: isConfirming ? 0 : [0, index === 1 ? 2 : 1, 0], opacity: [0.28, 0.46, 0.28] }}
+          transition={{ duration: 7.5 + index, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+        />
+      ))}
+      <motion.g
+        animate={{ y: isConfirming ? 0 : [0, -3, 2, 0], rotate: isConfirming ? 0 : [0, -1.5, 1, 0] }}
+        transition={{ duration: 6.6, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+        style={{ transformOrigin: '200px 214px' }}
+      >
+        <line x1="200" y1="168" x2="200" y2="244" stroke="rgba(120,113,108,0.32)" strokeWidth="1.4" strokeLinecap="round" />
+        <path d="M184 186 L200 156 L216 186 Z" fill="#fef3c7" stroke="rgba(255,255,255,0.78)" strokeWidth="1" />
+        <path d="M184 186 C192 196 208 196 216 186 L210 228 C205 235 195 235 190 228 Z" fill="#93c5fd" opacity="0.58" />
+        <circle cx="200" cy="186" r="5" fill="#ffffff" opacity="0.82" />
+      </motion.g>
+      <motion.path
+        d="M104 128 C138 108 168 118 200 104 C234 90 268 108 304 92"
+        fill="none"
+        stroke="rgba(255,255,255,0.54)"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        animate={{ opacity: [0.18, 0.38, 0.18] }}
+        transition={{ duration: 8, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      />
+    </Q6RhythmStage>
   );
 }
 
 function Q6Disciplined({ isConfirming }: { isConfirming: boolean }) {
-  // Perfectly concentric, rhythmic ripples
+  const state = q6RhythmStates.D;
+  const steps = [
+    { x: 96, y: 262, w: 74 },
+    { x: 128, y: 230, w: 74 },
+    { x: 160, y: 198, w: 74 },
+    { x: 192, y: 166, w: 74 },
+    { x: 224, y: 134, w: 74 },
+  ];
+
   return (
-    <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <filter id="q6-disc-blur"><feGaussianBlur stdDeviation="6" /></filter>
-      </defs>
-      <rect width="400" height="400" fill="#064e3b" />
-      
-      {[0, 1, 2, 3].map((i) => (
+    <Q6RhythmStage state={state} isConfirming={isConfirming}>
+      <motion.path
+        d="M90 282 C140 236 176 208 210 174 C246 138 280 120 326 94"
+        fill="none"
+        stroke={state.secondary}
+        strokeWidth="5"
+        strokeLinecap="round"
+        filter={`url(#${q6SoftFilterId(state.id)})`}
+        animate={{ pathLength: isConfirming ? 1 : [0.18, 0.88, 0.18], opacity: [0.16, 0.52, 0.16] }}
+        transition={{ duration: 4.8, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      />
+      {steps.map((step, index) => (
+        <motion.g
+          key={`${step.x}-${step.y}`}
+          animate={{ y: isConfirming ? 0 : [0, -2, 0], opacity: isConfirming ? 0.78 : [0.5, 0.84, 0.5] }}
+          transition={{ duration: 4.8, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut', delay: index * 0.22 }}
+        >
+          <path
+            d={`M${step.x} ${step.y} L${step.x + step.w} ${step.y - 20} L${step.x + step.w + 24} ${step.y - 8} L${step.x + 24} ${step.y + 14} Z`}
+            fill={index % 2 === 0 ? 'rgba(255,255,255,0.48)' : 'rgba(167,243,208,0.24)'}
+            stroke="rgba(255,255,255,0.72)"
+            strokeWidth="1"
+          />
+          <path
+            d={`M${step.x + 24} ${step.y + 14} L${step.x + step.w + 24} ${step.y - 8} L${step.x + step.w + 24} ${step.y + 8} L${step.x + 24} ${step.y + 30} Z`}
+            fill="rgba(20,184,166,0.08)"
+          />
+        </motion.g>
+      ))}
+      <motion.g
+        style={{ transformOrigin: '200px 200px' }}
+        animate={{
+          x: isConfirming ? 20 : [-78, -42, -6, 30, 66, 92],
+          y: isConfirming ? -24 : [62, 30, -2, -34, -66, -88],
+          opacity: isConfirming ? 0.86 : [0, 0.8, 0.88, 0.8, 0.72, 0],
+        }}
+        transition={{ duration: 4.2, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      >
+        <circle cx="200" cy="206" r="5.8" fill="#ffffff" />
+        <path d="M200 213 L200 231" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
+        <path d="M200 222 L188 234" stroke="rgba(255,255,255,0.86)" strokeWidth="3" strokeLinecap="round" />
+        <path d="M200 222 L214 232" stroke="rgba(255,255,255,0.86)" strokeWidth="3" strokeLinecap="round" />
+        <path d="M200 231 L190 250" stroke="rgba(20,184,166,0.72)" strokeWidth="3" strokeLinecap="round" />
+        <path d="M200 231 L214 248" stroke="rgba(20,184,166,0.72)" strokeWidth="3" strokeLinecap="round" />
+      </motion.g>
+      {[0, 1, 2].map((index) => (
         <motion.circle
-          key={i}
-          cx="200" cy="200" r="0"
-          stroke="#6ee7b7"
-          strokeWidth="6"
-          fill="none"
-          filter="url(#q6-disc-blur)"
-          animate={{
-            r: isConfirming ? 400 : [0, 400],
-            opacity: isConfirming ? 0 : [1, 0]
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "linear",
-            delay: i * 1.5
-          }}
+          key={index}
+          cx={118 + index * 68}
+          cy={282 - index * 48}
+          r={3 + index}
+          fill={index === 2 ? state.secondary : state.accent}
+          filter={`url(#${q6SoftFilterId(state.id)})`}
+          animate={{ opacity: [0.12, 0.62, 0.12], scale: [0.8, 1.25, 0.8] }}
+          transition={{ duration: 3.4, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut', delay: index * 0.6 }}
         />
       ))}
-    </svg>
+    </Q6RhythmStage>
   );
 }
 
@@ -748,22 +1069,26 @@ export default function ElementStageMotif({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          {/* Neutral idle texture */}
-          <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full">
-            <defs>
-              <filter id="element-idle">
-                <feTurbulence type="fractalNoise" baseFrequency="0.02" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" />
-                <feGaussianBlur stdDeviation="15" />
-              </filter>
-            </defs>
-            <rect width="400" height="400" fill="#f8fafc" />
-            <motion.circle
-              cx="200" cy="200" r="100" fill="#cbd5e1" filter="url(#element-idle)"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.7, 0.4] }}
-              transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-            />
-          </svg>
+          {questionId === 'q6' ? (
+            <Q6Idle isConfirming={isConfirming} />
+          ) : (
+            /* Neutral idle texture */
+            <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full">
+              <defs>
+                <filter id="element-idle">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.02" result="noise" />
+                  <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" />
+                  <feGaussianBlur stdDeviation="15" />
+                </filter>
+              </defs>
+              <rect width="400" height="400" fill="#f8fafc" />
+              <motion.circle
+                cx="200" cy="200" r="100" fill="#cbd5e1" filter="url(#element-idle)"
+                animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.7, 0.4] }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+              />
+            </svg>
+          )}
         </motion.div>
       )}
     </div>
