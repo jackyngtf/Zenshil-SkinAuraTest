@@ -260,6 +260,83 @@
     animation: landingHaloMint 12s ease-in-out infinite;
   }
 
+  .soft-aura-cloud {
+    --soft-aura-rose: 224, 135, 173;
+    --soft-aura-mint: 120, 202, 186;
+    --soft-aura-gold: 219, 172, 103;
+    --soft-aura-lavender: 193, 185, 220;
+    position: relative;
+    contain: layout;
+    isolation: isolate;
+    overflow: visible;
+    transform: translateZ(0);
+  }
+
+  .soft-aura-cloud__field {
+    position: absolute;
+    inset: 6%;
+    border-radius: 9999px;
+    overflow: hidden;
+    clip-path: circle(50% at 50% 50%);
+    -webkit-clip-path: circle(50% at 50% 50%);
+    mask-image: radial-gradient(circle at center, black 0 69%, transparent 74%);
+    -webkit-mask-image: radial-gradient(circle at center, black 0 69%, transparent 74%);
+    background:
+      radial-gradient(ellipse at 51% 50%, rgba(var(--soft-aura-rose), 0.25) 0 28%, rgba(var(--soft-aura-rose), 0) 66%),
+      radial-gradient(ellipse at 36% 54%, rgba(var(--soft-aura-rose), 0.5) 0 27%, rgba(var(--soft-aura-rose), 0) 66%),
+      radial-gradient(ellipse at 68% 48%, rgba(var(--soft-aura-mint), 0.5) 0 30%, rgba(var(--soft-aura-mint), 0) 68%),
+      radial-gradient(circle at 53% 72%, rgba(var(--soft-aura-gold), 0.32) 0 23%, rgba(var(--soft-aura-gold), 0) 62%),
+      radial-gradient(circle at 46% 38%, rgba(var(--soft-aura-lavender), 0.22) 0 27%, rgba(var(--soft-aura-lavender), 0) 66%),
+      radial-gradient(circle at 50% 50%, rgba(252, 244, 236, 0.08) 0 45%, rgba(255, 255, 255, 0) 78%);
+    box-shadow: 0 24px 82px rgba(118, 98, 84, 0.13);
+    opacity: 0.96;
+    animation: landingLensBreath 8s ease-in-out infinite;
+  }
+
+  .soft-aura-cloud__wash {
+    position: absolute;
+    inset: -24%;
+    border-radius: inherit;
+    pointer-events: none;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .soft-aura-cloud__wash-one {
+    background:
+      radial-gradient(ellipse at 22% 50%, rgba(var(--soft-aura-rose), 0.5) 0 21%, rgba(var(--soft-aura-rose), 0) 50%),
+      radial-gradient(ellipse at 74% 45%, rgba(var(--soft-aura-mint), 0.48) 0 24%, rgba(var(--soft-aura-mint), 0) 54%),
+      radial-gradient(ellipse at 51% 78%, rgba(var(--soft-aura-gold), 0.34) 0 18%, rgba(var(--soft-aura-gold), 0) 48%);
+    opacity: 0.6;
+    animation: landingAuraWashOne 5.6s ease-in-out infinite;
+  }
+
+  .soft-aura-cloud__wash-two {
+    background:
+      radial-gradient(ellipse at 32% 36%, rgba(255, 255, 255, 0.24) 0 18%, rgba(255, 255, 255, 0) 48%),
+      radial-gradient(ellipse at 68% 66%, rgba(var(--soft-aura-rose), 0.28) 0 22%, rgba(var(--soft-aura-rose), 0) 52%),
+      radial-gradient(ellipse at 56% 42%, rgba(var(--soft-aura-mint), 0.3) 0 20%, rgba(var(--soft-aura-mint), 0) 54%);
+    opacity: 0.6;
+    animation: landingAuraWashTwo 4.8s ease-in-out infinite;
+  }
+
+  .soft-aura-cloud__halo {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    opacity: 0.3;
+    mix-blend-mode: multiply;
+  }
+
+  .soft-aura-cloud__halo-rose {
+    background: radial-gradient(circle at 34% 46%, rgba(var(--soft-aura-rose), 0.26) 0 18%, rgba(var(--soft-aura-rose), 0) 56%);
+    animation: landingHaloRose 10s ease-in-out infinite;
+  }
+
+  .soft-aura-cloud__halo-mint {
+    background: radial-gradient(circle at 68% 54%, rgba(var(--soft-aura-mint), 0.24) 0 20%, rgba(var(--soft-aura-mint), 0) 58%);
+    animation: landingHaloMint 12s ease-in-out infinite;
+  }
+
 }
 
 @keyframes morph {
@@ -471,11 +548,15 @@
   .landing-light-breath,
   .landing-aura-field,
   .landing-aura-wash,
-  .landing-aura-halo {
+  .landing-aura-halo,
+  .soft-aura-cloud__field,
+  .soft-aura-cloud__wash,
+  .soft-aura-cloud__halo {
     animation: none;
   }
 
-  .landing-aura-field {
+  .landing-aura-field,
+  .soft-aura-cloud__field {
     opacity: 0.88;
   }
 

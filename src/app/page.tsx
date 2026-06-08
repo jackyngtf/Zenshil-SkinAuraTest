@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import SoftAuraCloud from '@/components/SoftAuraCloud';
 import { useQuizStore } from '@/store/useQuizStore';
 
 function LandingLightField() {
@@ -57,16 +58,7 @@ function LandingLightField() {
 }
 
 function LandingAuraLens() {
-  return (
-    <div className="landing-aura-stage mx-auto" aria-hidden="true">
-      <div className="landing-aura-field">
-        <div className="landing-aura-wash landing-aura-wash-one" />
-        <div className="landing-aura-wash landing-aura-wash-two" />
-      </div>
-      <div className="landing-aura-halo landing-aura-halo-rose" />
-      <div className="landing-aura-halo landing-aura-halo-mint" />
-    </div>
-  );
+  return <SoftAuraCloud className="landing-aura-stage mx-auto" />;
 }
 
 export default function LandingPage() {

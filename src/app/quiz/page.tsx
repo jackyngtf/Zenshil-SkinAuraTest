@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import questionsData from '@/data/questions.json';
 import { useQuizStore } from '@/store/useQuizStore';
+import SoftAuraCloud from '@/components/SoftAuraCloud';
 import QuizQuestionRenderer from './components/QuizQuestionRenderer';
 import type { QuizQuestion } from './components/types';
 
@@ -93,26 +94,7 @@ export default function QuizQuestionScreen() {
             {language === 'en' ? 'Skin Aura Analysis' : '肌膚氣場分析中'}
           </p>
 
-          <div className="relative mb-10 flex size-56 items-center justify-center">
-            <div className="absolute inset-0 rounded-full bg-white/45 shadow-[inset_0_1px_24px_rgba(255,255,255,0.75),0_24px_80px_rgba(170,145,130,0.12)]" />
-            <motion.div
-              animate={{ opacity: [0.55, 0.85, 0.55], scale: [0.98, 1.02, 0.98] }}
-              transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute inset-8 rounded-full bg-[radial-gradient(circle_at_48%_44%,rgba(255,255,255,0.95),rgba(247,170,198,0.54)_36%,rgba(157,212,198,0.42)_68%,transparent_82%)] blur-sm"
-            />
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-6 rounded-full opacity-45"
-              style={{
-                background: 'conic-gradient(from 90deg, transparent, rgba(246,185,211,0.42), rgba(182,219,208,0.36), rgba(239,220,182,0.28), transparent)',
-                filter: 'blur(10px)',
-              }}
-            />
-            <div className="absolute inset-3 rounded-full border border-white/65" />
-            <div className="absolute inset-12 rounded-full border border-white/35" />
-            <div className="absolute left-[25%] top-[27%] h-16 w-1/2 rotate-[-18deg] rounded-full bg-white/45 blur-xl" />
-          </div>
+          <SoftAuraCloud className="mb-10 size-56" />
 
           <AnimatePresence mode="wait">
             <motion.p

@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useQuizStore } from '@/store/useQuizStore';
+import SoftAuraCloud, { auraCloudPaletteFromOrb } from '@/components/SoftAuraCloud';
 import { auraNumbers, auraKeywordsDisplay, auraOrbColors } from './resultData';
 
 interface AuraProfile {
@@ -45,43 +46,10 @@ export default function FeaturedAuraCard({ aura, matchPercentage }: FeaturedAura
       <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#f8f5ef] to-transparent" />
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center pb-7 pt-24 text-center">
-        <div className="relative mb-8 flex size-[min(78vw,318px)] items-center justify-center">
-          <div
-            className="absolute inset-0 rounded-full opacity-45 blur-3xl"
-            style={{ background: `radial-gradient(circle, ${orb.outer} 0%, transparent 68%)` }}
-          />
-          <motion.div
-            animate={{ opacity: [0.72, 0.9, 0.72], scale: [0.985, 1.01, 0.985] }}
-            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute inset-[7%] rounded-full border border-white/65 bg-white/20 shadow-[inset_0_1px_24px_rgba(255,255,255,0.75),0_20px_70px_rgba(120,100,90,0.12)] backdrop-blur-[1px]"
-          />
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
-            className="absolute inset-[10%] rounded-full opacity-30"
-            style={{
-              background: `conic-gradient(from 90deg, transparent 0deg, ${orb.inner} 78deg, ${orb.mid} 150deg, transparent 230deg, ${orb.outer} 310deg, transparent 360deg)`,
-              filter: 'blur(10px)',
-            }}
-          />
-          <div
-            className="absolute inset-[16%] rounded-full opacity-80"
-            style={{
-              background: `radial-gradient(circle at 48% 42%, white 0%, ${orb.inner} 28%, ${orb.mid} 58%, transparent 78%)`,
-              filter: 'blur(14px)',
-            }}
-          />
-          <div
-            className="absolute inset-[24%] rounded-full opacity-65"
-            style={{
-              background: `radial-gradient(circle, white 0%, ${orb.inner} 52%, transparent 72%)`,
-              filter: 'blur(5px)',
-            }}
-          />
-          <div className="absolute left-[20%] top-[24%] h-20 w-1/2 rotate-[-18deg] rounded-full bg-white/35 blur-xl" />
-          <div className="absolute inset-[12%] rounded-full border border-white/55" />
-          <div className="absolute inset-[22%] rounded-full border border-white/25" />
-        </div>
+        <SoftAuraCloud
+          className="mb-8 size-[min(76vw,306px)]"
+          palette={auraCloudPaletteFromOrb(orb)}
+        />
 
         <div className="max-w-[340px]">
           <p className="mb-4 text-center text-[11px] font-medium text-stone-500 tabular-nums">
