@@ -2,14 +2,15 @@
 
 import { motion } from 'framer-motion';
 import { useQuizStore } from '@/store/useQuizStore';
-import SoftAuraCloud, { auraCloudPaletteFromOrb } from '@/components/SoftAuraCloud';
 import {
+  auraLensPalettes,
   auraNumbers,
   auraOrbColors,
   auraSymbols,
   getAuraFamily,
   getAuraIdentity,
 } from './resultData';
+import ResultAuraOrb from './ResultAuraOrb';
 
 interface AuraProfile {
   id: string;
@@ -34,6 +35,7 @@ export default function FeaturedAuraCard({ aura, matchPercentage }: FeaturedAura
     coreEn: 'Personal Rhythm',
   };
   const orb = auraOrbColors[aura.id] ?? { inner: '#c4b5fd', mid: '#f9a8d4', outer: '#93c5fd' };
+  const lens = auraLensPalettes[aura.id] ?? auraLensPalettes.glow;
   const identity = getAuraIdentity(aura.id);
   const family = getAuraFamily(aura.id);
   const quote = identity
@@ -89,10 +91,7 @@ export default function FeaturedAuraCard({ aura, matchPercentage }: FeaturedAura
         </div>
 
         <div className="relative mb-7">
-          <SoftAuraCloud
-            className="size-[min(67vw,284px)]"
-            palette={auraCloudPaletteFromOrb(orb)}
-          />
+          <ResultAuraOrb palette={lens} className="size-[min(67vw,286px)]" />
           <div className="absolute inset-x-0 -bottom-3 mx-auto h-10 w-36 rounded-full bg-stone-300/10 blur-2xl" aria-hidden="true" />
         </div>
 

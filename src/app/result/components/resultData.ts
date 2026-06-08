@@ -34,6 +34,93 @@ export const auraOrbColors: Record<string, { inner: string; mid: string; outer: 
   late_night: { inner: '#818cf8', mid: '#6366f1', outer: '#1e1b4b' },
 };
 
+export interface AuraLensPalette {
+  core: string;
+  soft: string;
+  warm: string;
+  shadow: string;
+  edge: string;
+  band: string;
+  angle: number;
+}
+
+// Result-only optical lens palettes. These are intentionally deeper than the
+// quiz aura colors so the end result feels more editorial and shareable.
+export const auraLensPalettes: Record<string, AuraLensPalette> = {
+  overworked: {
+    core: '#89b9e8',
+    soft: '#d9c9ff',
+    warm: '#f0c4d5',
+    shadow: '#4a7fb1',
+    edge: '#b2f0df',
+    band: '#eef4ff',
+    angle: 132,
+  },
+  stress: {
+    core: '#f4675f',
+    soft: '#d853ca',
+    warm: '#ffb25e',
+    shadow: '#44306f',
+    edge: '#b8f3d3',
+    band: '#ffde82',
+    angle: 138,
+  },
+  hidden_aging: {
+    core: '#d9b69b',
+    soft: '#f0b7c1',
+    warm: '#ffe3b8',
+    shadow: '#8c817b',
+    edge: '#c6e6d6',
+    band: '#fff1dc',
+    angle: 42,
+  },
+  recovery: {
+    core: '#65d1c9',
+    soft: '#91bff7',
+    warm: '#e8d7ff',
+    shadow: '#286f89',
+    edge: '#f7c6d8',
+    band: '#e9fff8',
+    angle: 122,
+  },
+  preventive: {
+    core: '#9bd8ac',
+    soft: '#e4d879',
+    warm: '#fff2bc',
+    shadow: '#7ba67a',
+    edge: '#f6c8df',
+    band: '#f8ffe0',
+    angle: 36,
+  },
+  glow: {
+    core: '#f284bb',
+    soft: '#c7a4ff',
+    warm: '#ffd3a4',
+    shadow: '#6f7cc6',
+    edge: '#9debd7',
+    band: '#fff0f8',
+    angle: 126,
+  },
+  burnout: {
+    core: '#f07a48',
+    soft: '#bd58ec',
+    warm: '#ffd26d',
+    shadow: '#392468',
+    edge: '#8ee8c9',
+    band: '#ff9f7c',
+    angle: 48,
+  },
+  late_night: {
+    core: '#5476ff',
+    soft: '#b6a5ff',
+    warm: '#ffb3d1',
+    shadow: '#151a4c',
+    edge: '#94f2dc',
+    band: '#dce6ff',
+    angle: 134,
+  },
+};
+
 export type AuraFamilyId = 'recovery' | 'pressure' | 'radiance' | 'rhythm';
 
 export type AuraStatKey = 'energy' | 'glow' | 'stress' | 'recoveryNeeded';

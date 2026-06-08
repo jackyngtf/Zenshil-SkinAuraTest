@@ -1,8 +1,10 @@
 import {
+  auraLensPalettes,
   auraNumbers,
   auraOrbColors,
   auraSymbols,
   getAuraIdentity,
+  type AuraLensPalette,
 } from './resultData';
 
 export interface ShareAuraProfile {
@@ -289,14 +291,14 @@ function drawAuraBlob(
   ctx.fillRect(-radius * 1.8, -radius * 1.8, radius * 3.6, radius * 3.6);
 }
 
-function drawShareAuraCloud(
+function drawShareAuraLens(
   ctx: CanvasRenderingContext2D,
-  orb: { inner: string; mid: string; outer: string },
+  lens: AuraLensPalette,
   x: number,
   y: number,
   radius: number
 ) {
-  const canvasSize = Math.ceil(radius * 2.18);
+  const canvasSize = Math.ceil(radius * 2.24);
   const cloudCanvas = document.createElement('canvas');
   cloudCanvas.width = canvasSize;
   cloudCanvas.height = canvasSize;
@@ -309,49 +311,96 @@ function drawShareAuraCloud(
   ctx.save();
 
   const ambient = ctx.createRadialGradient(0, 0, 0, 0, 0, radius * 1.22);
-  ambient.addColorStop(0, rgba(orb.inner, 0.24));
-  ambient.addColorStop(0.42, rgba(orb.mid, 0.2));
+  ambient.addColorStop(0, rgba(lens.core, 0.3));
+  ambient.addColorStop(0.42, rgba(lens.soft, 0.2));
+  ambient.addColorStop(0.68, rgba(lens.edge, 0.14));
   ambient.addColorStop(1, 'rgba(255, 255, 255, 0)');
   ctx.fillStyle = ambient;
   ctx.translate(x, y);
-  ctx.fillRect(-radius * 1.55, -radius * 1.55, radius * 3.1, radius * 3.1);
+  ctx.fillRect(-radius * 1.64, -radius * 1.64, radius * 3.28, radius * 3.28);
   ctx.restore();
 
   cloudCtx.save();
   cloudCtx.translate(canvasSize / 2, canvasSize / 2);
+  cloudCtx.beginPath();
+  cloudCtx.arc(0, 0, radius * 0.96, 0, Math.PI * 2);
+  cloudCtx.clip();
 
-  const volume = cloudCtx.createRadialGradient(0, 0, 0, 0, 0, radius * 0.98);
-  volume.addColorStop(0, 'rgba(255, 250, 246, 0.08)');
-  volume.addColorStop(0.5, 'rgba(255, 250, 246, 0.05)');
-  volume.addColorStop(0.72, 'rgba(255, 255, 255, 0.12)');
-  volume.addColorStop(1, 'rgba(255, 255, 255, 0)');
-  cloudCtx.fillStyle = volume;
-  cloudCtx.fillRect(-radius * 1.15, -radius * 1.15, radius * 2.3, radius * 2.3);
+  const base = cloudCtx.createRadialGradient(0, 0, 0, 0, 0, radius * 0.98);
+  base.addColorStop(0, 'rgba(255, 252, 248, 0.2)');
+  base.addColorStop(0.58, rgba(lens.core, 0.12));
+  base.addColorStop(1, 'rgba(255, 255, 255, 0.04)');
+  cloudCtx.fillStyle = base;
+  cloudCtx.fillRect(-radius, -radius, radius * 2, radius * 2);
 
-  drawAuraBlob(cloudCtx, orb.mid, -radius * 0.34, radius * 0.04, radius * 0.88, 0.7);
-  drawAuraBlob(cloudCtx, orb.outer, radius * 0.34, -radius * 0.06, radius * 0.92, 0.64);
-  drawAuraBlob(cloudCtx, orb.inner, radius * 0.02, radius * 0.43, radius * 0.68, 0.43);
-  drawAuraBlob(cloudCtx, orb.inner, -radius * 0.08, -radius * 0.38, radius * 0.62, 0.3);
+  drawAuraBlob(cloudCtx, lens.soft, -radius * 0.36, radius * 0.11, radius * 0.86, 0.84);
+  drawAuraBlob(cloudCtx, lens.core, radius * 0.32, radius * 0.02, radius * 0.9, 0.82);
+  drawAuraBlob(cloudCtx, lens.edge, radius * 0.42, -radius * 0.3, radius * 0.72, 0.62);
+  drawAuraBlob(cloudCtx, lens.warm, radius * 0.04, radius * 0.58, radius * 0.58, 0.52);
+  drawAuraBlob(cloudCtx, lens.shadow, -radius * 0.3, radius * 0.42, radius * 0.54, 0.42);
 
-  const softEdge = cloudCtx.createRadialGradient(0, 0, radius * 0.46, 0, 0, radius * 0.98);
-  softEdge.addColorStop(0, 'rgba(255, 255, 255, 0)');
-  softEdge.addColorStop(0.7, 'rgba(255, 255, 255, 0.1)');
-  softEdge.addColorStop(0.86, 'rgba(255, 255, 255, 0.18)');
-  softEdge.addColorStop(1, 'rgba(255, 255, 255, 0)');
-  cloudCtx.fillStyle = softEdge;
-  cloudCtx.fillRect(-radius * 1.14, -radius * 1.14, radius * 2.28, radius * 2.28);
+  const angle = (lens.angle * Math.PI) / 180;
+  const dx = Math.cos(angle) * radius * 1.34;
+  const dy = Math.sin(angle) * radius * 1.34;
+  const phase = cloudCtx.createLinearGradient(-dx, -dy, dx, dy);
+  phase.addColorStop(0, 'rgba(255, 255, 255, 0)');
+  phase.addColorStop(0.32, rgba(lens.edge, 0.08));
+  phase.addColorStop(0.42, rgba(lens.band, 0.58));
+  phase.addColorStop(0.49, rgba(lens.band, 0.9));
+  phase.addColorStop(0.55, rgba(lens.core, 0.5));
+  phase.addColorStop(0.63, rgba(lens.shadow, 0.42));
+  phase.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  cloudCtx.globalAlpha = 0.96;
+  cloudCtx.filter = 'blur(5px) saturate(1.14) contrast(1.04)';
+  cloudCtx.fillStyle = phase;
+  cloudCtx.fillRect(-radius * 1.3, -radius * 1.3, radius * 2.6, radius * 2.6);
+  cloudCtx.filter = 'none';
+  cloudCtx.globalAlpha = 1;
+
+  const depth = cloudCtx.createRadialGradient(-radius * 0.28, radius * 0.46, 0, -radius * 0.28, radius * 0.46, radius * 0.72);
+  depth.addColorStop(0, rgba(lens.shadow, 0.2));
+  depth.addColorStop(0.55, rgba(lens.shadow, 0.1));
+  depth.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  cloudCtx.globalCompositeOperation = 'multiply';
+  cloudCtx.fillStyle = depth;
+  cloudCtx.fillRect(-radius, -radius, radius * 2, radius * 2);
+
+  const sideDepth = cloudCtx.createRadialGradient(radius * 0.74, radius * 0.06, 0, radius * 0.74, radius * 0.06, radius * 0.56);
+  sideDepth.addColorStop(0, rgba(lens.shadow, 0.16));
+  sideDepth.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  cloudCtx.fillStyle = sideDepth;
+  cloudCtx.fillRect(-radius, -radius, radius * 2, radius * 2);
+  cloudCtx.globalCompositeOperation = 'source-over';
+
+  const highlight = cloudCtx.createRadialGradient(-radius * 0.16, -radius * 0.22, 0, -radius * 0.16, -radius * 0.22, radius * 0.46);
+  highlight.addColorStop(0, 'rgba(255, 255, 255, 0.58)');
+  highlight.addColorStop(0.34, 'rgba(255, 255, 255, 0.22)');
+  highlight.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  cloudCtx.fillStyle = highlight;
+  cloudCtx.fillRect(-radius, -radius, radius * 2, radius * 2);
 
   cloudCtx.globalCompositeOperation = 'destination-in';
   const mask = cloudCtx.createRadialGradient(0, 0, 0, 0, 0, radius * 0.98);
   mask.addColorStop(0, 'rgba(0, 0, 0, 1)');
-  mask.addColorStop(0.69, 'rgba(0, 0, 0, 1)');
-  mask.addColorStop(0.74, 'rgba(0, 0, 0, 0)');
+  mask.addColorStop(0.82, 'rgba(0, 0, 0, 1)');
+  mask.addColorStop(0.96, 'rgba(0, 0, 0, 0.76)');
   mask.addColorStop(1, 'rgba(0, 0, 0, 0)');
   cloudCtx.fillStyle = mask;
   cloudCtx.fillRect(-canvasSize / 2, -canvasSize / 2, canvasSize, canvasSize);
   cloudCtx.restore();
 
   ctx.drawImage(cloudCanvas, x - canvasSize / 2, y - canvasSize / 2);
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.shadowColor = rgba(lens.edge, 0.28);
+  ctx.shadowBlur = 32;
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(0, 0, radius * 0.9, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
 }
 
 function drawShareCard(
@@ -360,6 +409,7 @@ function drawShareCard(
   officialLogo: HTMLImageElement | null
 ) {
   const orb = auraOrbColors[aura.id] ?? { inner: '#f9a8d4', mid: '#e9d5ff', outer: '#fbcfe8' };
+  const lens = auraLensPalettes[aura.id] ?? auraLensPalettes.glow;
   const meta = auraNumbers[aura.id] ?? { number: '000', colorLabel: '—', colorLabelEn: '—' };
   const identity = getAuraIdentity(aura.id);
   const symbol = auraSymbols[aura.id] ?? {
@@ -418,7 +468,7 @@ function drawShareCard(
   ctx.font = '500 22px Arial, sans-serif';
   ctx.fillText(reportLabel, 540, 326);
 
-  drawShareAuraCloud(ctx, orb, 540, 752, 286);
+  drawShareAuraLens(ctx, lens, 540, 752, 286);
 
   ctx.fillStyle = '#1c1917';
   ctx.textAlign = 'center';
