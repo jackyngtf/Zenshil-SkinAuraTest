@@ -27,6 +27,10 @@ function createFileName(auraName: string) {
   return `zenshil-skin-aura-${slug || 'result'}.jpg`;
 }
 
+function isShareAbort(error: unknown) {
+  return typeof error === 'object' && error !== null && 'name' in error && error.name === 'AbortError';
+}
+
 export function useResultShareImage({ aura, matchPercentage, language }: UseResultShareImageOptions) {
   const [isSharing, setIsSharing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -46,33 +50,68 @@ export function useResultShareImage({ aura, matchPercentage, language }: UseResu
     try {
       const { blob, filename } = await createResultBlob();
       const file = new File([blob], filename, { type: 'image/jpeg' });
-      const shareData: ShareData = {
-        files: [file],
-      };
+      const shareTitle = language === 'en'
+        ? 'My Zenshil Skin Aura Result'
+        : '我的 Zenshil 肌膚氣場結果';
+      const shareText = language === 'en'
+        ? `My Skin Aura is ${aura.name}.`
+        : `我的 Skin Aura 是 ${aura.chineseName}。`;
+      const shareUrl = typeof window !== 'undefined' ? window.location.href : undefined;
 
-      if (navigator.canShare?.(shareData)) {
-        await navigator.share(shareData);
-        setMessage(language === 'en' ? 'Share sheet opened.' : '已開啟分享選單。');
+      if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+        const fileShareData: ShareData = {
+          files: [file],
+          text: shareText,
+          title: shareTitle,
+        };
+
+        if (navigator.canShare?.(fileShareData)) {
+          try {
+            await navigator.share(fileShareData);
+            setMessage(language === 'en' ? 'Share sheet opened.' : '已開啟分享選單。');
+            return;
+          } catch (error) {
+            if (isShareAbort(error)) {
+              throw error;
+            }
+          }
+        }
+
+        await navigator.share({
+          text: shareText,
+          title: shareTitle,
+          ...(shareUrl ? { url: shareUrl } : {}),
+        });
+        setMessage(
+          language === 'en'
+            ? 'Share sheet opened. Use Save Image for the IG Story artwork.'
+            : '已開啟分享選單。如要 IG Story 圖，請使用儲存圖片。'
+        );
         return;
       }
 
       downloadBlob(blob, filename);
       setMessage(
         language === 'en'
-          ? 'Image saved. If Instagram Story is not shown, upload this image manually.'
-          : '圖片已儲存。如未見 Instagram Story，請手動上載呢張圖片。'
+          ? 'Sharing is unavailable in this browser, so the image was saved instead.'
+          : '此瀏覽器未能開啟分享選單，已改為儲存圖片。'
       );
     } catch (error) {
+      if (isShareAbort(error)) {
+        setMessage(language === 'en' ? 'Sharing cancelled.' : '已取消分享。');
+        return;
+      }
+
       setMessage(
         language === 'en'
-          ? 'Unable to open sharing. Please try saving again.'
-          : '暫時未能開啟分享，請再試一次儲存圖片。'
+          ? 'Unable to open sharing. Please use Save Image instead.'
+          : '暫時未能開啟分享，請改用儲存圖片。'
       );
       console.error('Unable to share result image:', error);
     } finally {
       setIsSharing(false);
     }
-  }, [createResultBlob, language]);
+  }, [aura.chineseName, aura.name, createResultBlob, language]);
 
   const saveResultImage = useCallback(async () => {
     setIsSaving(true);

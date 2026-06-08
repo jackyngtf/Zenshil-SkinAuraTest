@@ -6,10 +6,9 @@ import { useQuizStore } from '@/store/useQuizStore';
 import { calculateResult } from '@/lib/quizLogic';
 
 import FeaturedAuraCard from './components/FeaturedAuraCard';
-import SectionNavRow from './components/SectionNavRow';
-import CompactStatRow from './components/CompactStatRow';
+import AuraCompositionSection from './components/AuraCompositionSection';
+import SkinAuraFamilySection from './components/SkinAuraFamilySection';
 import PersonalitySkinBlock from './components/PersonalitySkinBlock';
-import NeedsTagSection from './components/NeedsTagSection';
 import SecondaryAuraCard from './components/SecondaryAuraCard';
 import RitualCTASection from './components/RitualCTASection';
 import ResultActionRow from './components/ResultActionRow';
@@ -46,23 +45,21 @@ export default function ResultPage() {
           matchPercentage={primaryPercentage}
         />
 
-        {/* Section 2 — Section Navigation Row */}
-        <SectionNavRow />
-
-        {/* Section 3 — Compact Micro Stats */}
-        <CompactStatRow
+        {/* Section 2 — Aura Composition & Skin Balance */}
+        <AuraCompositionSection
           stats={calculatedStats}
           auraId={primaryAura.id}
         />
+
+        {/* Section 3 — Skin Aura Family Map */}
+        <SkinAuraFamilySection auraId={primaryAura.id} />
 
         {/* Section 4 — Personality & Skin Block */}
         <PersonalitySkinBlock
           description={language === 'en' && primaryAura.descriptionEn ? primaryAura.descriptionEn : primaryAura.description}
           auraId={primaryAura.id}
+          needs={primaryAura.skinNeeds}
         />
-
-        {/* Section 5 — Your Skin Currently Needs */}
-        <NeedsTagSection needs={primaryAura.skinNeeds} />
 
         {/* Section 6 — Secondary Aura Block */}
         <SecondaryAuraCard

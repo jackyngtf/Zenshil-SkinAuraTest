@@ -1,4 +1,12 @@
-import { auraKeywordsDisplay, auraNumbers, auraOrbColors } from './resultData';
+import {
+  auraKeywordsDisplay,
+  auraNumbers,
+  auraOrbColors,
+  getAuraFamily,
+  getAuraIdentity,
+  skinAuraFamilies,
+  type AuraFamilyId,
+} from './resultData';
 
 export interface ShareAuraProfile {
   id: string;
@@ -19,6 +27,7 @@ interface ShareImageOptions {
 const CARD_WIDTH = 1080;
 const CARD_HEIGHT = 1920;
 const OFFICIAL_LOGO_PATH = '/assets/brand/zenshil-logo-official-share.png';
+const SHARE_FAMILY_ORDER: AuraFamilyId[] = ['recovery', 'pressure', 'radiance', 'rhythm'];
 
 function hexToRgb(hex: string) {
   const normalized = hex.replace('#', '');
@@ -141,11 +150,67 @@ function roundedRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, wi
   ctx.closePath();
 }
 
-function drawPill(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, paddingX = 34) {
-  ctx.font = '500 28px Arial, sans-serif';
-  const textWidth = ctx.measureText(text).width;
-  const width = textWidth + paddingX * 2;
+interface PillMetrics {
+  fontSize: number;
+  textWidth: number;
+  width: number;
+}
+
+interface PillSpec {
+  text: string;
+  paddingX?: number;
+  maxWidth?: number;
+  maxFontSize?: number;
+  minFontSize?: number;
+}
+
+function getPillMetrics(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  paddingX = 34,
+  maxWidth = 860,
+  maxFontSize = 28,
+  minFontSize = 18
+): PillMetrics {
+  let fontSize = maxFontSize;
+  let textWidth = 0;
+
+  while (fontSize >= minFontSize) {
+    ctx.font = `500 ${fontSize}px Arial, sans-serif`;
+    textWidth = ctx.measureText(text).width;
+
+    if (textWidth <= maxWidth - paddingX * 2) {
+      break;
+    }
+
+    fontSize -= 1;
+  }
+
+  const width = Math.min(textWidth + paddingX * 2, maxWidth);
+
+  return { fontSize, textWidth, width };
+}
+
+function drawPill(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  paddingX = 34,
+  maxWidth = 860,
+  maxFontSize = 28,
+  minFontSize = 18
+) {
+  const { fontSize, textWidth, width } = getPillMetrics(
+    ctx,
+    text,
+    paddingX,
+    maxWidth,
+    maxFontSize,
+    minFontSize
+  );
   const height = 62;
+  ctx.font = `500 ${fontSize}px Arial, sans-serif`;
 
   ctx.save();
   ctx.shadowColor = 'rgba(120, 96, 72, 0.13)';
@@ -161,8 +226,121 @@ function drawPill(ctx: CanvasRenderingContext2D, text: string, x: number, y: num
   ctx.fillStyle = '#78716c';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(text, x, y + 1);
+
+  const availableTextWidth = width - paddingX * 2;
+  if (textWidth > availableTextWidth) {
+    ctx.save();
+    ctx.translate(x, y + 1);
+    ctx.scale(availableTextWidth / textWidth, 1);
+    ctx.fillText(text, 0, 0);
+    ctx.restore();
+  } else {
+    ctx.fillText(text, x, y + 1);
+  }
+
   ctx.restore();
+}
+
+function drawCenteredPillRow(
+  ctx: CanvasRenderingContext2D,
+  pills: PillSpec[],
+  centerX: number,
+  y: number,
+  gap = 24
+) {
+  const metrics = pills.map((pill) => getPillMetrics(
+    ctx,
+    pill.text,
+    pill.paddingX,
+    pill.maxWidth,
+    pill.maxFontSize,
+    pill.minFontSize
+  ));
+  const totalWidth = metrics.reduce((sum, metric) => sum + metric.width, 0) + gap * (pills.length - 1);
+  let cursorX = centerX - totalWidth / 2;
+
+  pills.forEach((pill, index) => {
+    const metric = metrics[index];
+
+    drawPill(
+      ctx,
+      pill.text,
+      cursorX + metric.width / 2,
+      y,
+      pill.paddingX,
+      pill.maxWidth,
+      pill.maxFontSize,
+      pill.minFontSize
+    );
+    cursorX += metric.width + gap;
+  });
+}
+
+function drawFamilyStrip(
+  ctx: CanvasRenderingContext2D,
+  activeFamilyId: AuraFamilyId | undefined,
+  language: ShareLanguage,
+  orb: { inner: string; mid: string; outer: string },
+  y: number
+) {
+  const stripWidth = 760;
+  const stripHeight = 52;
+  const startX = (CARD_WIDTH - stripWidth) / 2;
+  const itemWidth = stripWidth / SHARE_FAMILY_ORDER.length;
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(120, 96, 72, 0.08)';
+  ctx.shadowBlur = 16;
+  ctx.shadowOffsetY = 7;
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.36)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.72)';
+  ctx.lineWidth = 1.5;
+  roundedRectPath(ctx, startX, y - stripHeight / 2, stripWidth, stripHeight, stripHeight / 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.shadowColor = 'transparent';
+  ctx.restore();
+
+  SHARE_FAMILY_ORDER.forEach((familyId, index) => {
+    const family = skinAuraFamilies[familyId];
+    const isActive = familyId === activeFamilyId;
+    const x = startX + index * itemWidth;
+    const centerX = x + itemWidth / 2;
+
+    ctx.save();
+
+    if (isActive) {
+      const activeWidth = itemWidth - 12;
+      ctx.shadowColor = rgba(orb.mid, 0.18);
+      ctx.shadowBlur = 14;
+      ctx.shadowOffsetY = 5;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.78)';
+      roundedRectPath(ctx, centerX - activeWidth / 2, y - 19, activeWidth, 38, 19);
+      ctx.fill();
+      ctx.shadowColor = 'transparent';
+    }
+
+    ctx.fillStyle = isActive ? orb.mid : 'rgba(168, 162, 158, 0.48)';
+    ctx.beginPath();
+    ctx.arc(centerX - 48, y, isActive ? 7 : 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = isActive ? '#57534e' : '#a8a29e';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const label = language === 'en' ? family.name.replace(' Family', '') : family.nameZh;
+    drawFittedSingleLineText(
+      ctx,
+      label,
+      centerX + 13,
+      y + 1,
+      itemWidth - 72,
+      isActive ? 20 : 18,
+      14,
+      'Arial, sans-serif'
+    );
+    ctx.restore();
+  });
 }
 
 function drawAuraBlob(
@@ -255,7 +433,15 @@ function drawShareCard(
   const orb = auraOrbColors[aura.id] ?? { inner: '#f9a8d4', mid: '#e9d5ff', outer: '#fbcfe8' };
   const meta = auraNumbers[aura.id] ?? { number: '000', colorLabel: '—', colorLabelEn: '—' };
   const keywords = auraKeywordsDisplay[aura.id] ?? { zh: '', en: '' };
-  const quote = language === 'en' && aura.quoteEn ? aura.quoteEn : aura.quote;
+  const identity = getAuraIdentity(aura.id);
+  const family = getAuraFamily(aura.id);
+  const title = identity?.displayName ?? aura.name;
+  const subtitle = language === 'en'
+    ? family?.name ?? aura.chineseName
+    : identity?.displayNameZh ?? aura.chineseName;
+  const quote = identity
+    ? language === 'en' ? identity.shareLine : identity.shareLineZh
+    : language === 'en' && aura.quoteEn ? aura.quoteEn : aura.quote;
   const keywordText = language === 'en' ? keywords.en : keywords.zh;
   const colorLabel = language === 'en' ? meta.colorLabelEn : meta.colorLabel;
   const matchLabel = language === 'en' ? `Aura match ${matchPercentage}%` : `氣場吻合度 ${matchPercentage}%`;
@@ -299,43 +485,69 @@ function drawShareCard(
 
   drawPill(ctx, matchLabel, 540, 450);
 
-  drawShareAuraCloud(ctx, orb, 540, 840, 292);
+  drawShareAuraCloud(ctx, orb, 540, 815, 292);
 
   ctx.fillStyle = '#1c1917';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = '500 82px Georgia, serif';
-  ctx.fillText(aura.name, 540, 1254);
+  drawFittedSingleLineText(
+    ctx,
+    title,
+    540,
+    1226,
+    920,
+    84,
+    54,
+    'Georgia, "Times New Roman", serif'
+  );
 
   ctx.fillStyle = '#78716c';
-  ctx.font = 'italic 36px Georgia, serif';
-  ctx.fillText(aura.chineseName, 540, 1332);
+  drawFittedSingleLineText(
+    ctx,
+    subtitle,
+    540,
+    1310,
+    790,
+    language === 'en' ? 34 : 38,
+    26,
+    'Georgia, "Times New Roman", serif'
+  );
 
   ctx.fillStyle = '#57534e';
   drawFittedSingleLineText(
     ctx,
     `“${quote}”`,
     540,
-    1432,
+    1414,
     910,
     language === 'en' ? 30 : 36,
     language === 'en' ? 22 : 27,
     'Georgia, "Times New Roman", serif'
   );
 
-  drawPill(ctx, `AURA NO. ${meta.number}`, 380, 1606, 38);
-  drawPill(ctx, colorLabel, 670, 1606, 38);
+  drawCenteredPillRow(
+    ctx,
+    [
+      { text: `AURA NO. ${meta.number}`, paddingX: 38, maxWidth: 330 },
+      { text: colorLabel, paddingX: 38, maxWidth: 330 },
+    ],
+    540,
+    1522,
+    24
+  );
 
   ctx.font = '500 28px Arial, sans-serif';
-  drawPill(ctx, keywordText, 540, 1698, 42);
+  drawPill(ctx, keywordText, 540, 1606, 42, 760, language === 'en' ? 24 : 28, 18);
+
+  drawFamilyStrip(ctx, identity?.familyId, language, orb, 1684);
 
   ctx.fillStyle = '#a8a29e';
   ctx.font = '500 22px Arial, sans-serif';
-  ctx.fillText(footerLabel, 540, 1812);
+  ctx.fillText(footerLabel, 540, 1804);
 
   ctx.fillStyle = '#78716c';
   ctx.font = '500 26px Georgia, serif';
-  ctx.fillText(ctaLabel, 540, 1858);
+  ctx.fillText(ctaLabel, 540, 1846);
 }
 
 export async function createResultShareImage(options: ShareImageOptions) {

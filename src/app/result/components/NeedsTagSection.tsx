@@ -50,7 +50,7 @@ export default function NeedsTagSection({ needs }: NeedsTagSectionProps) {
       className="w-full max-w-md mx-auto px-5 mb-5"
     >
       <div className="bg-white/60 backdrop-blur-sm border border-white/50 rounded-3xl p-7 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
-        <h3 className="text-[10px] font-sans font-semibold uppercase tracking-[0.25em] text-stone-900 mb-5">
+        <h3 className="mb-5 font-sans text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-900">
           {language === 'en' ? 'YOUR SKIN CURRENTLY NEEDS:' : '你的肌膚目前需要：'}
         </h3>
 
@@ -64,7 +64,7 @@ export default function NeedsTagSection({ needs }: NeedsTagSectionProps) {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: 0.05 + i * 0.06 }}
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-stone-200/50 rounded-full text-[11px] font-sans text-stone-600 tracking-wide shadow-[0_2px_8px_rgba(0,0,0,0.03)] font-light"
+                className="inline-flex items-center gap-1.5 rounded-full border border-stone-200/50 bg-white px-4 py-2 font-sans text-[12px] font-light tracking-wide text-stone-600 shadow-[0_2px_8px_rgba(0,0,0,0.03)]"
               >
                 <span className="text-stone-400 text-[9px]">✦</span>
                 {language === 'en' ? trans.en : trans.zh}

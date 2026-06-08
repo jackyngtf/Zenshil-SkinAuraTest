@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { useQuizStore } from '@/store/useQuizStore';
 import SoftAuraCloud, { auraCloudPaletteFromOrb } from '@/components/SoftAuraCloud';
-import { auraOrbColors } from './resultData';
+import { auraOrbColors, getAuraFamily, getAuraIdentity } from './resultData';
 
 interface AuraProfile {
   id: string;
@@ -20,6 +20,17 @@ interface SecondaryAuraCardProps {
 export default function SecondaryAuraCard({ aura, matchPercentage }: SecondaryAuraCardProps) {
   const language = useQuizStore((state) => state.language);
   const orb = auraOrbColors[aura.id] ?? { inner: '#c4b5fd', mid: '#f9a8d4', outer: '#93c5fd' };
+  const identity = getAuraIdentity(aura.id);
+  const family = getAuraFamily(aura.id);
+  const displayName = identity
+    ? language === 'en' ? identity.displayName : identity.displayNameZh
+    : aura.name;
+  const familyName = family
+    ? language === 'en' ? family.name : family.nameZh
+    : language === 'en' ? 'Skin Aura Family' : '肌膚氣場家族';
+  const signal = identity
+    ? language === 'en' ? identity.skinState : identity.skinStateZh
+    : language === 'en' && aura.quoteEn ? aura.quoteEn : aura.quote;
 
   return (
     <motion.section
@@ -35,18 +46,23 @@ export default function SecondaryAuraCard({ aura, matchPercentage }: SecondaryAu
         {/* Label */}
         <p className="text-[9px] font-sans text-stone-400 uppercase tracking-[0.25em] mb-3">
           {language === 'en' 
-            ? `SECONDARY AURA — ${matchPercentage}% MATCH` 
-            : `次要氣場 — 吻合度 ${matchPercentage}%`}
+            ? `SUPPORTING TENDENCY — ${matchPercentage}%`
+            : `次要傾向 — ${matchPercentage}%`}
         </p>
 
         {/* Name */}
-        <h3 className="text-lg font-serif text-stone-800 tracking-wider mb-3 uppercase">
-          {aura.name}
+        <p className="mb-2 font-serif text-[14px] italic text-stone-500">
+          {familyName}
+        </p>
+        <h3 className="mb-3 font-serif text-[22px] uppercase leading-tight tracking-wide text-stone-800">
+          {displayName}
         </h3>
 
         {/* Quote */}
-        <p className="text-stone-500 font-serif text-[13px] italic font-light leading-relaxed max-w-xs mx-auto">
-          &ldquo;{language === 'en' && aura.quoteEn ? aura.quoteEn : aura.quote}&rdquo;
+        <p className="mx-auto max-w-xs text-[13px] leading-relaxed text-stone-500 text-pretty">
+          {language === 'en'
+            ? `This is not your main type; it simply shows a supporting signal of ${signal}.`
+            : `呢個唔係你嘅主導類型，只係代表你同時帶有「${signal}」呢個補充訊號。`}
         </p>
       </div>
     </motion.section>
