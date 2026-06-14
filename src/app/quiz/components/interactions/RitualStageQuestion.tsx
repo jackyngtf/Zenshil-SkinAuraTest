@@ -21,21 +21,29 @@ type RitualTheme = {
 };
 
 const ritualThemes: Record<string, RitualTheme> = {
+  neutral: {
+    bgGradient: 'from-stone-50/70 via-rose-50/30 to-emerald-50/25',
+    buttonBorder: 'border-stone-300/40',
+    buttonActiveBg: 'bg-stone-50/60',
+    rippleColor: 'rgba(214, 197, 178, 0.62)',
+    auraTint: 'rgba(232, 224, 214, 0.36)',
+    auraSecondary: 'rgba(211, 238, 230, 0.22)',
+  },
   late_night: { // Q10 A (Sleep)
-    bgGradient: 'from-violet-900/40 via-purple-900/30 to-slate-900/40',
+    bgGradient: 'from-indigo-50/55 via-violet-50/40 to-stone-50/30',
     buttonBorder: 'border-violet-300/40',
     buttonActiveBg: 'bg-violet-100/30',
     rippleColor: 'rgba(167,139,250,0.6)',
-    auraTint: 'rgba(192, 132, 252, 0.45)',
-    auraSecondary: 'rgba(216, 180, 254, 0.3)',
+    auraTint: 'rgba(164, 178, 218, 0.36)',
+    auraSecondary: 'rgba(222, 214, 239, 0.26)',
   },
   recovery: { // Q10 B (Spa)
-    bgGradient: 'from-sky-50/60 via-blue-50/40 to-cyan-50/30',
-    buttonBorder: 'border-sky-300/50',
-    buttonActiveBg: 'bg-sky-100/60',
-    rippleColor: 'rgba(125,211,252,0.85)',
-    auraTint: 'rgba(56, 189, 248, 0.45)',
-    auraSecondary: 'rgba(125, 211, 252, 0.3)',
+    bgGradient: 'from-stone-50/65 via-rose-50/35 to-amber-50/25',
+    buttonBorder: 'border-rose-200/60',
+    buttonActiveBg: 'bg-rose-50/55',
+    rippleColor: 'rgba(244, 190, 174, 0.75)',
+    auraTint: 'rgba(238, 196, 180, 0.34)',
+    auraSecondary: 'rgba(230, 214, 196, 0.28)',
   },
   preventive: { // Q10 C (Nature)
     bgGradient: 'from-emerald-50/60 via-green-50/40 to-teal-50/30',
@@ -65,7 +73,7 @@ export default function RitualStageQuestion({
   const selectedOption = question.options.find(o => o.id === previewId);
   const activeTheme = selectedOption?.auraMapping && ritualThemes[selectedOption.auraMapping]
     ? ritualThemes[selectedOption.auraMapping]
-    : ritualThemes['recovery'];
+    : ritualThemes['neutral'];
 
   const handleGridTap = (event: MouseEvent<HTMLButtonElement>) => {
     const optionId = event.currentTarget.dataset.optionId;
@@ -128,9 +136,9 @@ export default function RitualStageQuestion({
 
         {/* Soft aura mask container */}
         <div
-          className="skin-aura-orb-clip relative flex-shrink-0"
+          className="skin-aura-orb-clip relative flex-shrink-0 ring-1 ring-white/65 shadow-[0_24px_80px_rgba(28,25,23,0.10),inset_0_1px_0_rgba(255,255,255,0.78)]"
           style={{
-            height: '100%', width: '100%', maxWidth: '280px', maxHeight: '280px', aspectRatio: '1 / 1',
+            height: '100%', width: '100%', maxWidth: '300px', maxHeight: '300px', aspectRatio: '1 / 1',
           }}
         >
           {/* SVG Visual Component */}
@@ -143,10 +151,10 @@ export default function RitualStageQuestion({
           <AnimatePresence>
             {confirmedId && (
               <motion.div
-                className="absolute inset-0 z-30 bg-white/40"
+                className="absolute inset-0 z-30 bg-[radial-gradient(circle_at_50%_42%,rgba(255,255,255,0.66)_0%,rgba(255,255,255,0.24)_32%,rgba(255,255,255,0)_68%)]"
                 initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.6, 0] }}
-                transition={{ duration: 0.5 }}
+                animate={{ opacity: [0, 0.72, 0] }}
+                transition={{ duration: 0.56, ease: 'easeOut' }}
               />
             )}
           </AnimatePresence>
@@ -164,7 +172,7 @@ export default function RitualStageQuestion({
         getOptionStyle={(option) => {
           const theme = option.auraMapping && ritualThemes[option.auraMapping]
             ? ritualThemes[option.auraMapping]
-            : ritualThemes['recovery'];
+            : ritualThemes['neutral'];
 
           return {
             activeClassName: `${theme.buttonActiveBg} ${theme.buttonBorder} -translate-y-px shadow-[0_4px_20px_rgba(0,0,0,0.06)]`,

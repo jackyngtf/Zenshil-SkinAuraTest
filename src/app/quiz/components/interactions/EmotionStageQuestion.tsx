@@ -193,6 +193,7 @@ export default function EmotionStageQuestion({
   });
 
   const selectedOption = question.options.find(o => o.id === previewId);
+  const isShellConcernQuestion = question.id === 'q7';
   const activeTheme = selectedOption?.auraMapping && emotionThemes[selectedOption.auraMapping]
     ? emotionThemes[selectedOption.auraMapping]
     : (question.id === 'q3' ? q3NeutralTheme : emotionThemes['overworked']);
@@ -262,7 +263,11 @@ export default function EmotionStageQuestion({
           <div
             className="skin-aura-orb-clip relative flex-shrink-0"
             style={{
-              height: '100%', width: '100%', maxWidth: '280px', maxHeight: '280px', aspectRatio: '1 / 1',
+              height: isShellConcernQuestion ? 'min(86vw, 340px)' : '100%',
+              width: isShellConcernQuestion ? 'min(86vw, 340px)' : '100%',
+              maxWidth: isShellConcernQuestion ? '340px' : '280px',
+              maxHeight: isShellConcernQuestion ? '340px' : '280px',
+              aspectRatio: '1 / 1',
             }}
           >
             {/* SVG Visual Component */}

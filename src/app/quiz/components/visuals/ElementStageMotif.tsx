@@ -1,7 +1,14 @@
 'use client';
 
-import type { ReactNode } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import {
+  motion,
+  AnimatePresence,
+  animate,
+  useMotionValue,
+  type Easing,
+  type AnimationPlaybackControls,
+} from 'framer-motion';
 import { seededNumber } from './deterministicMotion';
 
 interface ElementStageMotifProps {
@@ -570,463 +577,579 @@ function Q4ResourceMeter({
 }
 
 /* ================================================================== */
-/*  Q6 SCENES: "Pace of life" (Skin Rhythm Field)                     */
+/*  Q6 SCENES: "Pace of life" — The Metronome                         */
+/*                                                                     */
+/*  One shared luminous chamber: a softly glowing metronome on a       */
+/*  light stage. Each answer changes only the *swing personality* —   */
+/*  tempo, amplitude, regularity, weight — plus a pastel palette:     */
+/*                                                                     */
+/*    A 長期高速運轉 — frantic fast swing, blurs into a fan  (coral)   */
+/*    B 不規律漂浮   — uneven amplitude, drifting off-axis  (lavender)*/
+/*    C 平穩但疲倦   — slow heavy swing, drooping & dimming  (sand)    */
+/*    D 努力自律中   — perfect even beat, crisp light pulse  (mint)    */
+/*                                                                     */
+/*  On confirm, the arm settles upright and a line of light blooms.   */
 /* ================================================================== */
 
-type Q6RhythmId = 'idle' | 'A' | 'B' | 'C' | 'D';
+// Metronome geometry: small base at the bottom, pivot clearly visible at the
+// very bottom of the needle. The long arm swings upward from that fixed point.
+const Q6_PIVOT_X = 200;
+const Q6_PIVOT_Y = 340;
+const Q6_ARM_LEN = 262;
+const Q6_BOB_REST_Y = Q6_PIVOT_Y - Q6_ARM_LEN; // 78 — arm tip near the top
+const Q6_WEIGHT_Y = 170; // sliding weight on upper portion of the arm
 
-type Q6RhythmState = {
-  id: Q6RhythmId;
-  base: string;
-  wash: string;
-  washSoft: string;
-  accent: string;
-  secondary: string;
-  line: string;
+// Metronome case: classic truncated pyramid standing on a wide plinth.
+// The needle swings in front of the case face; at wide angles its tip
+// sweeps past the slanted edges, just like a real metronome.
+const Q6_CASE_TOP_Y = 68;
+const Q6_CASE_BOT_Y = 358;
+const Q6_CASE_TOP_HW = 16;
+const Q6_CASE_BOT_HW = 48;
+const Q6_CASE_PATH = `M${Q6_PIVOT_X - Q6_CASE_BOT_HW} ${Q6_CASE_BOT_Y} L${Q6_PIVOT_X - Q6_CASE_TOP_HW} ${Q6_CASE_TOP_Y} L${Q6_PIVOT_X + Q6_CASE_TOP_HW} ${Q6_CASE_TOP_Y} L${Q6_PIVOT_X + Q6_CASE_BOT_HW} ${Q6_CASE_BOT_Y} Z`;
+const Q6_PLINTH_PATH = `M${Q6_PIVOT_X - 54} 374 L${Q6_PIVOT_X - 46} 356 L${Q6_PIVOT_X + 46} 356 L${Q6_PIVOT_X + 54} 374 Z`;
+const Q6_CAP_PATH = `M${Q6_PIVOT_X - 18} ${Q6_CASE_TOP_Y} L${Q6_PIVOT_X - 14} 56 L${Q6_PIVOT_X + 14} 56 L${Q6_PIVOT_X + 18} ${Q6_CASE_TOP_Y} Z`;
+
+// Tapered tempo-scale slot on the front face, with graduation marks
+const Q6_SLOT_TOP_Y = 96;
+const Q6_SLOT_BOT_Y = 326;
+const Q6_SLOT_TOP_HW = 6.5;
+const Q6_SLOT_BOT_HW = 13;
+const Q6_SLOT_PATH = `M${Q6_PIVOT_X - Q6_SLOT_BOT_HW} ${Q6_SLOT_BOT_Y} L${Q6_PIVOT_X - Q6_SLOT_TOP_HW} ${Q6_SLOT_TOP_Y} L${Q6_PIVOT_X + Q6_SLOT_TOP_HW} ${Q6_SLOT_TOP_Y} L${Q6_PIVOT_X + Q6_SLOT_BOT_HW} ${Q6_SLOT_BOT_Y} Z`;
+const Q6_SCALE_TICKS = [118, 152, 186, 220, 254, 288, 314].map((y) => {
+  const t = (y - Q6_SLOT_TOP_Y) / (Q6_SLOT_BOT_Y - Q6_SLOT_TOP_Y);
+  const hw = Q6_SLOT_TOP_HW + t * (Q6_SLOT_BOT_HW - Q6_SLOT_TOP_HW) + 4;
+  return { y, hw: +hw.toFixed(1) };
+});
+
+type MetroTheme = {
+  id: string;
+  bgTop: string;
+  bgMid: string;
+  bgLow: string;
+  floor: string;
+  body: string;
+  bodyDark: string;
+  arm: string;
+  bob: string;
+  glow: string;
+  note: string;
 };
 
-const q6RhythmStates: Record<Q6RhythmId, Q6RhythmState> = {
-  idle: {
-    id: 'idle',
-    base: '#fbf8f3',
-    wash: '#dbeafe',
-    washSoft: '#fce7f3',
-    accent: '#c7d2fe',
-    secondary: '#ccfbf1',
-    line: 'rgba(120, 113, 108, 0.22)',
-  },
-  A: {
-    id: 'A',
-    base: '#fff7ed',
-    wash: '#fed7aa',
-    washSoft: '#fecdd3',
-    accent: '#f59e0b',
-    secondary: '#fb7185',
-    line: 'rgba(180, 83, 9, 0.34)',
-  },
-  B: {
-    id: 'B',
-    base: '#f7f7ff',
-    wash: '#bfdbfe',
-    washSoft: '#ddd6fe',
-    accent: '#7dd3fc',
-    secondary: '#a78bfa',
-    line: 'rgba(79, 70, 229, 0.28)',
-  },
-  C: {
-    id: 'C',
-    base: '#fafaf7',
-    wash: '#dbeafe',
-    washSoft: '#fde68a',
-    accent: '#93c5fd',
-    secondary: '#d6d3d1',
-    line: 'rgba(87, 83, 78, 0.22)',
-  },
-  D: {
-    id: 'D',
-    base: '#f4fffb',
-    wash: '#a7f3d0',
-    washSoft: '#fef3c7',
-    accent: '#14b8a6',
-    secondary: '#fbbf24',
-    line: 'rgba(20, 113, 94, 0.27)',
-  },
+type MetroConfig = {
+  theme: MetroTheme;
+  /* Steady-state swing loop (ignored while `accel` is playing) */
+  swing: { values: number[]; times?: number[]; dur: number; ease?: Easing };
+  /* A only: one-shot accelerating sequence, then hand over to a fast loop */
+  accel?: { values: number[]; times: number[]; dur: number; fastValues: number[]; fastDur: number };
+  beatDur: number;
+  arcAngle: number;
+  noteDur: number;
+  /* A only: static ghost arms (speed blur) that fade in as tempo builds */
+  fanGhosts?: { angle: number; opacity: number }[];
+  fanDelay?: number;
+  arcDelay?: number;
+  /* D only: crisp tick flash at each swing extreme */
+  tickFlash?: boolean;
+  bobDim?: boolean;
 };
 
-const q6SoftFilterId = (id: Q6RhythmId) => `q6-rhythm-soft-${id}`;
-const q6FieldId = (id: Q6RhythmId) => `q6-rhythm-field-${id}`;
-const q6VeilId = (id: Q6RhythmId) => `q6-rhythm-veil-${id}`;
-const q6SheenId = (id: Q6RhythmId) => `q6-rhythm-sheen-${id}`;
+/* Tapered needle from the low pivot up to the tip */
+const Q6_ARM_PATH = `M${Q6_PIVOT_X - 2.8} ${Q6_PIVOT_Y} L${Q6_PIVOT_X - 1.3} ${Q6_BOB_REST_Y} L${Q6_PIVOT_X + 1.3} ${Q6_BOB_REST_Y} L${Q6_PIVOT_X + 2.8} ${Q6_PIVOT_Y} Z`;
 
-function Q6RhythmStage({
-  state,
-  isConfirming,
-  children,
-}: {
-  state: Q6RhythmState;
-  isConfirming: boolean;
-  children?: ReactNode;
-}) {
+/* Arc path traced by the bob between the two swing extremes */
+function swingArcPath(angleDeg: number): string {
+  const r = Q6_ARM_LEN;
+  const a = (angleDeg * Math.PI) / 180;
+  const x1 = Q6_PIVOT_X - r * Math.sin(a);
+  const y1 = Q6_PIVOT_Y - r * Math.cos(a);
+  const x2 = Q6_PIVOT_X + r * Math.sin(a);
+  const y2 = Q6_PIVOT_Y - r * Math.cos(a);
+  return `M ${x1.toFixed(1)} ${y1.toFixed(1)} A ${r} ${r} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+}
+
+function BeatRing({
+  color, dur, delay, maxR, isConfirming,
+}: { color: string; dur: number; delay: number; maxR: number; isConfirming: boolean }) {
+  return (
+    <motion.circle
+      cx={Q6_PIVOT_X}
+      cy={Q6_BOB_REST_Y}
+      r="5"
+      fill="none"
+      stroke={color}
+      strokeWidth="1.6"
+      initial={false}
+      animate={isConfirming ? { opacity: 0 } : { r: [5, maxR], opacity: [0.5, 0] }}
+      transition={{ duration: dur, delay, repeat: isConfirming ? 0 : Infinity, ease: 'easeOut' }}
+    />
+  );
+}
+
+function MetronomeScene({ config, isConfirming }: { config: MetroConfig; isConfirming: boolean }) {
+  const { theme, swing, accel, beatDur, arcAngle, noteDur, fanGhosts, fanDelay, arcDelay, tickFlash, bobDim } = config;
+  const uid = theme.id;
+
+  // Framer's CSS rotate on SVG spins the element about its own bbox centre
+  // (the middle of the needle), not the pivot. The arm angle is therefore
+  // driven manually through the native SVG attribute rotate(angle px py),
+  // which is guaranteed to rotate about the low pivot point.
+  const armAngle = useMotionValue(accel ? accel.values[0] : swing.values[0]);
+  const armRef = useRef<SVGGElement>(null);
+
+  useEffect(() => {
+    const apply = (a: number) => {
+      armRef.current?.setAttribute('transform', `rotate(${a.toFixed(2)} ${Q6_PIVOT_X} ${Q6_PIVOT_Y})`);
+    };
+    apply(armAngle.get());
+    return armAngle.on('change', apply);
+  }, [armAngle]);
+
+  useEffect(() => {
+    if (isConfirming) {
+      const settle = animate(armAngle, 0, { duration: 0.55, ease: [0.32, 0.72, 0, 1] });
+      return () => settle.stop();
+    }
+    if (accel) {
+      // One-shot accelerating ramp, then hand over to the fast infinite loop
+      let cancelled = false;
+      let fast: AnimationPlaybackControls | undefined;
+      const ramp = animate(armAngle, accel.values, { duration: accel.dur, times: accel.times, ease: 'easeInOut' });
+      ramp.then(() => {
+        if (cancelled) return;
+        fast = animate(armAngle, accel.fastValues, { duration: accel.fastDur, repeat: Infinity, ease: 'easeInOut' });
+      });
+      return () => {
+        cancelled = true;
+        ramp.stop();
+        fast?.stop();
+      };
+    }
+    const loop = animate(armAngle, swing.values, {
+      duration: swing.dur,
+      times: swing.times,
+      repeat: Infinity,
+      ease: swing.ease ?? 'easeInOut',
+    });
+    return () => loop.stop();
+    // config is recreated by the parent each render but constant per scene;
+    // depending on its identity would restart the swing on unrelated renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConfirming, armAngle]);
+
+  // D only: tip positions at the two swing extremes, for the tick flashes
+  const tickRad = (arcAngle * Math.PI) / 180;
+  const tickXL = +(Q6_PIVOT_X - Q6_ARM_LEN * Math.sin(tickRad)).toFixed(1);
+  const tickXR = +(Q6_PIVOT_X + Q6_ARM_LEN * Math.sin(tickRad)).toFixed(1);
+  const tickY = +(Q6_PIVOT_Y - Q6_ARM_LEN * Math.cos(tickRad)).toFixed(1);
+
+  // Floating notes rise alongside the case, never behind it
+  const notes = [
+    { x: 124, delay: 0, dur: noteDur, drift: -12 },
+    { x: 278, delay: noteDur * 0.4, dur: noteDur * 1.1, drift: 12 },
+    { x: 106, delay: noteDur * 0.75, dur: noteDur * 0.9, drift: -8 },
+    { x: 294, delay: noteDur * 1.2, dur: noteDur * 1.05, drift: 8 },
+  ];
+
   return (
     <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice">
       <defs>
-        <radialGradient id={q6FieldId(state.id)} cx="50%" cy="46%" r="64%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.92" />
-          <stop offset="38%" stopColor={state.wash} stopOpacity="0.62" />
-          <stop offset="74%" stopColor={state.washSoft} stopOpacity="0.34" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id={q6VeilId(state.id)} cx="52%" cy="62%" r="58%">
-          <stop offset="0%" stopColor={state.secondary} stopOpacity="0.5" />
-          <stop offset="62%" stopColor={state.wash} stopOpacity="0.18" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-        </radialGradient>
-        <linearGradient id={q6SheenId(state.id)} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="45%" stopColor="#ffffff" stopOpacity="0.7" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        <linearGradient id={`q6m-sky-${uid}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor={theme.bgTop} />
+          <stop offset="52%" stopColor={theme.bgMid} />
+          <stop offset="100%" stopColor={theme.bgLow} />
         </linearGradient>
-        <filter id={q6SoftFilterId(state.id)} x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="12" />
+        <radialGradient id={`q6m-floor-${uid}`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={theme.floor} stopOpacity="0.7" />
+          <stop offset="70%" stopColor={theme.floor} stopOpacity="0.18" />
+          <stop offset="100%" stopColor={theme.floor} stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id={`q6m-body-${uid}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor={theme.body} />
+          <stop offset="100%" stopColor={theme.bodyDark} />
+        </linearGradient>
+        <radialGradient id={`q6m-bob-${uid}`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+          <stop offset="45%" stopColor={theme.bob} stopOpacity="0.9" />
+          <stop offset="100%" stopColor={theme.bob} stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id={`q6m-arc-${uid}`} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor={theme.glow} stopOpacity="0" />
+          <stop offset="50%" stopColor={theme.glow} stopOpacity="0.55" />
+          <stop offset="100%" stopColor={theme.glow} stopOpacity="0" />
+        </linearGradient>
+        <filter id={`q6m-soft-${uid}`} x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="5" />
+        </filter>
+        <filter id={`q6m-glow-${uid}`} x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="7" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
       </defs>
 
-      <rect width="400" height="400" fill={state.base} />
+      {/* ── Chamber backdrop ── */}
+      <rect width="400" height="400" fill={`url(#q6m-sky-${uid})`} />
 
-      <motion.circle
-        cx="200"
-        cy="194"
-        r="152"
-        fill={`url(#${q6FieldId(state.id)})`}
-        filter={`url(#${q6SoftFilterId(state.id)})`}
-        animate={{
-          scale: isConfirming ? 1.08 : [1, 1.035, 1],
-          opacity: isConfirming ? 0.92 : [0.76, 0.92, 0.76],
-        }}
-        transition={{ duration: 7, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      {/* ── Floating luminous notes ── */}
+      {notes.map((n, i) => (
+        <motion.circle
+          key={`note-${uid}-${i}`}
+          cx={n.x}
+          cy={300}
+          r="2.4"
+          fill={theme.note}
+          filter={`url(#q6m-soft-${uid})`}
+          initial={false}
+          animate={isConfirming ? { opacity: 0 } : { cy: [340, 120], x: [0, n.drift], opacity: [0, 0.7, 0] }}
+          transition={{ duration: n.dur, delay: n.delay, repeat: isConfirming ? 0 : Infinity, ease: 'easeOut' }}
+        />
+      ))}
+
+      {/* ── Stage floor glow ── */}
+      <motion.ellipse
+        cx="200" cy="372" rx="158" ry="30"
+        fill={`url(#q6m-floor-${uid})`}
+        animate={{ opacity: isConfirming ? 0.85 : [0.55, 0.8, 0.55], scaleX: isConfirming ? 1.05 : [1, 1.04, 1] }}
+        style={{ transformOrigin: '200px 372px' }}
+        transition={{ duration: beatDur * 2, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
       />
-      <motion.circle
-        cx="210"
-        cy="224"
-        r="122"
-        fill={`url(#${q6VeilId(state.id)})`}
-        filter={`url(#${q6SoftFilterId(state.id)})`}
-        animate={{
-          x: isConfirming ? 0 : [-6, 8, -6],
-          y: isConfirming ? -4 : [5, -5, 5],
-          opacity: isConfirming ? 0.68 : [0.38, 0.58, 0.38],
-        }}
-        transition={{ duration: 9.5, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
-      />
 
-      <motion.g
-        opacity="0.5"
-        animate={{ y: isConfirming ? -2 : [0, 4, 0] }}
-        transition={{ duration: 6.5, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
-      >
-        <path
-          d="M42 246 C96 228 130 239 179 220 C232 199 275 210 342 184"
-          fill="none"
-          stroke="rgba(255,255,255,0.6)"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-        />
-        <path
-          d="M50 282 C104 266 148 277 192 258 C234 241 278 244 344 222"
-          fill="none"
-          stroke={state.line}
-          strokeWidth="1"
-          strokeLinecap="round"
-        />
-      </motion.g>
-
-      {children}
-
-      <motion.g
-        style={{ transformOrigin: '200px 200px' }}
-        animate={{ x: isConfirming ? 220 : [-190, 240] }}
-        transition={{ duration: 8.5, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
-        opacity="0.36"
-      >
-        <rect
-          x="8"
-          y="-20"
-          width="42"
-          height="455"
-          rx="22"
-          fill={`url(#${q6SheenId(state.id)})`}
-          transform="rotate(17 29 200)"
-        />
-      </motion.g>
-
-      <motion.circle
-        cx="200"
-        cy="200"
-        r="158"
-        fill="none"
-        stroke="rgba(255,255,255,0.62)"
+      {/* ── Metronome case: plinth + truncated pyramid + crown ── */}
+      <g filter={`url(#q6m-soft-${uid})`} opacity="0.45">
+        <path d={Q6_PLINTH_PATH} fill={theme.bodyDark} />
+        <path d={Q6_CASE_PATH} fill={theme.bodyDark} />
+      </g>
+      <path
+        d={Q6_CASE_PATH}
+        fill={`url(#q6m-body-${uid})`}
+        fillOpacity="0.92"
+        stroke="rgba(255,255,255,0.22)"
         strokeWidth="1"
-        animate={{ opacity: isConfirming ? 0.72 : [0.42, 0.66, 0.42] }}
-        transition={{ duration: 6.5, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      />
+      <path d={Q6_CAP_PATH} fill={theme.body} stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
+      <path
+        d={Q6_PLINTH_PATH}
+        fill={`url(#q6m-body-${uid})`}
+        stroke="rgba(255,255,255,0.25)"
+        strokeWidth="1"
+      />
+      {/* Tapered tempo-scale slot, softly breathing with the beat */}
+      <path d={Q6_SLOT_PATH} fill={theme.bodyDark} fillOpacity="0.75" stroke="rgba(255,255,255,0.14)" strokeWidth="1" />
+      <motion.path
+        d={Q6_SLOT_PATH}
+        fill={theme.glow}
+        initial={false}
+        animate={isConfirming ? { opacity: 0.16 } : { opacity: [0.05, 0.14, 0.05] }}
+        transition={{ duration: beatDur * 2, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      />
+      {Q6_SCALE_TICKS.map(({ y, hw }) => (
+        <line
+          key={`tick-${uid}-${y}`}
+          x1={Q6_PIVOT_X - hw}
+          y1={y}
+          x2={Q6_PIVOT_X + hw}
+          y2={y}
+          stroke="rgba(255,255,255,0.26)"
+          strokeWidth="1"
+        />
+      ))}
+      {/* Left-edge sheen down the case */}
+      <path d="M157 350 L186 78" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.2" strokeLinecap="round" opacity="0.45" />
+      {/* Pivot mounting hub (static; the white cap rides on the needle group) */}
+      <circle cx={Q6_PIVOT_X} cy={Q6_PIVOT_Y} r="9" fill={theme.bodyDark} stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
+
+      {/* ── Swing path arc (motion-blur trail) ── */}
+      <motion.path
+        d={swingArcPath(arcAngle)}
+        fill="none"
+        stroke={`url(#q6m-arc-${uid})`}
+        strokeWidth={fanGhosts ? 16 : 6}
+        strokeLinecap="round"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isConfirming ? 0 : fanGhosts ? [0.45, 0.7, 0.45] : [0.28, 0.45, 0.28] }}
+        transition={{
+          duration: beatDur,
+          delay: isConfirming ? 0 : (arcDelay ?? 0),
+          repeat: isConfirming ? 0 : Infinity,
+          ease: 'easeInOut',
+        }}
+      />
+
+      {/* ── Speed-blur fan (A): static ghost arms that surface as tempo builds ── */}
+      {fanGhosts && (
+        <motion.g
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isConfirming ? 0 : 1 }}
+          transition={isConfirming ? { duration: 0.3 } : { delay: fanDelay ?? 0, duration: 1.6, ease: 'easeIn' }}
+        >
+          {fanGhosts.map((ghost) => (
+            <g
+              key={`ghost-${uid}-${ghost.angle}`}
+              transform={`rotate(${ghost.angle} ${Q6_PIVOT_X} ${Q6_PIVOT_Y})`}
+              opacity={ghost.opacity}
+            >
+              <path d={Q6_ARM_PATH} fill={theme.arm} />
+              <circle cx={Q6_PIVOT_X} cy={Q6_WEIGHT_Y} r="9" fill={theme.bob} />
+            </g>
+          ))}
+        </motion.g>
+      )}
+
+      {/* ── The pendulum — rotated about the low pivot via the SVG
+             transform attribute, driven by the armAngle MotionValue ── */}
+      <g ref={armRef}>
+        {/* Long tapered arm — pivots low, reaches the top */}
+        <path d={Q6_ARM_PATH} fill={theme.arm} />
+        {/* Small accent at the very tip */}
+        <circle cx={Q6_PIVOT_X} cy={Q6_BOB_REST_Y} r="3.5" fill={theme.bob} opacity="0.9" />
+
+        {/* Sliding weight — the glowing focal mass, upper portion of the arm */}
+        <circle cx={Q6_PIVOT_X} cy={Q6_WEIGHT_Y} r="24" fill={`url(#q6m-bob-${uid})`} />
+        <path
+          d={`M${Q6_PIVOT_X - 11} ${Q6_WEIGHT_Y - 13} L${Q6_PIVOT_X + 11} ${Q6_WEIGHT_Y - 13} L${Q6_PIVOT_X + 9} ${Q6_WEIGHT_Y + 13} L${Q6_PIVOT_X - 9} ${Q6_WEIGHT_Y + 13} Z`}
+          fill={theme.bob}
+          stroke="rgba(255,255,255,0.45)"
+          strokeWidth="0.9"
+        />
+        <motion.circle
+          cx={Q6_PIVOT_X}
+          cy={Q6_WEIGHT_Y}
+          r="7"
+          fill="#ffffff"
+          filter={`url(#q6m-glow-${uid})`}
+          animate={
+            isConfirming
+              ? { opacity: 1, r: 10 }
+              : bobDim
+                ? { opacity: [0.4, 0.85, 0.4] }
+                : { opacity: [0.7, 1, 0.7] }
+          }
+          transition={{ duration: bobDim ? swing.dur : beatDur, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+        />
+        {/* Pivot cap (low, visible above the base) */}
+        <circle cx={Q6_PIVOT_X} cy={Q6_PIVOT_Y} r="4.5" fill="#ffffff" opacity="0.85" />
+      </g>
+
+      {/* ── Tick flashes at the swing extremes (D): the crisp beat ── */}
+      {tickFlash && (
+        <g>
+          <motion.circle
+            cx={tickXL} cy={tickY} r="5"
+            fill={theme.glow}
+            filter={`url(#q6m-glow-${uid})`}
+            initial={false}
+            animate={isConfirming ? { opacity: 0 } : { opacity: [1, 0, 0, 0, 1] }}
+            transition={{ duration: swing.dur, times: [0, 0.22, 0.5, 0.78, 1], repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+          />
+          <motion.circle
+            cx={tickXR} cy={tickY} r="5"
+            fill={theme.glow}
+            filter={`url(#q6m-glow-${uid})`}
+            initial={false}
+            animate={isConfirming ? { opacity: 0 } : { opacity: [0, 0, 1, 0, 0] }}
+            transition={{ duration: swing.dur, times: [0, 0.28, 0.5, 0.72, 1], repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+          />
+          <motion.circle
+            cx={tickXL} cy={tickY}
+            fill="none" stroke={theme.glow} strokeWidth="1.4"
+            initial={false}
+            animate={isConfirming ? { opacity: 0 } : { r: [5, 24, 24], opacity: [0.7, 0, 0] }}
+            transition={{ duration: swing.dur, times: [0, 0.45, 1], repeat: isConfirming ? 0 : Infinity, ease: 'easeOut' }}
+          />
+          <motion.circle
+            cx={tickXR} cy={tickY}
+            fill="none" stroke={theme.glow} strokeWidth="1.4"
+            initial={false}
+            animate={isConfirming ? { opacity: 0 } : { r: [5, 5, 5, 24], opacity: [0, 0, 0.7, 0] }}
+            transition={{ duration: swing.dur, times: [0, 0.49, 0.52, 1], repeat: isConfirming ? 0 : Infinity, ease: 'easeOut' }}
+          />
+        </g>
+      )}
+
+      {/* ── Beat indicator + radiating rings (the audible "tick") ── */}
+      <motion.circle
+        cx={Q6_PIVOT_X}
+        cy={Q6_BOB_REST_Y}
+        r="5"
+        fill={theme.glow}
+        filter={`url(#q6m-glow-${uid})`}
+        animate={isConfirming ? { opacity: 0.9, scale: 1.3 } : { opacity: [0.2, 0.95, 0.2], scale: [1, 1.5, 1] }}
+        style={{ transformOrigin: `${Q6_PIVOT_X}px ${Q6_BOB_REST_Y}px` }}
+        transition={{ duration: beatDur, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
+      />
+      <BeatRing color={theme.glow} dur={beatDur} delay={0} maxR={42} isConfirming={isConfirming} />
+      <BeatRing color={theme.glow} dur={beatDur} delay={beatDur * 0.5} maxR={42} isConfirming={isConfirming} />
+
+      {/* ── Confirm bloom + line of light ── */}
+      <motion.circle
+        cx="200" cy="180" r="120"
+        fill={`url(#q6m-bob-${uid})`}
+        initial={false}
+        animate={{ opacity: isConfirming ? [0, 0.7, 0.5] : 0 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+      />
+      <motion.line
+        x1="60" y1="210" x2="340" y2="210"
+        stroke={theme.glow}
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        style={{ transformOrigin: '200px 210px' }}
+        initial={false}
+        animate={{ opacity: isConfirming ? [0, 1, 0.85] : 0, scaleX: isConfirming ? [0.3, 1.02, 1] : 0.3 }}
+        transition={{ duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
+      />
+
+      {/* ── Outer ring (shared visual language) ── */}
+      <motion.circle
+        cx="200" cy="200" r="158"
+        fill="none"
+        stroke="rgba(255,255,255,0.6)"
+        strokeWidth="1"
+        animate={{ opacity: isConfirming ? 0.75 : [0.38, 0.6, 0.38] }}
+        transition={{ duration: 6, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
       />
     </svg>
   );
 }
 
-function Q6Idle({ isConfirming }: { isConfirming: boolean }) {
-  const state = q6RhythmStates.idle;
+/* ── A 長期高速運轉 — starts brisk, keeps accelerating until the arm    */
+/*    blurs into a ghost fan, coral                                      */
+function Q6RushMetro({ isConfirming }: { isConfirming: boolean }) {
+  const theme: MetroTheme = {
+    id: 'rush',
+    bgTop: '#3a1410', bgMid: '#5a1e16', bgLow: '#7c2d18',
+    floor: '#fb923c', body: '#7c3a26', bodyDark: '#4a2016',
+    arm: '#fdba74', bob: '#fb923c', glow: '#fbbf24', note: '#fdba74',
+  };
   return (
-    <Q6RhythmStage state={state} isConfirming={isConfirming}>
-      {[150, 188, 226].map((y, index) => (
-        <motion.path
-          key={y}
-          d={`M72 ${y} C126 ${y - 14}, 166 ${y + 10}, 210 ${y - 2} S286 ${y + 8}, 330 ${y - 10}`}
-          fill="none"
-          stroke={index === 1 ? state.accent : 'rgba(255,255,255,0.56)'}
-          strokeWidth={index === 1 ? 2 : 1.2}
-          strokeLinecap="round"
-          opacity={index === 1 ? 0.34 : 0.32}
-          animate={{ y: [0, index === 1 ? 4 : 2, 0], opacity: [0.2, 0.42, 0.2] }}
-          transition={{ duration: 6 + index, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      ))}
-    </Q6RhythmStage>
+    <MetronomeScene
+      isConfirming={isConfirming}
+      config={{
+        theme,
+        // One-shot ramp: each half-swing shorter than the last (0.8s → 0.38s),
+        // amplitude widening 12° → 26°, then hand over to the 0.62s fast loop.
+        accel: {
+          values: [0, 12, -14, 17, -20, 23, -26, 26],
+          times: [0, 0.19, 0.37, 0.53, 0.68, 0.8, 0.91, 1],
+          dur: 4.2,
+          fastValues: [26, -26, 26],
+          fastDur: 0.62,
+        },
+        swing: { values: [-26, 26, -26], dur: 0.62 },
+        beatDur: 0.31,
+        arcAngle: 26,
+        noteDur: 1.5,
+        // Speed blur surfaces only once the tempo is already high
+        fanGhosts: [
+          { angle: -26, opacity: 0.2 },
+          { angle: -17, opacity: 0.13 },
+          { angle: -8, opacity: 0.08 },
+          { angle: 8, opacity: 0.08 },
+          { angle: 17, opacity: 0.13 },
+          { angle: 26, opacity: 0.2 },
+        ],
+        fanDelay: 2.6,
+        arcDelay: 2.6,
+      }}
+    />
   );
 }
 
-function Q6HighSpeed({ isConfirming }: { isConfirming: boolean }) {
-  const state = q6RhythmStates.A;
-  const orbitals = [
-    { rx: 128, ry: 38, rotate: -18, duration: 2.6, planetX: 328, planetY: 196, radius: 7, fill: state.secondary },
-    { rx: 96, ry: 30, rotate: 24, duration: 1.9, planetX: 292, planetY: 194, radius: 5, fill: state.accent },
-    { rx: 62, ry: 20, rotate: -42, duration: 1.35, planetX: 262, planetY: 196, radius: 4, fill: '#ffffff' },
-  ];
-
+/* ── B 不規律 — amplitude swings big and small with no pattern, lavender ── */
+function Q6DriftMetro({ isConfirming }: { isConfirming: boolean }) {
+  const theme: MetroTheme = {
+    id: 'drift',
+    bgTop: '#1e1b3a', bgMid: '#2c2658', bgLow: '#3a3270',
+    floor: '#a78bfa', body: '#3f3a6e', bodyDark: '#262247',
+    arm: '#c4b5fd', bob: '#a78bfa', glow: '#818cf8', note: '#c4b5fd',
+  };
   return (
-    <Q6RhythmStage state={state} isConfirming={isConfirming}>
-      <motion.circle
-        cx="200"
-        cy="196"
-        r="34"
-        fill="#fff7ed"
-        filter={`url(#${q6SoftFilterId(state.id)})`}
-        animate={{ scale: isConfirming ? 1.1 : [1, 1.08, 1], opacity: [0.78, 1, 0.78] }}
-        transition={{ duration: 2.4, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
-      />
-      <circle cx="200" cy="196" r="18" fill={state.accent} opacity="0.42" />
-
-      {orbitals.map((orbit, index) => (
-        <g key={`${orbit.rx}-${orbit.rotate}`} transform={`rotate(${orbit.rotate} 200 196)`}>
-          <ellipse
-            cx="200"
-            cy="196"
-            rx={orbit.rx}
-            ry={orbit.ry}
-            fill="none"
-            stroke={index === 0 ? 'rgba(255,255,255,0.62)' : state.line}
-            strokeWidth={index === 0 ? 1.2 : 1}
-            strokeDasharray={index === 2 ? '5 10' : undefined}
-          />
-          <motion.g
-            style={{ transformOrigin: '200px 196px' }}
-            animate={{ rotate: isConfirming ? 280 : [0, 360] }}
-            transition={{ duration: orbit.duration, repeat: isConfirming ? 0 : Infinity, ease: 'linear' }}
-          >
-            <circle
-              cx={orbit.planetX}
-              cy={orbit.planetY}
-              r={orbit.radius}
-              fill={orbit.fill}
-              filter={`url(#${q6SoftFilterId(state.id)})`}
-              opacity="0.78"
-            />
-            <circle cx={orbit.planetX} cy={orbit.planetY} r={Math.max(2.5, orbit.radius - 2)} fill="rgba(255,255,255,0.72)" />
-          </motion.g>
-        </g>
-      ))}
-
-      {[0, 1, 2, 3].map((index) => (
-        <motion.path
-          key={index}
-          d={`M${72 + index * 9} ${256 - index * 28} C${126 + index * 14} ${230 - index * 16}, ${164 + index * 18} ${222 - index * 26}, ${324 - index * 22} ${170 - index * 10}`}
-          fill="none"
-          stroke={index % 2 === 0 ? state.secondary : '#ffffff'}
-          strokeWidth={index === 0 ? 3 : 1.4}
-          strokeLinecap="round"
-          filter={`url(#${q6SoftFilterId(state.id)})`}
-          animate={{
-            pathLength: isConfirming ? 0.9 : [0.08, 0.72, 0.08],
-            opacity: isConfirming ? 0.25 : [0, 0.42, 0],
-          }}
-          transition={{ duration: 1.35 + index * 0.22, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut', delay: index * 0.16 }}
-        />
-      ))}
-    </Q6RhythmStage>
+    <MetronomeScene
+      isConfirming={isConfirming}
+      config={{
+        theme,
+        // Wide swing, then shallow, then wide again — no two beats alike
+        swing: {
+          values: [0, 26, -7, 14, -28, 9, -19, 23, 0],
+          times: [0, 0.1, 0.23, 0.34, 0.52, 0.65, 0.79, 0.91, 1],
+          dur: 7.5,
+        },
+        beatDur: 1.7,
+        arcAngle: 26,
+        noteDur: 4.2,
+      }}
+    />
   );
 }
 
-function Q6Irregular({ isConfirming }: { isConfirming: boolean }) {
-  const state = q6RhythmStates.B;
-  const waves = [
-    { y: 220, amp: 16, color: '#93c5fd', duration: 4.8, opacity: 0.46 },
-    { y: 246, amp: -22, color: '#c4b5fd', duration: 3.9, opacity: 0.4 },
-    { y: 276, amp: 12, color: '#ffffff', duration: 5.6, opacity: 0.34 },
-  ];
-
+/* ── C 平穩但冇力 — barely swinging, slow and faint, sand ── */
+function Q6WearyMetro({ isConfirming }: { isConfirming: boolean }) {
+  const theme: MetroTheme = {
+    id: 'weary',
+    bgTop: '#6e5a3e', bgMid: '#8a7050', bgLow: '#a88a62',
+    floor: '#d6b483', body: '#7a6244', bodyDark: '#4e3d28',
+    arm: '#e2c79c', bob: '#d6b483', glow: '#e8cfa0', note: '#dcc7a4',
+  };
   return (
-    <Q6RhythmStage state={state} isConfirming={isConfirming}>
-      <motion.path
-        d="M0 246 C46 212 84 254 128 228 C170 202 214 256 258 222 C302 190 338 250 400 218 L400 400 L0 400 Z"
-        fill="#bfdbfe"
-        opacity="0.34"
-        animate={{ y: isConfirming ? 0 : [0, -12, 8, 0] }}
-        transition={{ duration: 5.4, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
-      />
-      <motion.path
-        d="M0 288 C54 268 86 294 132 278 C178 262 208 292 254 272 C304 250 340 284 400 260 L400 400 L0 400 Z"
-        fill="#ddd6fe"
-        opacity="0.26"
-        animate={{ y: isConfirming ? 0 : [10, -8, 12, 10], x: isConfirming ? 0 : [0, -18, 12, 0] }}
-        transition={{ duration: 4.2, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
-      />
-
-      {waves.map((wave, index) => (
-        <motion.path
-          key={wave.y}
-          d={`M38 ${wave.y} C86 ${wave.y + wave.amp}, 126 ${wave.y - wave.amp}, 172 ${wave.y + wave.amp * 0.6} S262 ${wave.y - wave.amp * 0.8}, 342 ${wave.y + wave.amp * 0.5}`}
-          fill="none"
-          stroke={wave.color}
-          strokeWidth={index === 0 ? 3 : 1.7}
-          strokeLinecap="round"
-          filter={`url(#${q6SoftFilterId(state.id)})`}
-          animate={{
-            x: isConfirming ? 0 : [0, index % 2 === 0 ? 28 : -18, 0],
-            y: isConfirming ? 0 : [0, index === 1 ? -15 : 10, 0],
-            opacity: isConfirming ? wave.opacity : [wave.opacity * 0.55, wave.opacity, wave.opacity * 0.55],
-          }}
-          transition={{ duration: wave.duration, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut', delay: index * 0.32 }}
-        />
-      ))}
-
-      {[112, 186, 274].map((cx, index) => (
-        <motion.circle
-          key={cx}
-          cx={cx}
-          cy={index === 1 ? 238 : 258}
-          r={index === 1 ? 4.5 : 3.5}
-          fill="rgba(255,255,255,0.74)"
-          animate={{
-            y: isConfirming ? 0 : [0, index === 0 ? -24 : 18, index === 2 ? -14 : 8, 0],
-            opacity: [0.18, 0.58, 0.25, 0.18],
-          }}
-          transition={{ duration: 4.6 + index * 0.7, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut', delay: index * 0.35 }}
-        />
-      ))}
-    </Q6RhythmStage>
+    <MetronomeScene
+      isConfirming={isConfirming}
+      config={{
+        theme,
+        swing: { values: [-8, 8, -8], dur: 5.6 },
+        beatDur: 2.8,
+        arcAngle: 8,
+        noteDur: 7,
+        bobDim: true,
+      }}
+    />
   );
 }
 
-function Q6Steady({ isConfirming }: { isConfirming: boolean }) {
-  const state = q6RhythmStates.C;
+/* ── D 努力自律中 — crisp metronome beat: dwell at each side, snap     */
+/*    through the middle, tick flash on arrival, mint                   */
+function Q6MeterMetro({ isConfirming }: { isConfirming: boolean }) {
+  const theme: MetroTheme = {
+    id: 'meter',
+    bgTop: '#173a30', bgMid: '#1f5444', bgLow: '#2a6e58',
+    floor: '#34d399', body: '#2c5e4c', bodyDark: '#1a3d30',
+    arm: '#a7f3d0', bob: '#34d399', glow: '#6ee7b7', note: '#a7f3d0',
+  };
   return (
-    <Q6RhythmStage state={state} isConfirming={isConfirming}>
-      <path
-        d="M0 244 C64 230 114 248 184 236 C256 224 314 242 400 228 L400 400 L0 400 Z"
-        fill="#dbeafe"
-        opacity="0.3"
-      />
-      <path
-        d="M0 286 C72 276 134 286 202 278 C274 268 330 280 400 270 L400 400 L0 400 Z"
-        fill="#e7e5e4"
-        opacity="0.24"
-      />
-      {[222, 252, 282].map((y, index) => (
-        <motion.path
-          key={y}
-          d={`M52 ${y} C110 ${y + 4}, 148 ${y - 4}, 204 ${y + 2} S292 ${y - 3}, 348 ${y + 3}`}
-          fill="none"
-          stroke={index === 1 ? state.accent : 'rgba(255,255,255,0.66)'}
-          strokeWidth={index === 1 ? 2 : 1.2}
-          strokeLinecap="round"
-          animate={{ y: isConfirming ? 0 : [0, index === 1 ? 2 : 1, 0], opacity: [0.28, 0.46, 0.28] }}
-          transition={{ duration: 7.5 + index, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
-        />
-      ))}
-      <motion.g
-        animate={{ y: isConfirming ? 0 : [0, -3, 2, 0], rotate: isConfirming ? 0 : [0, -1.5, 1, 0] }}
-        transition={{ duration: 6.6, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
-        style={{ transformOrigin: '200px 214px' }}
-      >
-        <line x1="200" y1="168" x2="200" y2="244" stroke="rgba(120,113,108,0.32)" strokeWidth="1.4" strokeLinecap="round" />
-        <path d="M184 186 L200 156 L216 186 Z" fill="#fef3c7" stroke="rgba(255,255,255,0.78)" strokeWidth="1" />
-        <path d="M184 186 C192 196 208 196 216 186 L210 228 C205 235 195 235 190 228 Z" fill="#93c5fd" opacity="0.58" />
-        <circle cx="200" cy="186" r="5" fill="#ffffff" opacity="0.82" />
-      </motion.g>
-      <motion.path
-        d="M104 128 C138 108 168 118 200 104 C234 90 268 108 304 92"
-        fill="none"
-        stroke="rgba(255,255,255,0.54)"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-        animate={{ opacity: [0.18, 0.38, 0.18] }}
-        transition={{ duration: 8, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
-      />
-    </Q6RhythmStage>
+    <MetronomeScene
+      isConfirming={isConfirming}
+      config={{
+        theme,
+        swing: { values: [-20, 20, -20], dur: 1.2, ease: [0.8, 0, 0.2, 1] },
+        beatDur: 0.6,
+        arcAngle: 20,
+        noteDur: 3,
+        tickFlash: true,
+      }}
+    />
   );
 }
 
-function Q6Disciplined({ isConfirming }: { isConfirming: boolean }) {
-  const state = q6RhythmStates.D;
-  const steps = [
-    { x: 96, y: 262, w: 74 },
-    { x: 128, y: 230, w: 74 },
-    { x: 160, y: 198, w: 74 },
-    { x: 192, y: 166, w: 74 },
-    { x: 224, y: 134, w: 74 },
-  ];
-
+/* ── Idle — a resting metronome before any choice ── */
+function Q6IdleMetro({ isConfirming }: { isConfirming: boolean }) {
+  const theme: MetroTheme = {
+    id: 'idle',
+    bgTop: '#3a3640', bgMid: '#4c4654', bgLow: '#5e5768',
+    floor: '#c9b8a3', body: '#564f5e', bodyDark: '#373340',
+    arm: '#d6cfc4', bob: '#c9b8a3', glow: '#d8d2e6', note: '#d6cfc4',
+  };
   return (
-    <Q6RhythmStage state={state} isConfirming={isConfirming}>
-      <motion.path
-        d="M90 282 C140 236 176 208 210 174 C246 138 280 120 326 94"
-        fill="none"
-        stroke={state.secondary}
-        strokeWidth="5"
-        strokeLinecap="round"
-        filter={`url(#${q6SoftFilterId(state.id)})`}
-        animate={{ pathLength: isConfirming ? 1 : [0.18, 0.88, 0.18], opacity: [0.16, 0.52, 0.16] }}
-        transition={{ duration: 4.8, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
-      />
-      {steps.map((step, index) => (
-        <motion.g
-          key={`${step.x}-${step.y}`}
-          animate={{ y: isConfirming ? 0 : [0, -2, 0], opacity: isConfirming ? 0.78 : [0.5, 0.84, 0.5] }}
-          transition={{ duration: 4.8, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut', delay: index * 0.22 }}
-        >
-          <path
-            d={`M${step.x} ${step.y} L${step.x + step.w} ${step.y - 20} L${step.x + step.w + 24} ${step.y - 8} L${step.x + 24} ${step.y + 14} Z`}
-            fill={index % 2 === 0 ? 'rgba(255,255,255,0.48)' : 'rgba(167,243,208,0.24)'}
-            stroke="rgba(255,255,255,0.72)"
-            strokeWidth="1"
-          />
-          <path
-            d={`M${step.x + 24} ${step.y + 14} L${step.x + step.w + 24} ${step.y - 8} L${step.x + step.w + 24} ${step.y + 8} L${step.x + 24} ${step.y + 30} Z`}
-            fill="rgba(20,184,166,0.08)"
-          />
-        </motion.g>
-      ))}
-      <motion.g
-        style={{ transformOrigin: '200px 200px' }}
-        animate={{
-          x: isConfirming ? 20 : [-78, -42, -6, 30, 66, 92],
-          y: isConfirming ? -24 : [62, 30, -2, -34, -66, -88],
-          opacity: isConfirming ? 0.86 : [0, 0.8, 0.88, 0.8, 0.72, 0],
-        }}
-        transition={{ duration: 4.2, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut' }}
-      >
-        <circle cx="200" cy="206" r="5.8" fill="#ffffff" />
-        <path d="M200 213 L200 231" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
-        <path d="M200 222 L188 234" stroke="rgba(255,255,255,0.86)" strokeWidth="3" strokeLinecap="round" />
-        <path d="M200 222 L214 232" stroke="rgba(255,255,255,0.86)" strokeWidth="3" strokeLinecap="round" />
-        <path d="M200 231 L190 250" stroke="rgba(20,184,166,0.72)" strokeWidth="3" strokeLinecap="round" />
-        <path d="M200 231 L214 248" stroke="rgba(20,184,166,0.72)" strokeWidth="3" strokeLinecap="round" />
-      </motion.g>
-      {[0, 1, 2].map((index) => (
-        <motion.circle
-          key={index}
-          cx={118 + index * 68}
-          cy={282 - index * 48}
-          r={3 + index}
-          fill={index === 2 ? state.secondary : state.accent}
-          filter={`url(#${q6SoftFilterId(state.id)})`}
-          animate={{ opacity: [0.12, 0.62, 0.12], scale: [0.8, 1.25, 0.8] }}
-          transition={{ duration: 3.4, repeat: isConfirming ? 0 : Infinity, ease: 'easeInOut', delay: index * 0.6 }}
-        />
-      ))}
-    </Q6RhythmStage>
+    <MetronomeScene
+      isConfirming={isConfirming}
+      config={{
+        theme,
+        swing: { values: [-8, 8, -8], dur: 3.4 },
+        beatDur: 1.7,
+        arcAngle: 8,
+        noteDur: 6,
+      }}
+    />
   );
 }
-
 
 export default function ElementStageMotif({
   questionId,
@@ -1054,10 +1177,10 @@ export default function ElementStageMotif({
             {questionId === 'q4' && previewId === 'C' && <Q4Time isConfirming={isConfirming} />}
             {questionId === 'q4' && previewId === 'D' && <Q4Energy isConfirming={isConfirming} />}
 
-            {questionId === 'q6' && previewId === 'A' && <Q6HighSpeed isConfirming={isConfirming} />}
-            {questionId === 'q6' && previewId === 'B' && <Q6Irregular isConfirming={isConfirming} />}
-            {questionId === 'q6' && previewId === 'C' && <Q6Steady isConfirming={isConfirming} />}
-            {questionId === 'q6' && previewId === 'D' && <Q6Disciplined isConfirming={isConfirming} />}
+            {questionId === 'q6' && previewId === 'A' && <Q6RushMetro isConfirming={isConfirming} />}
+            {questionId === 'q6' && previewId === 'B' && <Q6DriftMetro isConfirming={isConfirming} />}
+            {questionId === 'q6' && previewId === 'C' && <Q6WearyMetro isConfirming={isConfirming} />}
+            {questionId === 'q6' && previewId === 'D' && <Q6MeterMetro isConfirming={isConfirming} />}
           </motion.div>
         )}
       </AnimatePresence>
@@ -1070,7 +1193,7 @@ export default function ElementStageMotif({
           exit={{ opacity: 0 }}
         >
           {questionId === 'q6' ? (
-            <Q6Idle isConfirming={isConfirming} />
+            <Q6IdleMetro isConfirming={isConfirming} />
           ) : (
             /* Neutral idle texture */
             <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full">
