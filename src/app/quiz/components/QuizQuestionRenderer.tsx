@@ -1,10 +1,7 @@
 'use client';
 
-import { memo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
-import FullPageSceneQuestion from './interactions/FullPageSceneQuestion';
-import WeatherMapQuestion from './interactions/WeatherMapQuestion';
 import WeatherStageQuestion from './interactions/WeatherStageQuestion';
 import ElementStageQuestion from './interactions/ElementStageQuestion';
 import ImageStageQuestion from './interactions/ImageStageQuestion';
@@ -16,7 +13,7 @@ import MirrorFocusQuestion from './interactions/MirrorFocusQuestion';
 import { useQuizStore } from '@/store/useQuizStore';
 import type { QuizQuestion } from './types';
 
-const QuizHeader = memo(({
+const QuizHeader = ({
   currentNum,
   totalNum,
   questionId,
@@ -30,12 +27,12 @@ const QuizHeader = memo(({
   onBack: () => void;
 }) => (
   <div className="pointer-events-none fixed left-0 right-0 top-0 z-40 flex flex-col items-center px-6 pb-2 pt-[85px]">
-    
+
     {/* Top Row: Back Button & Progress Bar (Full width) */}
     <div className="relative flex w-full items-center mb-4">
-      <button 
-        onClick={onBack} 
-        className="pointer-events-auto absolute left-[-16px] p-2 text-stone-500 transition-colors hover:text-stone-800" 
+      <button
+        onClick={onBack}
+        className="pointer-events-auto absolute left-[-16px] p-2 text-stone-500 transition-colors hover:text-stone-800"
         aria-label="Back"
       >
         <ArrowLeft className="h-5 w-5" strokeWidth={1.5} />
@@ -69,8 +66,7 @@ const QuizHeader = memo(({
     </div>
 
   </div>
-));
-QuizHeader.displayName = 'QuizHeader';
+);
 
 interface QuizQuestionRendererProps {
   question: QuizQuestion;
@@ -88,10 +84,10 @@ export default function QuizQuestionRenderer({
   onBack,
 }: QuizQuestionRendererProps) {
   const language = useQuizStore((state) => state.language);
-  const interactionType = question.interaction?.type ?? 'fullPageScene';
-  
-  const localizedQuestionText = language === 'en' && question.questionTextEn 
-    ? question.questionTextEn 
+  const interactionType = question.interaction?.type;
+
+  const localizedQuestionText = language === 'en' && question.questionTextEn
+    ? question.questionTextEn
     : question.questionText;
 
   const interactionProps = {
@@ -136,10 +132,8 @@ export default function QuizQuestionRenderer({
             <EmotionStageQuestion {...interactionProps} />
           ) : interactionType === 'ritualStage' ? (
             <RitualStageQuestion {...interactionProps} />
-          ) : interactionType === 'weatherMap' ? (
-            <WeatherMapQuestion {...interactionProps} />
           ) : (
-            <FullPageSceneQuestion {...interactionProps} />
+            null
           )}
         </motion.div>
       </AnimatePresence>
