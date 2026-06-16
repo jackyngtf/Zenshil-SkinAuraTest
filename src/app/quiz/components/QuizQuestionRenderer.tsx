@@ -1,17 +1,27 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
-import WeatherStageQuestion from './interactions/WeatherStageQuestion';
-import ElementStageQuestion from './interactions/ElementStageQuestion';
 import ImageStageQuestion from './interactions/ImageStageQuestion';
-import EmotionStageQuestion from './interactions/EmotionStageQuestion';
-import RitualStageQuestion from './interactions/RitualStageQuestion';
-import AuraFieldQuestion from './interactions/AuraFieldQuestion';
-import ResourceMeterQuestion from './interactions/ResourceMeterQuestion';
-import MirrorFocusQuestion from './interactions/MirrorFocusQuestion';
 import { useQuizStore } from '@/store/useQuizStore';
 import type { QuizQuestion } from './types';
+
+// Q1 (imageStage) loads eagerly; the rest are lazy chunks so heavy motifs
+// (ElementStage Q6, AuraField Q9, Ritual Q10) only load when reached.
+const questionLoading = () => (
+  <div className="flex h-full w-full items-center justify-center">
+    <div className="h-8 w-8 animate-pulse rounded-full bg-stone-300/50" />
+  </div>
+);
+
+const AuraFieldQuestion = dynamic(() => import('./interactions/AuraFieldQuestion'), { ssr: false, loading: questionLoading });
+const ResourceMeterQuestion = dynamic(() => import('./interactions/ResourceMeterQuestion'), { ssr: false, loading: questionLoading });
+const MirrorFocusQuestion = dynamic(() => import('./interactions/MirrorFocusQuestion'), { ssr: false, loading: questionLoading });
+const ElementStageQuestion = dynamic(() => import('./interactions/ElementStageQuestion'), { ssr: false, loading: questionLoading });
+const WeatherStageQuestion = dynamic(() => import('./interactions/WeatherStageQuestion'), { ssr: false, loading: questionLoading });
+const EmotionStageQuestion = dynamic(() => import('./interactions/EmotionStageQuestion'), { ssr: false, loading: questionLoading });
+const RitualStageQuestion = dynamic(() => import('./interactions/RitualStageQuestion'), { ssr: false, loading: questionLoading });
 
 const QuizHeader = ({
   currentNum,
