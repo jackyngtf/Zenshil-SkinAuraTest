@@ -579,7 +579,11 @@ export default function ResourceMeterVisual({
               transition={{ duration: 6.8, repeat: Infinity, ease: 'easeInOut' }}
             />
             {optionId === 'B' ? (
-              <RelaxScene isConfirming={isConfirming} />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="skin-aura-orb-clip relative h-[min(80vw,300px)] w-[min(80vw,300px)]">
+                  <RelaxScene isConfirming={isConfirming} />
+                </div>
+              </div>
             ) : (
               <>
                 <BaseImageLayer state={state} optionId={optionId} reduceMotion={reduceMotion} />
