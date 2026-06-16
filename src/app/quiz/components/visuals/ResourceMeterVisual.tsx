@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { seededNumber } from './deterministicMotion';
+import RelaxScene from './q04/RelaxScene';
 
 export type ResourceMeterOptionId = 'A' | 'B' | 'C' | 'D';
 
@@ -34,10 +35,7 @@ const visualStates: Record<ResourceMeterOptionId | 'idle', ResourceVisualState> 
     accentSoft: '#eef0ff',
   },
   B: {
-    image: '/assets/quiz/q04/b-relax-base.png',
-    imageFit: 'cover',
-    imagePosition: 'center 50%',
-    imageMask: 'radial-gradient(ellipse 52% 56% at center, #000 0%, #000 46%, rgba(0,0,0,0.48) 64%, transparent 86%)',
+    // B「放鬆」is a full SVG spa-candle scene (RelaxScene) — no base photo.
     aura: '#e9aab7',
     auraSoft: '#f7d8d7',
     accent: '#bd7084',
@@ -273,106 +271,6 @@ function SleepOverlay({
           transition={{ duration: d.dur, repeat: Infinity, ease: 'linear', delay: d.delay }}
         />
       ))}
-    </svg>
-  );
-}
-
-function RelaxOverlay({
-  state,
-  reduceMotion,
-}: {
-  state: ResourceVisualState;
-  reduceMotion: boolean;
-}) {
-  const cx = 200;
-  const cy = 160;
-
-  // Soft drifting bokeh particles
-  const bokeh = [
-    { x: 120, y: 200, r: 24, dur: 12, delay: 0 },
-    { x: 280, y: 220, r: 32, dur: 15, delay: 2 },
-    { x: 160, y: 140, r: 18, dur: 10, delay: 5 },
-    { x: 240, y: 120, r: 28, dur: 14, delay: 1 },
-    { x: 200, y: 260, r: 40, dur: 18, delay: 4 },
-  ];
-
-  return (
-    <svg viewBox="0 0 400 320" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <radialGradient id="relax-core-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.8" />
-          <stop offset="30%" stopColor={state.auraSoft} stopOpacity="0.6" />
-          <stop offset="70%" stopColor={state.aura} stopOpacity="0.1" />
-          <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-        </radialGradient>
-        
-        <radialGradient id="relax-bokeh" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.4" />
-          <stop offset="50%" stopColor={state.auraSoft} stopOpacity="0.1" />
-          <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-        </radialGradient>
-
-        <filter id="relax-blur-heavy" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="8" />
-        </filter>
-        
-        <filter id="relax-blur-light" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="2" />
-        </filter>
-      </defs>
-
-      {/* Background drifting bokeh to create depth */}
-      {bokeh.map((b, i) => (
-        <motion.circle
-          key={`bokeh-${i}`}
-          cx={b.x}
-          cy={b.y}
-          r={b.r}
-          fill="url(#relax-bokeh)"
-          filter="url(#relax-blur-heavy)"
-          animate={reduceMotion ? undefined : { 
-            y: [0, -40, 0], 
-            x: [0, i % 2 === 0 ? 15 : -15, 0],
-            opacity: [0.1, 0.5, 0.1],
-            scale: [0.8, 1.2, 0.8]
-          }}
-          transition={{ duration: b.dur, repeat: Infinity, ease: 'easeInOut', delay: b.delay }}
-        />
-      ))}
-
-      {/* Central Breathing Core */}
-      <motion.circle
-        cx={cx} cy={cy} r="120"
-        fill="url(#relax-core-glow)"
-        animate={reduceMotion ? undefined : { scale: [0.85, 1.15, 0.85], opacity: [0.4, 0.8, 0.4] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ transformOrigin: 'center' }}
-      />
-
-      {/* Breathing Echo Rings (Ripples) - Inhale/Exhale rhythm */}
-      <motion.circle
-        cx={cx} cy={cy} r="90"
-        fill="none"
-        stroke="#ffffff"
-        strokeWidth="1.5"
-        filter="url(#relax-blur-light)"
-        animate={reduceMotion ? undefined : { scale: [0.5, 1.8], opacity: [0.7, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeOut', delay: 0 }}
-        style={{ transformOrigin: 'center' }}
-      />
-      
-      <motion.circle
-        cx={cx} cy={cy} r="90"
-        fill="none"
-        stroke={state.auraSoft}
-        strokeWidth="1"
-        animate={reduceMotion ? undefined : { scale: [0.5, 1.8], opacity: [0.5, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeOut', delay: 3 }}
-        style={{ transformOrigin: 'center' }}
-      />
-      
-      {/* Central anchor point (very subtle) */}
-      <circle cx={cx} cy={cy} r="2" fill="#ffffff" opacity="0.4" filter="url(#relax-blur-light)" />
     </svg>
   );
 }
@@ -636,7 +534,6 @@ function VisualOverlay({
   reduceMotion: boolean;
 }) {
   if (optionId === 'A') return <SleepOverlay state={state} reduceMotion={reduceMotion} />;
-  if (optionId === 'B') return <RelaxOverlay state={state} reduceMotion={reduceMotion} />;
   if (optionId === 'C') return <TimeOverlay state={state} reduceMotion={reduceMotion} />;
   if (optionId === 'D') return <EnergyOverlay reduceMotion={reduceMotion} />;
   return null;
@@ -681,15 +578,21 @@ export default function ResourceMeterVisual({
               animate={reduceMotion ? undefined : { scale: [0.98, 1.035, 0.98], opacity: [0.38, 0.62, 0.38] }}
               transition={{ duration: 6.8, repeat: Infinity, ease: 'easeInOut' }}
             />
-            <BaseImageLayer state={state} optionId={optionId} reduceMotion={reduceMotion} />
-            <motion.div
-              className="absolute inset-0"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, ease: 'easeOut', delay: 0.08 }}
-            >
-              <VisualOverlay optionId={optionId} state={state} reduceMotion={reduceMotion} />
-            </motion.div>
+            {optionId === 'B' ? (
+              <RelaxScene isConfirming={isConfirming} />
+            ) : (
+              <>
+                <BaseImageLayer state={state} optionId={optionId} reduceMotion={reduceMotion} />
+                <motion.div
+                  className="absolute inset-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, ease: 'easeOut', delay: 0.08 }}
+                >
+                  <VisualOverlay optionId={optionId} state={state} reduceMotion={reduceMotion} />
+                </motion.div>
+              </>
+            )}
           </div>
         </motion.div>
       </AnimatePresence>

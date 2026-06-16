@@ -78,37 +78,37 @@ type AuraTheme = {
 };
 
 const auraThemes: Record<string, AuraTheme> = {
-  late_night: { // Q8 A (Sleep/Eclipse)
-    bgGradient: 'from-slate-900/40 via-blue-900/30 to-indigo-900/40',
-    auraTint: 'rgba(30, 58, 138, 0.45)',
-    auraSecondary: 'rgba(15, 23, 42, 0.3)',
-    buttonBorder: 'border-slate-400/60',
-    buttonActiveBg: 'bg-slate-200/50',
-    rippleColor: 'rgba(148,163,184,0.8)',
+  late_night: { // Q8 A 捱夜 — soft dusty blue-violet
+    bgGradient: 'from-indigo-50/55 via-violet-50/40 to-slate-50/30',
+    auraTint: 'rgba(154, 151, 189, 0.4)',
+    auraSecondary: 'rgba(188, 184, 216, 0.28)',
+    buttonBorder: 'border-violet-300/50',
+    buttonActiveBg: 'bg-violet-100/40',
+    rippleColor: 'rgba(188,184,216,0.72)',
   },
-  stress: { // Q8 B (Emotions/Ink)
-    bgGradient: 'from-fuchsia-50/60 via-purple-50/40 to-pink-50/30',
-    auraTint: 'rgba(192, 132, 252, 0.45)',
-    auraSecondary: 'rgba(216, 180, 254, 0.3)',
-    buttonBorder: 'border-fuchsia-300/60',
-    buttonActiveBg: 'bg-fuchsia-100/70',
-    rippleColor: 'rgba(240,171,252,0.8)',
+  stress: { // Q8 B 情緒 — mauve / blush
+    bgGradient: 'from-pink-50/55 via-fuchsia-50/35 to-rose-50/30',
+    auraTint: 'rgba(215, 166, 195, 0.4)',
+    auraSecondary: 'rgba(238, 203, 216, 0.3)',
+    buttonBorder: 'border-pink-300/50',
+    buttonActiveBg: 'bg-pink-100/45',
+    rippleColor: 'rgba(238,203,216,0.75)',
   },
-  burnout: { // Q8 C (Stress/Ice crack)
-    bgGradient: 'from-cyan-50/60 via-sky-50/40 to-blue-50/30',
-    auraTint: 'rgba(56, 189, 248, 0.45)',
-    auraSecondary: 'rgba(125, 211, 252, 0.3)',
-    buttonBorder: 'border-sky-300/60',
-    buttonActiveBg: 'bg-sky-100/70',
-    rippleColor: 'rgba(125,211,252,0.8)',
+  burnout: { // Q8 C 壓力 — cool grey-purple / blue-grey / beige
+    bgGradient: 'from-slate-100/55 via-violet-50/35 to-stone-100/30',
+    auraTint: 'rgba(167, 164, 189, 0.42)',
+    auraSecondary: 'rgba(189, 183, 196, 0.3)',
+    buttonBorder: 'border-slate-300/55',
+    buttonActiveBg: 'bg-slate-100/50',
+    rippleColor: 'rgba(189,183,196,0.7)',
   },
-  recovery: { // Q8 D (Diet/Pigment)
-    bgGradient: 'from-orange-50/60 via-amber-50/40 to-yellow-50/30',
-    auraTint: 'rgba(251, 146, 60, 0.45)',
-    auraSecondary: 'rgba(252, 211, 77, 0.3)',
-    buttonBorder: 'border-orange-300/60',
-    buttonActiveBg: 'bg-orange-100/70',
-    rippleColor: 'rgba(253,186,116,0.8)',
+  recovery: { // Q8 D 飲食 — warm amber / peach
+    bgGradient: 'from-amber-50/55 via-orange-50/35 to-rose-50/25',
+    auraTint: 'rgba(233, 180, 134, 0.42)',
+    auraSecondary: 'rgba(243, 209, 168, 0.3)',
+    buttonBorder: 'border-amber-300/55',
+    buttonActiveBg: 'bg-amber-100/50',
+    rippleColor: 'rgba(243,209,168,0.75)',
   },
 };
 

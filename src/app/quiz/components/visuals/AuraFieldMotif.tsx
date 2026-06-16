@@ -2,6 +2,8 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { seededNumber } from './deterministicMotion';
+import Q9FirmScene from './q9/Q9FirmScene';
+import Q9StableScene from './q9/Q9StableScene';
 
 interface AuraFieldMotifProps {
   questionId: string;
@@ -203,157 +205,6 @@ function Q9Vitality({ isConfirming }: { isConfirming: boolean }) {
   );
 }
 
-function Q9Firm({ isConfirming }: { isConfirming: boolean }) {
-  // Flawless perfect spherical pearl
-  return (
-    <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <radialGradient id="q9-pearl" cx="30%" cy="30%" r="70%">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="50%" stopColor="#e2e8f0" />
-          <stop offset="100%" stopColor="#94a3b8" />
-        </radialGradient>
-        <filter id="q9-pearl-glow"><feGaussianBlur stdDeviation="12" /></filter>
-      </defs>
-      <rect width="400" height="400" fill="#f8fafc" />
-      
-      <motion.circle
-        cx="200" cy="200" r="110"
-        fill="url(#q9-pearl)"
-        animate={{
-          scale: isConfirming ? 1.5 : [1, 1.02, 1],
-          opacity: isConfirming ? 0 : 1
-        }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-      />
-      {/* Pearlescent iridescent reflection */}
-      <motion.ellipse
-        cx="160" cy="140" rx="40" ry="20"
-        fill="#fdf4ff" opacity="0.6" transform="rotate(-30 160 140)"
-        filter="url(#q9-pearl-glow)"
-        animate={{ opacity: isConfirming ? 0 : [0.4, 0.8, 0.4] }}
-        transition={{ duration: 3, repeat: Infinity }}
-      />
-    </svg>
-  );
-}
-
-function Q9Stable({ isConfirming }: { isConfirming: boolean }) {
-  // Stable comfort as a calm mint-pearl aura cushion.
-  return (
-    <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <radialGradient id="q9-stable-bg" cx="48%" cy="42%" r="62%">
-          <stop offset="0%" stopColor="#f8fffd" stopOpacity="0.96" />
-          <stop offset="40%" stopColor="#ccfbf1" stopOpacity="0.84" />
-          <stop offset="74%" stopColor="#5eead4" stopOpacity="0.48" />
-          <stop offset="100%" stopColor="#0f766e" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id="q9-stable-core" cx="42%" cy="34%" r="72%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.98" />
-          <stop offset="48%" stopColor="#99f6e4" stopOpacity="0.62" />
-          <stop offset="100%" stopColor="#14b8a6" stopOpacity="0.28" />
-        </radialGradient>
-        <linearGradient id="q9-stable-silk" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="44%" stopColor="#ffffff" stopOpacity="0.72" />
-          <stop offset="72%" stopColor="#5eead4" stopOpacity="0.32" />
-          <stop offset="100%" stopColor="#14b8a6" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <rect width="400" height="400" fill="#ecfdf5" />
-      <motion.circle
-        cx="200"
-        cy="200"
-        r="184"
-        fill="url(#q9-stable-bg)"
-        animate={{
-          opacity: isConfirming ? 0 : [0.82, 0.98, 0.82],
-          scale: isConfirming ? 1.08 : [1, 1.025, 1],
-        }}
-        transition={{ duration: 7.2, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.circle
-        cx="200"
-        cy="200"
-        r="118"
-        fill="url(#q9-stable-core)"
-        stroke="#ffffff"
-        strokeOpacity="0.64"
-        strokeWidth="1.4"
-        animate={{
-          opacity: isConfirming ? 0 : [0.76, 0.94, 0.76],
-          scale: isConfirming ? 1.12 : [1, 1.018, 1],
-        }}
-        transition={{ duration: 6.4, repeat: Infinity, ease: "easeInOut" }}
-      />
-      {[0, 1, 2].map((ribbon) => (
-        <motion.path
-          key={ribbon}
-          d={
-            ribbon === 0
-              ? 'M82 184 C126 164 166 176 204 190 C244 205 282 196 322 174'
-              : ribbon === 1
-              ? 'M76 218 C122 232 154 214 198 210 C242 206 278 226 326 212'
-              : 'M102 250 C142 238 164 252 202 250 C242 248 266 238 302 244'
-          }
-          fill="none"
-          stroke="url(#q9-stable-silk)"
-          strokeWidth={ribbon === 1 ? 11 : 7}
-          strokeLinecap="round"
-          animate={{
-            opacity: isConfirming ? 0 : [0.3, 0.58, 0.3],
-            x: [0, ribbon === 1 ? 5 : -4, 0],
-            y: [0, ribbon === 2 ? -3 : 3, 0],
-          }}
-          transition={{
-            duration: 7 + ribbon * 0.8,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: ribbon * 0.35,
-          }}
-        />
-      ))}
-      <motion.ellipse
-        cx="200"
-        cy="226"
-        rx="112"
-        ry="28"
-        fill="#2dd4bf"
-        opacity="0.18"
-        animate={{
-          opacity: isConfirming ? 0 : [0.14, 0.3, 0.14],
-          scaleX: [1, 1.06, 1],
-        }}
-        transition={{ duration: 8.4, repeat: Infinity, ease: "easeInOut" }}
-      />
-      {[0, 1, 2, 3, 4].map((dot) => (
-        <motion.circle
-          key={dot}
-          cx="200"
-          cy="200"
-          r={dot % 2 ? 2.2 : 1.6}
-          fill="#ecfdf5"
-          opacity="0.52"
-          style={{ transformOrigin: '200px 200px' }}
-          animate={{
-            opacity: isConfirming ? 0 : [0.18, 0.5, 0.18],
-            rotate: [dot * 72, dot * 72 + 14, dot * 72],
-            x: [0, 74 + dot * 5, 0],
-            y: [0, -26 + dot * 9, 0],
-          }}
-          transition={{
-            duration: 8.5 + dot * 0.4,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: dot * 0.24,
-          }}
-        />
-      ))}
-    </svg>
-  );
-}
-
 function Q9Radiant({ isConfirming }: { isConfirming: boolean }) {
   // Warm golden sunburst with flares
   return (
@@ -425,8 +276,8 @@ export default function AuraFieldMotif({
             {questionId === 'q5' && previewId === 'D' && <Q5Puffiness isConfirming={isConfirming} />}
 
             {questionId === 'q9' && previewId === 'A' && <Q9Vitality isConfirming={isConfirming} />}
-            {questionId === 'q9' && previewId === 'B' && <Q9Firm isConfirming={isConfirming} />}
-            {questionId === 'q9' && previewId === 'C' && <Q9Stable isConfirming={isConfirming} />}
+            {questionId === 'q9' && previewId === 'B' && <Q9FirmScene isConfirming={isConfirming} />}
+            {questionId === 'q9' && previewId === 'C' && <Q9StableScene isConfirming={isConfirming} />}
             {questionId === 'q9' && previewId === 'D' && <Q9Radiant isConfirming={isConfirming} />}
           </motion.div>
         )}
