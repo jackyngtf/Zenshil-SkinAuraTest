@@ -41,7 +41,7 @@ export default function SecondaryAuraCard({ aura, matchPercentage }: SecondaryAu
       className="w-full max-w-md mx-auto px-5 mb-5"
     >
       <div className="relative bg-[#fefdfb]/90 backdrop-blur-sm border border-stone-200/40 rounded-3xl p-7 text-center overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
-        <SoftAuraCloud className="mx-auto mb-5 size-20" palette={auraCloudPaletteFromOrb(orb)} />
+        <SoftAuraCloud className="mx-auto mb-4 size-16" palette={auraCloudPaletteFromOrb(orb)} />
 
         {/* Label */}
         <p className="text-[9px] font-sans text-stone-400 uppercase tracking-[0.25em] mb-3">
@@ -58,8 +58,9 @@ export default function SecondaryAuraCard({ aura, matchPercentage }: SecondaryAu
           {displayName}
         </h3>
 
-        {/* Quote */}
-        <p className="mx-auto max-w-xs text-[13px] leading-relaxed text-stone-500 text-pretty">
+        {/* Quote — no max-width constraint so it fills the card's inner width
+            (the card's p-7 padding already provides breathing room). */}
+        <p className="text-[14px] leading-relaxed text-stone-500 text-pretty">
           {language === 'en'
             ? `This is not your main type; it simply shows a supporting signal of ${signal}.`
             : `呢個唔係你嘅主導類型，只係代表你同時帶有「${signal}」呢個補充訊號。`}

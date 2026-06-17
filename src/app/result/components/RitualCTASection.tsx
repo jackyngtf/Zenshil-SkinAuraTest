@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { useQuizStore } from '@/store/useQuizStore';
 import { auraOrbColors } from './resultData';
-import { WHATSAPP_BOOKING_URL } from './resultLinks';
+import { getBookingUrl } from './resultLinks';
 
 interface RitualCTASectionProps {
   auraId: string;
@@ -12,6 +12,7 @@ interface RitualCTASectionProps {
 export default function RitualCTASection({ auraId }: RitualCTASectionProps) {
   const language = useQuizStore((state) => state.language);
   const orb = auraOrbColors[auraId] ?? { inner: '#c4b5fd', mid: '#f9a8d4', outer: '#93c5fd' };
+  const bookingUrl = getBookingUrl(auraId, language);
 
   return (
     <motion.section
@@ -73,7 +74,7 @@ export default function RitualCTASection({ auraId }: RitualCTASectionProps) {
 
           {/* CTA Link */}
           <a
-            href={WHATSAPP_BOOKING_URL}
+            href={bookingUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={language === 'en' ? 'Book your Zenshil skin ritual on WhatsApp' : '透過 WhatsApp 預約 Zenshil 肌膚諮詢'}

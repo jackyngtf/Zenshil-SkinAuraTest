@@ -1,9 +1,28 @@
 'use client';
 
+import { useEffect, useSyncExternalStore } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import SoftAuraCloud from '@/components/SoftAuraCloud';
 import { useQuizStore } from '@/store/useQuizStore';
+
+function useHasHydrated() {
+  // Zustand hydrates synchronously on the client at store init; on the server
+  // there is no localStorage so it reports not-yet-hydrated. useSyncExternalStore
+  // gives us a mismatch-free way to read that without setState-in-effect.
+  return useSyncExternalStore(
+    () => () => {},
+    () => useQuizStore.persist.hasHydrated(),
+    () => false,
+  );
+}
+
+function useHasCompleted() {
+  const hydrated = useHasHydrated();
+  const completedAt = useQuizStore((state) => state.completedAt);
+  return hydrated ? completedAt : null;
+}
 
 function LandingLightField() {
   return (
@@ -62,9 +81,26 @@ function LandingAuraLens() {
 }
 
 export default function LandingPage() {
+  const router = useRouter();
   const language = useQuizStore((state) => state.language);
   const isEnglish = language === 'en';
   const heroTitle = isEnglish ? 'Skin Aura Analysis' : '肌膚氣場分析';
+
+  const completedAt = useHasCompleted();
+
+  // Lock-to-result: once the user has finished the quiz, any visit to the home
+  // page bounces them to their result until they explicitly retake.
+  useEffect(() => {
+    if (completedAt !== null) {
+      router.replace('/result');
+    }
+  }, [completedAt, router]);
+
+  // Render nothing (ivory base) until we've checked — avoids a flash of the
+  // landing screen before the redirect fires.
+  if (completedAt !== null) {
+    return <main className="app-screen bg-[#f8f4ee]" aria-busy="true" />;
+  }
 
   return (
     <main className="app-screen relative overflow-hidden bg-[#f8f4ee] selection:bg-rose-200 touch-manipulation">

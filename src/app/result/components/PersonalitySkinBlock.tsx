@@ -8,6 +8,8 @@ interface PersonalitySkinBlockProps {
   description: string;
   auraId: string;
   needs: string[];
+  /** 'stacked' renders standalone (legacy); 'carousel' renders inside AuraCarousel. */
+  variant?: 'stacked' | 'carousel';
 }
 
 const needTranslations: Record<string, { zh: string; en: string }> = {
@@ -38,12 +40,17 @@ const needTranslations: Record<string, { zh: string; en: string }> = {
   'Barrier Support': { zh: '強韌屏障支持', en: 'Barrier Support' },
 };
 
-export default function PersonalitySkinBlock({ description, auraId, needs }: PersonalitySkinBlockProps) {
+export default function PersonalitySkinBlock({ description, auraId, needs, variant = 'stacked' }: PersonalitySkinBlockProps) {
   const language = useQuizStore((state) => state.language);
   const insights = insightPoints[auraId] ?? [];
   const allNeeds = needs.includes('Barrier Support')
     ? needs
     : [...needs, 'Barrier Support'];
+
+  const sectionClass =
+    variant === 'carousel'
+      ? 'mx-auto flex w-full flex-col'
+      : 'w-full max-w-md mx-auto px-5 mb-5';
 
   return (
     <motion.section
@@ -51,7 +58,7 @@ export default function PersonalitySkinBlock({ description, auraId, needs }: Per
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.7 }}
-      className="w-full max-w-md mx-auto px-5 mb-5"
+      className={sectionClass}
     >
       <div className="rounded-[30px] border border-white/60 bg-[#fefcf8]/64 p-7 shadow-sm backdrop-blur-sm">
         <div className="mb-5 flex items-center justify-between">

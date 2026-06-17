@@ -6,11 +6,13 @@ import { auraIdentityProfiles, auraOrbColors, getAuraFamily, getAuraIdentity, sk
 
 interface SkinAuraFamilySectionProps {
   auraId: string;
+  /** 'stacked' renders standalone (legacy); 'carousel' renders inside AuraCarousel. */
+  variant?: 'stacked' | 'carousel';
 }
 
 const familyOrder = ['recovery', 'pressure', 'radiance', 'rhythm'] as const;
 
-export default function SkinAuraFamilySection({ auraId }: SkinAuraFamilySectionProps) {
+export default function SkinAuraFamilySection({ auraId, variant = 'stacked' }: SkinAuraFamilySectionProps) {
   const language = useQuizStore((state) => state.language);
   const identity = getAuraIdentity(auraId);
   const family = getAuraFamily(auraId);
@@ -18,13 +20,18 @@ export default function SkinAuraFamilySection({ auraId }: SkinAuraFamilySectionP
 
   if (!identity || !family) return null;
 
+  const sectionClass =
+    variant === 'carousel'
+      ? 'mx-auto flex w-full flex-col'
+      : 'mx-auto mb-5 w-full max-w-md px-5';
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-48px' }}
       transition={{ duration: 0.65, ease: 'easeOut' }}
-      className="mx-auto mb-5 w-full max-w-md px-5"
+      className={sectionClass}
     >
       <div className="relative overflow-hidden rounded-[30px] border border-white/65 bg-white/58 p-6 shadow-sm backdrop-blur-sm">
         <div
@@ -100,6 +107,16 @@ export default function SkinAuraFamilySection({ auraId }: SkinAuraFamilySectionP
             );
           })}
         </div>
+
+        {/* Swipe hint — only in carousel mode, fills the trailing whitespace
+            left by the shorter slide so the empty space has intent. */}
+        {variant === 'carousel' && (
+          <p className="mt-auto pt-6 text-center text-[10px] font-light tracking-wide text-stone-400">
+            {language === 'en'
+              ? 'Swipe → to see your personality analysis'
+              : '向右掃睇你嘅個性分析 →'}
+          </p>
+        )}
       </div>
     </motion.section>
   );

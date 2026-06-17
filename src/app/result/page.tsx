@@ -9,6 +9,7 @@ import FeaturedAuraCard from './components/FeaturedAuraCard';
 import AuraCompositionSection from './components/AuraCompositionSection';
 import SkinAuraFamilySection from './components/SkinAuraFamilySection';
 import PersonalitySkinBlock from './components/PersonalitySkinBlock';
+import AuraCarousel from './components/AuraCarousel';
 import SecondaryAuraCard from './components/SecondaryAuraCard';
 import RitualCTASection from './components/RitualCTASection';
 import ResultActionRow from './components/ResultActionRow';
@@ -18,14 +19,17 @@ export default function ResultPage() {
   const router = useRouter();
   const { answers } = useQuizStore();
   const language = useQuizStore((state) => state.language);
-  const hasAnswers = Object.keys(answers).length > 0;
-  const result = hasAnswers ? calculateResult(answers) : null;
+  const completedAt = useQuizStore((state) => state.completedAt);
+  // The authoritative gate is completedAt (persisted). answers alone is too
+  // loose — a half-finished quiz would otherwise show an empty result.
+  const hasCompleted = completedAt !== null;
+  const result = hasCompleted ? calculateResult(answers) : null;
 
   useEffect(() => {
-    if (!hasAnswers) {
+    if (!hasCompleted) {
       router.replace('/');
     }
-  }, [hasAnswers, router]);
+  }, [hasCompleted, router]);
 
   if (!result) return null;
 
@@ -51,15 +55,16 @@ export default function ResultPage() {
           auraId={primaryAura.id}
         />
 
-        {/* Section 3 — Skin Aura Family Map */}
-        <SkinAuraFamilySection auraId={primaryAura.id} />
-
-        {/* Section 4 — Personality & Skin Block */}
-        <PersonalitySkinBlock
-          description={language === 'en' && primaryAura.descriptionEn ? primaryAura.descriptionEn : primaryAura.description}
-          auraId={primaryAura.id}
-          needs={primaryAura.skinNeeds}
-        />
+        {/* Section 3 & 4 — Skin Aura Family + Personality (horizontal carousel) */}
+        <AuraCarousel language={language}>
+          <SkinAuraFamilySection auraId={primaryAura.id} variant="carousel" />
+          <PersonalitySkinBlock
+            description={language === 'en' && primaryAura.descriptionEn ? primaryAura.descriptionEn : primaryAura.description}
+            auraId={primaryAura.id}
+            needs={primaryAura.skinNeeds}
+            variant="carousel"
+          />
+        </AuraCarousel>
 
         {/* Section 6 — Secondary Aura Block */}
         <SecondaryAuraCard

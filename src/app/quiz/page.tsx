@@ -15,6 +15,8 @@ const questions = questionsData as QuizQuestion[];
 export default function QuizQuestionScreen() {
   const router = useRouter();
   const { setAnswer } = useQuizStore();
+  const markCompleted = useQuizStore((state) => state.markCompleted);
+  const completedAt = useQuizStore((state) => state.completedAt);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -25,6 +27,14 @@ export default function QuizQuestionScreen() {
   const analysisSteps = language === 'en'
     ? ['Reading your skin rhythm...', 'Analysing your lifestyle pace...', 'Revealing your Skin Aura...']
     : ['正在讀取你的肌膚能量...', '分析生活節奏...', '生成專屬 Aura...'];
+
+  // Lock-to-result: a returning user who already finished shouldn't redo the
+  // quiz — send them back to their existing result.
+  useEffect(() => {
+    if (completedAt !== null) {
+      router.replace('/result');
+    }
+  }, [completedAt, router]);
 
   useEffect(() => {
     setCurrentQuestionInfo(currentIndex, questions.length);
@@ -55,6 +65,9 @@ export default function QuizQuestionScreen() {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((current) => current + 1);
     } else {
+      // Lock the result state BEFORE the analysis animation so a refresh
+      // during the animation still lands the user on their result.
+      markCompleted();
       setAnalysisStep(0);
       setIsAnalyzing(true);
     }
