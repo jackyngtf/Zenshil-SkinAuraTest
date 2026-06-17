@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { seededNumber } from './deterministicMotion';
 import RelaxScene from './q04/RelaxScene';
+import GymScene from './q04/GymScene';
 
 export type ResourceMeterOptionId = 'A' | 'B' | 'C' | 'D';
 
@@ -52,10 +53,7 @@ const visualStates: Record<ResourceMeterOptionId | 'idle', ResourceVisualState> 
     accentSoft: '#edfaff',
   },
   D: {
-    image: '/assets/quiz/q04/d-energy-base.png',
-    imageFit: 'contain',
-    imagePosition: 'center center',
-    imageMask: 'radial-gradient(ellipse 25% 64% at center, #000 0%, #000 54%, rgba(0,0,0,0.44) 72%, transparent 100%)',
+    // D「能量」is a full SVG gym-room scene (GymScene) — no base photo.
     aura: '#f2c75f',
     auraSoft: '#fff0bf',
     accent: '#c99432',
@@ -348,179 +346,6 @@ function TimeOverlay({
   );
 }
 
-function EnergyOverlay({
-  reduceMotion,
-}: {
-  reduceMotion: boolean;
-}) {
-  // Exact inner boundaries of the 3D glass capsule, extended down to sit on the base
-  const capsulePath = 'M176 64 C176 42 189 31 200 31 C211 31 224 42 224 64 L224 222 C224 254 213 270 200 270 C187 270 176 254 176 222 Z';
-
-  // Golden serum / dust particles rising through the fluid
-  const particles = Array.from({ length: 18 }).map((_, i) => ({
-    x: seededNumber(3000 + i, 180, 220), 
-    y: seededNumber(3100 + i, 250, 300), 
-    r: seededNumber(3200 + i, 0.8, 3.3),
-    delay: seededNumber(3300 + i, 0, 5),
-    duration: seededNumber(3400 + i, 3, 6),
-  }));
-
-  // Glowing ambient particles outside the capsule
-  const outerParticles = Array.from({ length: 8 }).map((_, i) => ({
-    x: seededNumber(3500 + i, 150, 250), 
-    y: seededNumber(3600 + i, 200, 300), 
-    r: seededNumber(3700 + i, 1, 3),
-    delay: seededNumber(3800 + i, 0, 4),
-    duration: seededNumber(3900 + i, 5, 8),
-  }));
-
-  return (
-    <svg viewBox="0 0 400 320" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <radialGradient id="energy-core-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-          <stop offset="25%" stopColor="#fef3c7" stopOpacity="0.8" />
-          <stop offset="60%" stopColor="#fde68a" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-        </radialGradient>
-        
-        <linearGradient id="energy-fluid-fill" x1="0%" x2="0%" y1="0%" y2="100%">
-          <stop offset="0%" stopColor="#fef3c7" stopOpacity="0.95" />
-          <stop offset="40%" stopColor="#fcd34d" stopOpacity="0.85" />
-          <stop offset="80%" stopColor="#f59e0b" stopOpacity="0.75" />
-          <stop offset="100%" stopColor="#d97706" stopOpacity="0.85" />
-        </linearGradient>
-
-        <linearGradient id="energy-fluid-highlight" x1="0%" x2="100%" y1="0%" y2="0%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.4" />
-          <stop offset="20%" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="80%" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0.2" />
-        </linearGradient>
-
-        <filter id="energy-blur-soft" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="6" />
-        </filter>
-        <filter id="energy-particle-glow" x="-100%" y="-100%" width="300%" height="300%">
-          <feGaussianBlur stdDeviation="2.5" />
-        </filter>
-
-        <clipPath id="energy-capsule-clip">
-          <path d={capsulePath} />
-        </clipPath>
-      </defs>
-
-      {/* Ambient background glow emitted from the capsule */}
-      <motion.ellipse
-        cx="200" cy="150" rx="70" ry="130"
-        fill="url(#energy-core-glow)"
-        filter="url(#energy-blur-soft)"
-        animate={reduceMotion ? undefined : { scale: [0.95, 1.05, 0.95], opacity: [0.35, 0.65, 0.35] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ transformOrigin: '200px 150px' }}
-      />
-
-      {/* INSIDE THE CAPSULE */}
-      <g clipPath="url(#energy-capsule-clip)">
-        {/* Dynamic Fluid Body sloshing inside */}
-        <motion.path
-          d="M170 280 L170 120 C185 110, 215 130, 230 120 L230 280 Z"
-          fill="url(#energy-fluid-fill)"
-          animate={reduceMotion ? undefined : { 
-            d: [
-              "M170 280 L170 120 C185 110, 215 130, 230 120 L230 280 Z",
-              "M170 280 L170 130 C190 140, 210 110, 230 130 L230 280 Z",
-              "M170 280 L170 115 C200 130, 200 110, 230 125 L230 280 Z",
-              "M170 280 L170 120 C185 110, 215 130, 230 120 L230 280 Z"
-            ]
-          }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        />
-
-        {/* Fluid surface foam / highlight wave */}
-        <motion.path
-          d="M170 120 C185 110, 215 130, 230 120"
-          fill="none"
-          stroke="#ffffff"
-          strokeWidth="3"
-          strokeLinecap="round"
-          opacity="0.8"
-          animate={reduceMotion ? undefined : { 
-            d: [
-              "M170 120 C185 110, 215 130, 230 120",
-              "M170 130 C190 140, 210 110, 230 130",
-              "M170 115 C200 130, 200 110, 230 125",
-              "M170 120 C185 110, 215 130, 230 120"
-            ]
-          }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        />
-
-        {/* Glass edge highlights overlapping the liquid */}
-        <rect x="176" y="31" width="48" height="240" fill="url(#energy-fluid-highlight)" />
-
-        {/* Golden Serum Dust / Bubbles rising inside the liquid */}
-        {particles.map((p, i) => (
-          <motion.circle
-            key={`serum-dust-${i}`}
-            cx={p.x}
-            cy={p.y}
-            r={p.r}
-            fill="#ffffff"
-            filter="url(#energy-particle-glow)"
-            animate={reduceMotion ? undefined : { 
-              y: [0, -140], // Stop roughly around the surface
-              x: [0, Math.sin(i) * 10], 
-              opacity: [0, 0.9, 0],
-              scale: [0.6, 1.2, 0.4]
-            }}
-            transition={{ 
-              duration: p.duration, 
-              repeat: Infinity, 
-              ease: 'easeOut', 
-              delay: p.delay 
-            }}
-          />
-        ))}
-      </g>
-
-      {/* OUTSIDE THE CAPSULE */}
-      {/* Soft light reflection on the bottom base of the glass */}
-      <motion.ellipse
-        cx="200" cy="270" rx="35" ry="8"
-        fill="#fbbf24"
-        opacity="0.3"
-        filter="url(#energy-blur-soft)"
-        animate={reduceMotion ? undefined : { opacity: [0.15, 0.45, 0.15], scaleX: [0.9, 1.1, 0.9] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
-      {/* Ambient floating dust outside */}
-      {outerParticles.map((p, i) => (
-        <motion.circle
-          key={`outer-dust-${i}`}
-          cx={p.x}
-          cy={p.y}
-          r={p.r}
-          fill="#fde68a"
-          filter="url(#energy-particle-glow)"
-          animate={reduceMotion ? undefined : { 
-            y: [0, -60],
-            x: [0, seededNumber(4000 + i, -10, 10)],
-            opacity: [0, 0.6, 0]
-          }}
-          transition={{ 
-            duration: p.duration, 
-            repeat: Infinity, 
-            ease: 'easeInOut', 
-            delay: p.delay 
-          }}
-        />
-      ))}
-    </svg>
-  );
-}
-
 function VisualOverlay({
   optionId,
   state,
@@ -532,7 +357,6 @@ function VisualOverlay({
 }) {
   if (optionId === 'A') return <SleepOverlay state={state} reduceMotion={reduceMotion} />;
   if (optionId === 'C') return <TimeOverlay state={state} reduceMotion={reduceMotion} />;
-  if (optionId === 'D') return <EnergyOverlay reduceMotion={reduceMotion} />;
   return null;
 }
 
@@ -569,10 +393,14 @@ export default function ResourceMeterVisual({
               animate={reduceMotion ? undefined : { scale: [0.98, 1.035, 0.98], opacity: [0.38, 0.62, 0.38] }}
               transition={{ duration: 6.8, repeat: Infinity, ease: 'easeInOut' }}
             />
-            {optionId === 'B' ? (
+            {optionId === 'B' || optionId === 'D' ? (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="skin-aura-orb-clip relative h-[min(80vw,300px)] w-[min(80vw,300px)]">
-                  <RelaxScene isConfirming={isConfirming} />
+                  {optionId === 'B' ? (
+                    <RelaxScene isConfirming={isConfirming} />
+                  ) : (
+                    <GymScene isConfirming={isConfirming} />
+                  )}
                 </div>
               </div>
             ) : (
