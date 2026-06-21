@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useQuizStore } from '@/store/useQuizStore';
-import { auraIdentityProfiles, auraOrbColors, getAuraFamily, getAuraIdentity, skinAuraFamilies } from './resultData';
+import { auraIdentityProfiles, getOrbColors, getAuraFamily, getAuraIdentity, skinAuraFamilies } from '@/data/resultData';
 
 interface SkinAuraFamilySectionProps {
   auraId: string;
@@ -16,7 +16,7 @@ export default function SkinAuraFamilySection({ auraId, variant = 'stacked' }: S
   const language = useQuizStore((state) => state.language);
   const identity = getAuraIdentity(auraId);
   const family = getAuraFamily(auraId);
-  const orb = auraOrbColors[auraId] ?? { inner: '#c4b5fd', mid: '#f9a8d4', outer: '#93c5fd' };
+  const orb = getOrbColors(auraId);
 
   if (!identity || !family) return null;
 

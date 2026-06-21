@@ -5,11 +5,11 @@ import { useQuizStore } from '@/store/useQuizStore';
 import {
   auraLensPalettes,
   auraNumbers,
-  auraOrbColors,
+  getOrbColors,
   auraSymbols,
   getAuraFamily,
   getAuraIdentity,
-} from './resultData';
+} from '@/data/resultData';
 import ResultAuraOrb from './ResultAuraOrb';
 
 interface AuraProfile {
@@ -34,7 +34,7 @@ export default function FeaturedAuraCard({ aura, matchPercentage }: FeaturedAura
     coreZh: '個人節奏',
     coreEn: 'Personal Rhythm',
   };
-  const orb = auraOrbColors[aura.id] ?? { inner: '#c4b5fd', mid: '#f9a8d4', outer: '#93c5fd' };
+  const orb = getOrbColors(aura.id);
   const lens = auraLensPalettes[aura.id] ?? auraLensPalettes.glow;
   const identity = getAuraIdentity(aura.id);
   const family = getAuraFamily(aura.id);

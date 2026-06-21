@@ -86,7 +86,7 @@ Each question maps user choices to one of **8 aura types**:
 | `hidden_aging` | STRUCTURED LIVING | Detail-aware, long-term care |
 | `recovery` | RECOVERY MODE | In repair mode, needs rest |
 | `preventive` | BALANCE BUILDER | Stable, building resilience |
-| `glow` | RADIANT GLOW | Glowing energy |
+| `glow` | GLOW EXPLORER | Glowing energy |
 | `burnout` | (Burnout archetype) | Exhausted, rushing |
 | `late_night` | (Night owl archetype) | Sleep-deprived |
 
@@ -182,7 +182,7 @@ All use deterministic motion (seeded randomness) to ensure consistent visual out
 |------|---------|
 | `src/data/questions.json` | All 10 questions + options + aura mappings |
 | `src/data/aura_profiles.json` | 8 aura profiles + descriptions + skin needs |
-| `src/data/aura_moods.ts` | Gradient/visual themes per aura type |
+| `src/app/result/components/resultData.ts` | Per-aura presentation data (orb colors, lens palettes, families, identity, insights, labels) |
 | `src/store/useQuizStore.ts` | Global quiz state (Zustand) |
 | `src/lib/quizLogic.ts` | Aura scoring & result calculation |
 | `src/app/quiz/page.tsx` | Quiz flow controller |
@@ -209,7 +209,7 @@ Edit `src/lib/quizLogic.ts`:
 
 ### Modify Visual Theme
 
-- **Colors & gradients:** `src/data/aura_moods.ts` — Update gradient class names
+- **Colors & gradients:** `src/app/result/components/resultData.ts` — per-aura orb colors / lens palettes (result page); `src/data/aura_moods.ts` does not exist
 - **Question-specific styling:** Edit individual question interaction components (`*Question.tsx`)
 - **Tailwind v4 tokens:** Define in `src/app/globals.css` using `@theme` directive
 

@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import type { AuraLensPalette } from './resultData';
+import type { AuraLensPalette } from '@/data/resultData';
 
 interface ResultAuraOrbProps {
   palette: AuraLensPalette;

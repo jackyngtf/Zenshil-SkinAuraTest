@@ -1,11 +1,11 @@
 import {
   auraLensPalettes,
   auraNumbers,
-  auraOrbColors,
+  getOrbColors,
   auraSymbols,
   getAuraIdentity,
   type AuraLensPalette,
-} from './resultData';
+} from '@/data/resultData';
 
 export interface ShareAuraProfile {
   id: string;
@@ -19,7 +19,6 @@ export type ShareLanguage = 'en' | 'zh';
 
 interface ShareImageOptions {
   aura: ShareAuraProfile;
-  matchPercentage: number;
   language: ShareLanguage;
 }
 
@@ -408,7 +407,7 @@ function drawShareCard(
   { aura, language }: ShareImageOptions,
   officialLogo: HTMLImageElement | null
 ) {
-  const orb = auraOrbColors[aura.id] ?? { inner: '#f9a8d4', mid: '#e9d5ff', outer: '#fbcfe8' };
+  const orb = getOrbColors(aura.id);
   const lens = auraLensPalettes[aura.id] ?? auraLensPalettes.glow;
   const meta = auraNumbers[aura.id] ?? { number: '000', colorLabel: '—', colorLabelEn: '—' };
   const identity = getAuraIdentity(aura.id);

@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useQuizStore } from '@/store/useQuizStore';
-import { auraOrbColors } from './resultData';
+import { getOrbColors } from '@/data/resultData';
 import { getBookingUrl } from './resultLinks';
 
 interface RitualCTASectionProps {
@@ -11,7 +11,7 @@ interface RitualCTASectionProps {
 
 export default function RitualCTASection({ auraId }: RitualCTASectionProps) {
   const language = useQuizStore((state) => state.language);
-  const orb = auraOrbColors[auraId] ?? { inner: '#c4b5fd', mid: '#f9a8d4', outer: '#93c5fd' };
+  const orb = getOrbColors(auraId);
   const bookingUrl = getBookingUrl(auraId, language);
 
   return (

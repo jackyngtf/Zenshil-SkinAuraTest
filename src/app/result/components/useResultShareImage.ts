@@ -6,7 +6,6 @@ import { createResultShareImage } from './shareResultImage';
 
 interface UseResultShareImageOptions {
   aura: ShareAuraProfile;
-  matchPercentage: number;
   language: ShareLanguage;
 }
 
@@ -31,17 +30,17 @@ function isShareAbort(error: unknown) {
   return typeof error === 'object' && error !== null && 'name' in error && error.name === 'AbortError';
 }
 
-export function useResultShareImage({ aura, matchPercentage, language }: UseResultShareImageOptions) {
+export function useResultShareImage({ aura, language }: UseResultShareImageOptions) {
   const [isSharing, setIsSharing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   const createResultBlob = useCallback(async () => {
-    const blob = await createResultShareImage({ aura, matchPercentage, language });
+    const blob = await createResultShareImage({ aura, language });
     const filename = createFileName(aura.name);
 
     return { blob, filename };
-  }, [aura, language, matchPercentage]);
+  }, [aura, language]);
 
   const shareToInstagramStory = useCallback(async () => {
     setIsSharing(true);

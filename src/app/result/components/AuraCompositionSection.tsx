@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useQuizStore } from '@/store/useQuizStore';
-import { auraOrbColors, statLabels } from './resultData';
+import { getOrbColors, statLabels } from '@/data/resultData';
 
 type ResultStats = {
   energy: number;
@@ -41,7 +41,7 @@ function getTextTone(value: number) {
 
 export default function AuraCompositionSection({ stats, auraId }: AuraCompositionSectionProps) {
   const language = useQuizStore((state) => state.language);
-  const orb = auraOrbColors[auraId] ?? { inner: '#c4b5fd', mid: '#f9a8d4', outer: '#93c5fd' };
+  const orb = getOrbColors(auraId);
 
   return (
     <motion.section

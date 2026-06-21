@@ -79,7 +79,6 @@ export default function ResultPreviewPage() {
           };
           const blob = await createResultShareImage({
             aura: profile,
-            matchPercentage: previewEntries.find((e) => e.auraId === aura.id)!.primaryPct,
             language,
           });
           if (cancelled) return;

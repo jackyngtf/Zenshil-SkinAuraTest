@@ -10,18 +10,6 @@ export const auraNumbers: Record<string, { number: string; colorLabel: string; c
   late_night: { number: '888', colorLabel: '深海藍', colorLabelEn: 'Midnight Blue' },
 };
 
-// Display keywords string for each aura
-export const auraKeywordsDisplay: Record<string, { zh: string; en: string }> = {
-  overworked: { zh: '靜默回補・能量重整・溫柔恢復', en: 'Quiet Recharge · Energy Reset · Gentle Recovery' },
-  stress: { zh: '高感知・情緒接收・需要安定', en: 'High Sensitivity · Emotional Reception · Grounding' },
-  hidden_aging: { zh: '規律節奏・細節覺察・長期守護', en: 'Structured Rhythm · Detail Awareness · Long-Term Care' },
-  recovery: { zh: '修復模式・循環重啟・慢慢回穩', en: 'Recovery Mode · Flow Reset · Returning Balance' },
-  preventive: { zh: '平衡建立・穩定守護・長期維持', en: 'Balance Builder · Steady Care · Long-Term Maintenance' },
-  glow: { zh: '光感探索・透亮美學・細節自信', en: 'Glow Explorer · Radiance Sense · Refined Confidence' },
-  burnout: { zh: '高速運轉・能量重啟・節奏調整', en: 'Constant Motion · Energy Reset · Rhythm Adjustment' },
-  late_night: { zh: '夜間靈感・作息重整・醒膚節奏', en: 'Night Inspiration · Rhythm Reset · Skin Awakening' },
-};
-
 // CSS gradient orb colors for each aura
 export const auraOrbColors: Record<string, { inner: string; mid: string; outer: string }> = {
   overworked: { inner: '#c4b5fd', mid: '#f9a8d4', outer: '#93c5fd' },
@@ -33,6 +21,16 @@ export const auraOrbColors: Record<string, { inner: string; mid: string; outer: 
   burnout: { inner: '#c084fc', mid: '#f472b6', outer: '#fb923c' },
   late_night: { inner: '#818cf8', mid: '#6366f1', outer: '#1e1b4b' },
 };
+
+export type AuraOrbColors = { inner: string; mid: string; outer: string };
+
+/** Fallback orb palette for an unknown aura id (all 8 known ids are in
+ *  auraOrbColors, so this is defensive only). Single source — previously
+ *  this literal was copy-pasted across ~6 components + the share canvas. */
+export const DEFAULT_ORB_COLORS: AuraOrbColors = auraOrbColors.overworked;
+
+export const getOrbColors = (auraId: string): AuraOrbColors =>
+  auraOrbColors[auraId] ?? DEFAULT_ORB_COLORS;
 
 export interface AuraLensPalette {
   core: string;
@@ -397,46 +395,46 @@ export function getAuraFamily(auraId: string) {
 }
 
 // Insight points for the Personality & Skin block
-export const insightPoints: Record<string, Array<{ icon: string; titleZh: string; titleEn: string; descZh: string; descEn: string }>> = {
+export const insightPoints: Record<string, Array<{ titleZh: string; titleEn: string; descZh: string; descEn: string }>> = {
   overworked: [
-    { icon: '⚡', titleZh: '能量透支', titleEn: 'Energy Depletion', descZh: '長期高壓輸出導致能量透支', descEn: 'Long-term high output leading to drained energy' },
-    { icon: '🌫', titleZh: '暗沉無光', titleEn: 'Dull & Lacklustre', descZh: '肌膚屏障變弱，光澤與透明感下降', descEn: 'Compromised skin barrier leading to lost radiance' },
-    { icon: '🔋', titleZh: '需要修復', titleEn: 'Recovery Needed', descZh: '恢復比刺激更重要，幫助肌膚重新充電', descEn: 'Restoration is key; help skin recharge rather than stimulate' },
+    { titleZh: '能量透支', titleEn: 'Energy Depletion', descZh: '長期高壓輸出導致能量透支', descEn: 'Long-term high output leading to drained energy' },
+    { titleZh: '暗沉無光', titleEn: 'Dull & Lacklustre', descZh: '肌膚屏障變弱，光澤與透明感下降', descEn: 'Compromised skin barrier leading to lost radiance' },
+    { titleZh: '需要修復', titleEn: 'Recovery Needed', descZh: '恢復比刺激更重要，幫助肌膚重新充電', descEn: 'Restoration is key; help skin recharge rather than stimulate' },
   ],
   stress: [
-    { icon: '🔥', titleZh: '壓力爆發', titleEn: 'Stress Flare-ups', descZh: '情緒與壓力直接反映在皮膚狀態', descEn: 'Emotions and stress reflect directly on skin condition' },
-    { icon: '🛡', titleZh: '屏障受損', titleEn: 'Compromised Barrier', descZh: '皮膚屏障功能減弱，容易敏感泛紅', descEn: 'Weakened barrier makes skin prone to sensitivity & redness' },
-    { icon: '❄️', titleZh: '需要鎮靜', titleEn: 'Calming Required', descZh: '冷靜修復比激烈治療更適合你', descEn: 'Gentle soothing works far better than active treatments' },
+    { titleZh: '壓力爆發', titleEn: 'Stress Flare-ups', descZh: '情緒與壓力直接反映在皮膚狀態', descEn: 'Emotions and stress reflect directly on skin condition' },
+    { titleZh: '屏障受損', titleEn: 'Compromised Barrier', descZh: '皮膚屏障功能減弱，容易敏感泛紅', descEn: 'Weakened barrier makes skin prone to sensitivity & redness' },
+    { titleZh: '需要鎮靜', titleEn: 'Calming Required', descZh: '冷靜修復比激烈治療更適合你', descEn: 'Gentle soothing works far better than active treatments' },
   ],
   hidden_aging: [
-    { icon: '⏳', titleZh: '膠原流失', titleEn: 'Collagen Depletion', descZh: '膠原蛋白正在悄悄流失中', descEn: 'Collagen levels are quietly declining beneath the surface' },
-    { icon: '📐', titleZh: '輪廓變化', titleEn: 'Contour Changes', descZh: '面部線條開始出現微妙變化', descEn: 'Facial lines and contours begin to show micro-variations' },
-    { icon: '🎯', titleZh: '最佳時機', titleEn: 'Prime Time', descZh: '現在是預防初老的黃金介入期', descEn: 'Now is the golden window for early anti-aging prevention' },
+    { titleZh: '膠原流失', titleEn: 'Collagen Depletion', descZh: '膠原蛋白正在悄悄流失中', descEn: 'Collagen levels are quietly declining beneath the surface' },
+    { titleZh: '輪廓變化', titleEn: 'Contour Changes', descZh: '面部線條開始出現微妙變化', descEn: 'Facial lines and contours begin to show micro-variations' },
+    { titleZh: '最佳時機', titleEn: 'Prime Time', descZh: '現在是預防初老的黃金介入期', descEn: 'Now is the golden window for early anti-aging prevention' },
   ],
   recovery: [
-    { icon: '🌀', titleZh: '循環不足', titleEn: 'Sluggish Circulation', descZh: '代謝緩慢，保養品難以被吸收', descEn: 'Slow metabolism makes it hard for skincare to absorb' },
-    { icon: '😴', titleZh: '需要休息', titleEn: 'Rest Needed', descZh: '身體正在發出需要休息的信號', descEn: 'Your body is sending clear signals for rest and sleep' },
-    { icon: '🌿', titleZh: '回歸基礎', titleEn: 'Return to Basics', descZh: '讓肌膚重新呼吸與循環', descEn: 'Allow your skin to breathe and restore natural flow' },
+    { titleZh: '循環不足', titleEn: 'Sluggish Circulation', descZh: '代謝緩慢，保養品難以被吸收', descEn: 'Slow metabolism makes it hard for skincare to absorb' },
+    { titleZh: '需要休息', titleEn: 'Rest Needed', descZh: '身體正在發出需要休息的信號', descEn: 'Your body is sending clear signals for rest and sleep' },
+    { titleZh: '回歸基礎', titleEn: 'Return to Basics', descZh: '讓肌膚重新呼吸與循環', descEn: 'Allow your skin to breathe and restore natural flow' },
   ],
   preventive: [
-    { icon: '🛡', titleZh: '屏障穩固', titleEn: 'Stable Barrier', descZh: '皮膚屏障功能維持在良好狀態', descEn: 'Your skin barrier function remains highly effective and resilient' },
-    { icon: '⚖️', titleZh: '平衡穩定', titleEn: 'Balanced & Steady', descZh: '生活節奏與護膚紀律高度一致', descEn: 'Daily lifestyle and skincare discipline are well-aligned' },
-    { icon: '🌟', titleZh: '屏障維持', titleEn: 'Barrier Maintenance', descZh: '穩定保養是你最大的護膚優勢', descEn: 'Consistent barrier maintenance is your greatest skincare advantage' },
+    { titleZh: '屏障穩固', titleEn: 'Stable Barrier', descZh: '皮膚屏障功能維持在良好狀態', descEn: 'Your skin barrier function remains highly effective and resilient' },
+    { titleZh: '平衡穩定', titleEn: 'Balanced & Steady', descZh: '生活節奏與護膚紀律高度一致', descEn: 'Daily lifestyle and skincare discipline are well-aligned' },
+    { titleZh: '屏障維持', titleEn: 'Barrier Maintenance', descZh: '穩定保養是你最大的護膚優勢', descEn: 'Consistent barrier maintenance is your greatest skincare advantage' },
   ],
   glow: [
-    { icon: '✨', titleZh: '追求透亮', titleEn: 'Pursuing Radiance', descZh: '對光澤感有極高的審美標準', descEn: 'High aesthetic standards for luminous and radiant skin' },
-    { icon: '💧', titleZh: '水光渴求', titleEn: 'Hydration Craving', descZh: '渴望永遠像剛做完 Facial 般發光', descEn: 'Desiring the fresh, lit-from-within post-facial glow daily' },
-    { icon: '🔬', titleZh: '精緻要求', titleEn: 'Refined Detail', descZh: '對膚質細節有近乎完美的追求', descEn: 'Meticulous attention to microscopic skin texture details' },
+    { titleZh: '追求透亮', titleEn: 'Pursuing Radiance', descZh: '對光澤感有極高的審美標準', descEn: 'High aesthetic standards for luminous and radiant skin' },
+    { titleZh: '水光渴求', titleEn: 'Hydration Craving', descZh: '渴望永遠像剛做完 Facial 般發光', descEn: 'Desiring the fresh, lit-from-within post-facial glow daily' },
+    { titleZh: '精緻要求', titleEn: 'Refined Detail', descZh: '對膚質細節有近乎完美的追求', descEn: 'Meticulous attention to microscopic skin texture details' },
   ],
   burnout: [
-    { icon: '🔥', titleZh: '身心透支', titleEn: 'Total Burnout', descZh: '極度緊繃的狀態影響全身系統', descEn: 'Extreme physical and mental tension impacting systemic health' },
-    { icon: '⚠️', titleZh: '高壓過熱', titleEn: 'High Stress Overheat', descZh: '長期高強度運轉進入明顯透支期', descEn: 'Extended high-pace living leading to obvious depletion' },
-    { icon: '🆘', titleZh: '急需重啟', titleEn: 'Urgent Reset', descZh: '皮膚需要一次全面的深層重置', descEn: 'Skin requires a comprehensive and quiet systemic reset' },
+    { titleZh: '身心透支', titleEn: 'Total Burnout', descZh: '極度緊繃的狀態影響全身系統', descEn: 'Extreme physical and mental tension impacting systemic health' },
+    { titleZh: '高壓過熱', titleEn: 'High Stress Overheat', descZh: '長期高強度運轉進入明顯透支期', descEn: 'Extended high-pace living leading to obvious depletion' },
+    { titleZh: '急需重啟', titleEn: 'Urgent Reset', descZh: '皮膚需要一次全面的深層重置', descEn: 'Skin requires a comprehensive and quiet systemic reset' },
   ],
   late_night: [
-    { icon: '🌙', titleZh: '熬夜習慣', titleEn: 'Night Owl Habits', descZh: '不規律的作息偷走肌膚元氣', descEn: 'Irregular sleeping patterns draining skin vitality' },
-    { icon: '👁', titleZh: '疲態顯現', titleEn: 'Visible Tiredness', descZh: '黑眼圈與浮腫成為常態困擾', descEn: 'Dark circles and puffiness becoming persistent concerns' },
-    { icon: '☀️', titleZh: '喚醒需求', titleEn: 'Awakening Call', descZh: '需要專屬的提亮與消腫方案', descEn: 'Requires targeted brightening and anti-puffiness relief' },
+    { titleZh: '熬夜習慣', titleEn: 'Night Owl Habits', descZh: '不規律的作息偷走肌膚元氣', descEn: 'Irregular sleeping patterns draining skin vitality' },
+    { titleZh: '疲態顯現', titleEn: 'Visible Tiredness', descZh: '黑眼圈與浮腫成為常態困擾', descEn: 'Dark circles and puffiness becoming persistent concerns' },
+    { titleZh: '喚醒需求', titleEn: 'Awakening Call', descZh: '需要專屬的提亮與消腫方案', descEn: 'Requires targeted brightening and anti-puffiness relief' },
   ],
 };
 
@@ -447,3 +445,45 @@ export const statLabels = [
   { key: 'stress' as const, label: 'STRESS', nameZh: '壓力指數', nameEn: 'Stress Level' },
   { key: 'recoveryNeeded' as const, label: 'RECOVERY', nameZh: '修復需求', nameEn: 'Recovery Need' },
 ];
+
+// ── Skin "needs" localisation + the universal-need business rule ──
+// Single source for need labels (was previously copy-pasted in the view
+// layer across PersonalitySkinBlock + the now-deleted NeedsTagSection).
+export const needTranslations: Record<string, { zh: string; en: string }> = {
+  'Deep Hydration': { zh: '深層注水保濕', en: 'Deep Hydration' },
+  'Skin Recovery': { zh: '肌膚能量修護', en: 'Skin Recovery' },
+  'Nervous System Reset': { zh: '神經放鬆重設', en: 'Nervous System Reset' },
+  'Calming & Cooling': { zh: '舒緩鎮靜降溫', en: 'Calming & Cooling' },
+  'Barrier Repair': { zh: '修護肌膚屏障', en: 'Barrier Repair' },
+  'Anti-inflammation': { zh: '消炎抗紅防敏', en: 'Anti-inflammation' },
+  'Collagen Support': { zh: '促進膠原蛋白', en: 'Collagen Support' },
+  'Contour Lifting': { zh: '面部輪廓提拉', en: 'Contour Lifting' },
+  'Elasticity Boost': { zh: '提升彈性飽滿', en: 'Elasticity Boost' },
+  'Better Circulation': { zh: '促進微循環', en: 'Better Circulation' },
+  'Detoxification': { zh: '深層排毒代謝', en: 'Detoxification' },
+  'Deep Tissue Relaxation': { zh: '深層組織舒壓', en: 'Deep Tissue Relaxation' },
+  'Antioxidant Protection': { zh: '抗氧化細胞防護', en: 'Antioxidant Protection' },
+  Maintenance: { zh: '極簡精準保養', en: 'Maintenance' },
+  'Preventive Care': { zh: '未來抗衰預防', en: 'Preventive Care' },
+  'Ultimate Brightening': { zh: '極致煥亮提亮', en: 'Ultimate Brightening' },
+  'Glass Skin Effect': { zh: '水光玻璃肌感', en: 'Glass Skin Effect' },
+  'Texture Refinement': { zh: '細緻毛孔理膚', en: 'Texture Refinement' },
+  'Total Reset': { zh: '身心肌膚重置', en: 'Total Reset' },
+  'Intensive Repair': { zh: '高濃縮密集修復', en: 'Intensive Repair' },
+  'Deep Awakening': { zh: '深層喚醒細胞', en: 'Deep Awakening' },
+  'De-puffing': { zh: '排水緊緻消腫', en: 'De-puffing' },
+  'Awakening & Brightening': { zh: '喚醒去黃提亮', en: 'Awakening & Brightening' },
+  'Eye Contour Rescue': { zh: '眼周密集急救', en: 'Eye Contour Rescue' },
+  'Barrier Support': { zh: '強韌屏障支持', en: 'Barrier Support' },
+};
+
+/** Every result appends this universal need if the aura didn't already list it. */
+export const UNIVERSAL_NEED = 'Barrier Support';
+
+/** Aura skinNeeds + the universal need (deduped) — the list the UI renders. */
+export const withUniversalNeeds = (needs: string[]): string[] =>
+  needs.includes(UNIVERSAL_NEED) ? needs : [...needs, UNIVERSAL_NEED];
+
+/** Localised label for a skin need, falling back to the raw key if untranslated. */
+export const getNeedLabel = (need: string, language: 'zh' | 'en'): string =>
+  needTranslations[need]?.[language] ?? need;

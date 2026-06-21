@@ -17,7 +17,7 @@ import BrandFooter from './components/BrandFooter';
 
 export default function ResultPage() {
   const router = useRouter();
-  const { answers } = useQuizStore();
+  const answers = useQuizStore((state) => state.answers);
   const language = useQuizStore((state) => state.language);
   const completedAt = useQuizStore((state) => state.completedAt);
   // The authoritative gate is completedAt (persisted). answers alone is too
@@ -43,19 +43,19 @@ export default function ResultPage() {
 
       {/* All content layered above noise */}
       <div className="relative z-10">
-        {/* Section 1 — Featured Aura Card Hero */}
+        {/* 1 — Featured aura hero */}
         <FeaturedAuraCard
           aura={primaryAura}
           matchPercentage={primaryPercentage}
         />
 
-        {/* Section 2 — Aura Composition & Skin Balance */}
+        {/* 2 — Aura composition & skin balance */}
         <AuraCompositionSection
           stats={calculatedStats}
           auraId={primaryAura.id}
         />
 
-        {/* Section 3 & 4 — Skin Aura Family + Personality (horizontal carousel) */}
+        {/* 3 — Skin aura family + personality (horizontal carousel) */}
         <AuraCarousel language={language}>
           <SkinAuraFamilySection auraId={primaryAura.id} variant="carousel" />
           <PersonalitySkinBlock
@@ -66,22 +66,19 @@ export default function ResultPage() {
           />
         </AuraCarousel>
 
-        {/* Section 6 — Secondary Aura Block */}
+        {/* 4 — Secondary aura */}
         <SecondaryAuraCard
           aura={secondaryAura}
           matchPercentage={secondaryPercentage}
         />
 
-        {/* Section 7 — Recommended Ritual CTA */}
+        {/* 5 — Recommended ritual CTA */}
         <RitualCTASection auraId={primaryAura.id} />
 
-        {/* Section 8 — Bottom Action Row */}
-        <ResultActionRow
-          aura={primaryAura}
-          matchPercentage={primaryPercentage}
-        />
+        {/* 6 — Bottom action row */}
+        <ResultActionRow aura={primaryAura} />
 
-        {/* Section 9 — Brand Footer */}
+        {/* 7 — Brand footer */}
         <BrandFooter />
       </div>
     </main>

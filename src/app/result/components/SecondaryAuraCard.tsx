@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { useQuizStore } from '@/store/useQuizStore';
 import SoftAuraCloud, { auraCloudPaletteFromOrb } from '@/components/SoftAuraCloud';
-import { auraOrbColors, getAuraFamily, getAuraIdentity } from './resultData';
+import { getAuraFamily, getAuraIdentity, getOrbColors } from '@/data/resultData';
 
 interface AuraProfile {
   id: string;
@@ -19,7 +19,7 @@ interface SecondaryAuraCardProps {
 
 export default function SecondaryAuraCard({ aura, matchPercentage }: SecondaryAuraCardProps) {
   const language = useQuizStore((state) => state.language);
-  const orb = auraOrbColors[aura.id] ?? { inner: '#c4b5fd', mid: '#f9a8d4', outer: '#93c5fd' };
+  const orb = getOrbColors(aura.id);
   const identity = getAuraIdentity(aura.id);
   const family = getAuraFamily(aura.id);
   const displayName = identity
