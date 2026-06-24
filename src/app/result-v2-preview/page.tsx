@@ -5,8 +5,9 @@
 //   rather than lifting GlassCard/Kicker/Pill into result/components.
 
 import { motion } from 'framer-motion';
-import { ArrowRight, Bookmark, RefreshCcw, Share2 } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import auraProfilesData from '@/data/aura_profiles.json';
+import ResultActionRow from '@/app/result/components/ResultActionRow';
 import {
   auraLensPalettes,
   auraV2Content,
@@ -608,45 +609,6 @@ function BookingCta({ language }: { language: 'zh' | 'en' }) {
   );
 }
 
-function PreviewActions({ language }: { language: 'zh' | 'en' }) {
-  const actionClassName = 'flex min-h-12 items-center justify-center gap-2 rounded-full px-3 py-3 text-[10px] font-medium text-stone-500 transition-all duration-200 hover:bg-white/85 hover:text-stone-800 active:scale-[0.98]';
-  const cardClassName = 'rounded-[2rem] border border-white/70 bg-white/45 p-1.5 shadow-sm backdrop-blur-sm';
-
-  return (
-    <motion.section
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="mx-auto mb-8 w-full max-w-md px-5"
-    >
-      <div className={cardClassName}>
-        <div className="grid grid-cols-2 gap-1.5">
-          <button type="button" className={actionClassName}>
-            <Share2 className="size-4 text-stone-400" strokeWidth={1.5} />
-            <span>{language === 'en' ? 'Share Result' : '分享結果圖'}</span>
-          </button>
-          <button type="button" className={actionClassName}>
-            <Bookmark className="size-4 text-stone-400" strokeWidth={1.5} />
-            <span>{language === 'en' ? 'Save Image' : '儲存圖片'}</span>
-          </button>
-        </div>
-      </div>
-      <p className="mt-3 px-3 text-center text-[10px] leading-relaxed text-stone-400">
-        {language === 'en'
-          ? 'Preview copy: the final version can generate a matching IG Story report.'
-          : '預覽文案：正式版可生成同風格 IG Story 報告。'}
-      </p>
-      <div className={`${cardClassName} mt-4`}>
-        <button type="button" className={`${actionClassName} w-full`}>
-          <RefreshCcw className="size-4 text-stone-400" strokeWidth={1.5} />
-          <span>{language === 'en' ? 'Retake Test' : '重新測試'}</span>
-        </button>
-      </div>
-    </motion.section>
-  );
-}
-
 export default function ResultV2PreviewPage() {
   const language = useQuizStore((state) => state.language);
 
@@ -667,7 +629,7 @@ export default function ResultV2PreviewPage() {
         <JourneyCard language={language} />
         <SupportingSignal language={language} />
         <BookingCta language={language} />
-        <PreviewActions language={language} />
+        <ResultActionRow aura={auraProfilesData[preview.auraId]} />
         <BrandFooter />
       </div>
     </main>
