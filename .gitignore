@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local source reference material (product brief, mood images) — kept on
+# disk, not shipped with the repo. Delete from disk once the project ships.
+*.JPG
+SKIN AURA TEST.docx
+SKIN AURA TEST.pdf
+
+# editor / tooling clutter
+.claude/
+.superpowers/
+tmp/
