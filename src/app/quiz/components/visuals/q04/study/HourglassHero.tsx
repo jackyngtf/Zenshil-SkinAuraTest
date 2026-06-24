@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import type { Transition } from 'framer-motion';
-import { STUDY, HOURGLASS, SAND_GRAINS, sn } from './studyLayout';
+import { STUDY, HOURGLASS, SAND_GRAINS } from './studyLayout';
 
 /* ================================================================== */
 /*  Q4 · C 時間 (Time) — HOURGLASS HERO                                 */
