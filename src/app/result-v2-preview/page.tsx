@@ -547,12 +547,12 @@ function SupportingSignal({ language }: { language: 'zh' | 'en' }) {
             ? 'A supporting rhythm that explains your need for structure and steadier timing.'
             : '呢個補充訊號代表你同時需要結構感、時間節奏同細節覺察。'}
         </p>
-        <button
-          type="button"
-          className="mt-5 rounded-full border border-stone-200/70 bg-white/58 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-600 shadow-sm"
+        <a
+          href="/family"
+          className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-stone-200/70 bg-white/58 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-600 shadow-sm transition-colors hover:text-stone-900"
         >
           {language === 'en' ? 'View full family' : '查看 Family 全家'}
-        </button>
+        </a>
       </GlassCard>
     </motion.section>
   );
