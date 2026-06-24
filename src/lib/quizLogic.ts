@@ -39,6 +39,9 @@ export function calculateResult(answers: Record<string, string>) {
   const primaryRawScore = sortedAuras[0][1];
   const secondaryRawScore = sortedAuras[1][1];
 
+  // ponytail: hand-tuned percentage curve, ceiling = needs product sign-off
+  //   on the exact match% display, upgrade = when aura weights are tuned with
+  //   real quiz data or A/B tested.
   // Primary: 70-92%
   const primaryPercentage = Math.floor(70 + (primaryRawScore / 10) * 22);
   // Secondary: 45-68%

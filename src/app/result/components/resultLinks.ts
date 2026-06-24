@@ -1,5 +1,7 @@
 import type { Language } from '@/store/useQuizStore';
 
+// ponytail: booking number hardcoded, ceiling = single-clinic launch only,
+//   upgrade = when a second clinic/branch or multi-tenant booking is added.
 const WHATSAPP_PHONE = '85295096802';
 
 /**

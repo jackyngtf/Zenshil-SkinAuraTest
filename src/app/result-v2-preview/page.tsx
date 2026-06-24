@@ -1,4 +1,8 @@
 'use client';
+// ponytail: throwaway design preview (670 LOC, hardcoded 'stress' aura),
+//   ceiling = only exists until the v2 result layout ships at /result,
+//   upgrade = once v2 is the live result page, delete this whole file
+//   rather than lifting GlassCard/Kicker/Pill into result/components.
 
 import { motion } from 'framer-motion';
 import { ArrowRight, Bookmark, RefreshCcw, Share2 } from 'lucide-react';
