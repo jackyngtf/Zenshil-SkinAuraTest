@@ -279,6 +279,20 @@ function SocietySlide({ language }: { language: 'zh' | 'en' }) {
   const orb = getOrbColors(preview.auraId);
   const aura = auraProfilesData[preview.auraId];
   const societyNeeds = withUniversalNeeds(aura.skinNeeds);
+  const evidenceItems: { label: { zh: string; en: string }; value: { zh: string; en: string } }[] = [
+    {
+      label: { zh: '你皮膚最似以下邊種天氣？', en: 'Which weather best represents your skin state?' },
+      value: { zh: '悶熱暴風雨', en: 'Humid Pressure' },
+    },
+    {
+      label: { zh: '如果皮膚有情緒，你覺得佢而家會講：', en: 'If your skin had feelings, it would say:' },
+      value: { zh: '我頂唔順', en: "I can't cope" },
+    },
+    {
+      label: { zh: '你最想改善邊種感覺？', en: 'What skin condition do you want to improve most?' },
+      value: { zh: '不穩定敏感', en: 'Sensitive flare-ups' },
+    },
+  ];
 
   return (
     <GlassCard className="min-h-[500px] p-7">
@@ -298,6 +312,24 @@ function SocietySlide({ language }: { language: 'zh' | 'en' }) {
         <p className="mt-5 text-[14px] font-light leading-relaxed text-stone-600 text-pretty">
           {t(preview.societyDescription, language)}
         </p>
+
+        <div className="mt-6">
+          <p className="mb-3 text-[9px] font-medium uppercase tracking-[0.24em] text-stone-400">
+            {language === 'en' ? 'How we read you' : '我哋點睇出嚟'}
+          </p>
+          <div className="overflow-hidden rounded-2xl border border-white/55 bg-white/34">
+            {evidenceItems.map((item) => (
+              <div key={item.value.zh} className="flex items-start justify-between gap-4 border-b border-white/50 px-4 py-3 last:border-b-0">
+                <p className="min-w-[82px] text-[9px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+                  {t(item.label, language)}
+                </p>
+                <p className="text-right text-[12px] leading-relaxed text-stone-600">
+                  {t(item.value, language)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
 
         <div className="my-6 h-px w-full bg-stone-200/55" />
 
@@ -419,6 +451,7 @@ function IdentitySlide({ language }: { language: 'zh' | 'en' }) {
 
 function SkinMessageCard({ language }: { language: 'zh' | 'en' }) {
   const orb = getOrbColors(preview.auraId);
+  const q3Echo: LanguageCopy = { zh: '你話我會講『我頂唔順』', en: 'You said I would say “I can’t cope”' };
 
   return (
     <motion.section
@@ -440,7 +473,7 @@ function SkinMessageCard({ language }: { language: 'zh' | 'en' }) {
             {language === 'en' ? 'What you need to hear today' : '今日先替肌膚降噪'}
           </h3>
           <p className="mt-4 text-[15px] font-light leading-relaxed text-stone-600 text-pretty">
-            &ldquo;{t(preview.skinMessage, language)}&rdquo;
+            &ldquo;<span className="font-medium text-stone-700">{t(q3Echo, language)}</span>{language === 'en' ? '.' : '。'} {t(preview.skinMessage, language)}&rdquo;
           </p>
 
           <div className="mt-6 overflow-hidden rounded-2xl border border-white/55 bg-white/34">
