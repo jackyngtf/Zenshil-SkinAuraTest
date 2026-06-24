@@ -225,7 +225,7 @@ function ResultV2Hero({ language }: { language: 'zh' | 'en' }) {
         <div className="mb-6 flex items-center justify-center gap-2 rounded-full border border-white/70 bg-white/58 px-4 py-2 shadow-sm backdrop-blur-sm">
           <span className="size-2 rounded-full" style={{ backgroundColor: orb.mid }} aria-hidden="true" />
           <span className="text-[10px] font-medium tracking-[0.16em] text-stone-500">
-            {language === 'en' ? `Purity ${purityPercent}%` : `純度 ${purityPercent}%`}
+            {language === 'en' ? `Aura Match ${purityPercent}%` : `氣場吻合度 ${purityPercent}%`}
           </span>
         </div>
 
@@ -279,20 +279,6 @@ function SocietySlide({ language }: { language: 'zh' | 'en' }) {
   const orb = getOrbColors(preview.auraId);
   const aura = auraProfilesData[preview.auraId];
   const societyNeeds = withUniversalNeeds(aura.skinNeeds);
-  const evidenceItems: { label: { zh: string; en: string }; value: { zh: string; en: string } }[] = [
-    {
-      label: { zh: '你皮膚最似以下邊種天氣？', en: 'Which weather best represents your skin state?' },
-      value: { zh: '悶熱暴風雨', en: 'Humid Pressure' },
-    },
-    {
-      label: { zh: '如果皮膚有情緒，你覺得佢而家會講：', en: 'If your skin had feelings, it would say:' },
-      value: { zh: '我頂唔順', en: "I can't cope" },
-    },
-    {
-      label: { zh: '你最想改善邊種感覺？', en: 'What skin condition do you want to improve most?' },
-      value: { zh: '不穩定敏感', en: 'Sensitive flare-ups' },
-    },
-  ];
 
   return (
     <GlassCard className="min-h-[500px] p-7">
@@ -312,24 +298,6 @@ function SocietySlide({ language }: { language: 'zh' | 'en' }) {
         <p className="mt-5 text-[14px] font-light leading-relaxed text-stone-600 text-pretty">
           {t(preview.societyDescription, language)}
         </p>
-
-        <div className="mt-6">
-          <p className="mb-3 text-[9px] font-medium uppercase tracking-[0.24em] text-stone-400">
-            {language === 'en' ? 'How we read you' : '我哋點睇出嚟'}
-          </p>
-          <div className="overflow-hidden rounded-2xl border border-white/55 bg-white/34">
-            {evidenceItems.map((item) => (
-              <div key={item.value.zh} className="flex items-start justify-between gap-4 border-b border-white/50 px-4 py-3 last:border-b-0">
-                <p className="min-w-[82px] text-[9px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-                  {t(item.label, language)}
-                </p>
-                <p className="text-right text-[12px] leading-relaxed text-stone-600">
-                  {t(item.value, language)}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
 
         <div className="my-6 h-px w-full bg-stone-200/55" />
 
@@ -377,8 +345,12 @@ function SocietySlide({ language }: { language: 'zh' | 'en' }) {
 function IdentitySlide({ language }: { language: 'zh' | 'en' }) {
   const orb = getOrbColors(preview.auraId);
   const lucky = auraV2Content[preview.auraId];
-  const fruitLabel: LanguageCopy = { zh: '果物', en: 'Fruit' };
-  const drinkLabel: LanguageCopy = { zh: '飲品', en: 'Drink' };
+  const ritualNotes: IdentityNote[] = [
+    { label: { zh: '水果', en: 'Fruit' }, value: lucky ? lucky.luckyFruit : { zh: '—', en: '—' } },
+    { label: { zh: '輕食', en: 'Light Bite' }, value: { zh: '核桃', en: 'Walnut' } },
+    { label: { zh: '飲品', en: 'Drink' }, value: lucky ? lucky.luckyDrink : { zh: '—', en: '—' } },
+    { label: { zh: '生活提醒', en: 'Lifestyle Cue' }, value: { zh: '今晚提早 30 分鐘離線', en: 'Log off 30 min earlier tonight' } },
+  ];
 
   return (
     <GlassCard className="min-h-[500px] p-7">
@@ -423,27 +395,22 @@ function IdentitySlide({ language }: { language: 'zh' | 'en' }) {
 
         <div className="my-6 h-px w-full bg-stone-200/55" />
 
-        {lucky && (
-          <div className="mt-5">
-            <h3 className="mb-4 text-[11px] font-semibold tracking-[0.12em] text-stone-900">
-              {language === 'en' ? 'Lucky Fruit & Drink' : '幸運果物與飲品'}
-            </h3>
-            <div className="flex flex-wrap gap-2.5">
+        <div className="mt-5">
+          <h3 className="mb-4 text-[11px] font-semibold tracking-[0.12em] text-stone-900">
+            {language === 'en' ? 'Today Ritual Cues' : '今日小儀式'}
+          </h3>
+          <div className="flex flex-wrap gap-2.5">
+            {ritualNotes.map((note) => (
               <span
+                key={note.label.zh}
                 className="inline-flex items-center gap-1.5 rounded-full border border-stone-200/55 bg-white/70 px-3.5 py-2 text-[12px] font-light leading-none tracking-wide text-stone-600 shadow-sm"
               >
                 <span className="text-[9px] text-stone-400">✦</span>
-                {t(fruitLabel, language)} {t(lucky.luckyFruit, language)}
+                {t(note.label, language)} {t(note.value, language)}
               </span>
-              <span
-                className="inline-flex items-center gap-1.5 rounded-full border border-stone-200/55 bg-white/70 px-3.5 py-2 text-[12px] font-light leading-none tracking-wide text-stone-600 shadow-sm"
-              >
-                <span className="text-[9px] text-stone-400">✦</span>
-                {t(drinkLabel, language)} {t(lucky.luckyDrink, language)}
-              </span>
-            </div>
+            ))}
           </div>
-        )}
+        </div>
       </div>
     </GlassCard>
   );
