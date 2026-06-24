@@ -629,7 +629,11 @@ export default function ResultV2PreviewPage() {
         <JourneyCard language={language} />
         <SupportingSignal language={language} />
         <BookingCta language={language} />
-        <ResultActionRow aura={auraProfilesData[preview.auraId]} />
+        <ResultActionRow
+          aura={auraProfilesData[preview.auraId]}
+          primaryRawScore={preview.primaryRawScore}
+          secondaryAuraId={preview.secondaryAuraId}
+        />
         <BrandFooter />
       </div>
     </main>

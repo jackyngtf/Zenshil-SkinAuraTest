@@ -77,9 +77,12 @@ export default function ResultPreviewPage() {
             quote: aura.quote,
             quoteEn: aura.quoteEn,
           };
+          const entry = previewEntries.find((e) => e.auraId === aura.id);
           const blob = await createResultShareImage({
             aura: profile,
             language,
+            primaryRawScore: entry ? Math.round((entry.primaryPct / 100) * 10) : 7,
+            secondaryAuraId: entry?.secondary,
           });
           if (cancelled) return;
           const url = URL.createObjectURL(blob);

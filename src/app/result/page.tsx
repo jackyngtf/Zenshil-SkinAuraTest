@@ -32,7 +32,7 @@ export default function ResultPage() {
 
   if (!result) return null;
 
-  const { primaryAura, primaryPercentage, secondaryAura, secondaryPercentage } = result;
+  const { primaryAura, primaryRawScore, primaryPercentage, secondaryAura, secondaryPercentage } = result;
 
   return (
     <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#f8f5ef] pb-8 text-stone-900 selection:bg-rose-200 touch-manipulation">
@@ -69,7 +69,11 @@ export default function ResultPage() {
         <RitualCTASection auraId={primaryAura.id} />
 
         {/* 5 — Bottom action row */}
-        <ResultActionRow aura={primaryAura} />
+        <ResultActionRow
+          aura={primaryAura}
+          primaryRawScore={primaryRawScore}
+          secondaryAuraId={secondaryAura.id}
+        />
 
         {/* 6 — Brand footer */}
         <BrandFooter />

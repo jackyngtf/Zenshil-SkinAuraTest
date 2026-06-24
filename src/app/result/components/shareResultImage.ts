@@ -1,9 +1,11 @@
 import {
   auraLensPalettes,
   auraNumbers,
-  getOrbColors,
+  auraV2Content,
   auraSymbols,
   getAuraIdentity,
+  getCouplet,
+  getOrbColors,
   type AuraLensPalette,
 } from '@/data/resultData';
 
@@ -20,6 +22,10 @@ export type ShareLanguage = 'en' | 'zh';
 interface ShareImageOptions {
   aura: ShareAuraProfile;
   language: ShareLanguage;
+  /** Frequency of the primary aura across 10 answers (truthful signal strength). */
+  primaryRawScore: number;
+  /** The user's secondary aura id, used to pick the couplet variant. */
+  secondaryAuraId?: string;
 }
 
 const CARD_WIDTH = 1080;
@@ -404,7 +410,7 @@ function drawShareAuraLens(
 
 function drawShareCard(
   ctx: CanvasRenderingContext2D,
-  { aura, language }: ShareImageOptions,
+  { aura, language, primaryRawScore, secondaryAuraId }: ShareImageOptions,
   officialLogo: HTMLImageElement | null
 ) {
   const orb = getOrbColors(aura.id);
@@ -423,9 +429,15 @@ function drawShareCard(
   const subtitle = language === 'en'
     ? identity?.displayNameZh ?? aura.chineseName
     : identity?.displayName ?? aura.name;
-  const quote = identity
-    ? language === 'en' ? identity.shortLine : identity.shortLineZh
-    : language === 'en' && aura.quoteEn ? aura.quoteEn : aura.quote;
+  // Personalized couplet (varies by secondary aura) replaces the static quote.
+  const couplet = getCouplet(aura.id, secondaryAuraId ?? '');
+  const quote = couplet.zh || couplet.en
+    ? (language === 'en' ? couplet.en : couplet.zh)
+    : identity
+      ? language === 'en' ? identity.shortLine : identity.shortLineZh
+      : language === 'en' && aura.quoteEn ? aura.quoteEn : aura.quote;
+  const purityPercent = Math.floor((primaryRawScore / 10) * 100);
+  const lucky = auraV2Content[aura.id];
   const symbolLabel = language === 'en' ? symbol.labelEn : symbol.labelZh;
   const auraCore = language === 'en' ? symbol.coreEn : symbol.coreZh;
   const reportLabel = language === 'en' ? 'SKIN AURA IDENTITY' : 'SKIN AURA IDENTITY';
@@ -498,12 +510,17 @@ function drawShareCard(
   drawCenteredPillRow(
     ctx,
     [
-      { text: `AURA NO. ${meta.number}`, paddingX: 38, maxWidth: 330 },
-      { text: symbolLabel, paddingX: 38, maxWidth: 340 },
+      { text: `AURA NO. ${meta.number}`, paddingX: 34, maxWidth: 300 },
+      {
+        text: language === 'en' ? `MATCH ${purityPercent}%` : `吻合度 ${purityPercent}%`,
+        paddingX: 34,
+        maxWidth: 300,
+      },
+      { text: symbolLabel, paddingX: 34, maxWidth: 320 },
     ],
     540,
     1342,
-    24
+    20
   );
 
   drawPill(
@@ -528,6 +545,25 @@ function drawShareCard(
     language === 'en' ? 22 : 27,
     'Georgia, "Times New Roman", serif'
   );
+
+  // Lucky fruit + drink — a quiet daily-ritual line that varies per aura.
+  if (lucky) {
+    const fruitText = language === 'en' ? lucky.luckyFruit.en : lucky.luckyFruit.zh;
+    const drinkText = language === 'en' ? lucky.luckyDrink.en : lucky.luckyDrink.zh;
+    const ritualLabel = language === 'en' ? 'TODAY' : '今日';
+    ctx.fillStyle = '#a8a29e';
+    ctx.font = '500 22px Arial, sans-serif';
+    drawCenteredPillRow(
+      ctx,
+      [
+        { text: `${ritualLabel} · ${fruitText}`, paddingX: 34, maxWidth: 360, maxFontSize: 24, minFontSize: 16 },
+        { text: drinkText, paddingX: 34, maxWidth: 300, maxFontSize: 24, minFontSize: 16 },
+      ],
+      540,
+      1666,
+      20
+    );
+  }
 
   ctx.fillStyle = '#a8a29e';
   ctx.font = '500 22px Arial, sans-serif';

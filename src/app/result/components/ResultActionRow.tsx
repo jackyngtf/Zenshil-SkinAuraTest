@@ -10,15 +10,19 @@ import { useResultShareImage } from './useResultShareImage';
 
 interface ResultActionRowProps {
   aura: ShareAuraProfile;
+  primaryRawScore: number;
+  secondaryAuraId?: string;
 }
 
-export default function ResultActionRow({ aura }: ResultActionRowProps) {
+export default function ResultActionRow({ aura, primaryRawScore, secondaryAuraId }: ResultActionRowProps) {
   const router = useRouter();
   const language = useQuizStore((state) => state.language);
   const resetQuiz = useQuizStore((state) => state.resetQuiz);
   const { isSharing, isSaving, message, saveResultImage, shareToInstagramStory } = useResultShareImage({
     aura,
     language,
+    primaryRawScore,
+    secondaryAuraId,
   });
   const [isRetakeOpen, setIsRetakeOpen] = useState(false);
 
