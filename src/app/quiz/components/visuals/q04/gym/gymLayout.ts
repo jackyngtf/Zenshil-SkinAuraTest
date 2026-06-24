@@ -9,7 +9,7 @@
 /*  content within ~radius 150 of (200,160); corners are cropped.        */
 /* ================================================================== */
 
-export const sn = (v: number) => +v.toFixed(1);
+export { sn } from '../q04Shared';
 
 /* Floor line — equipment sits with its base on FLOOR_Y. Lowered so the
    whole scene sits LOWER in the circle orb (less empty floor foreground, so

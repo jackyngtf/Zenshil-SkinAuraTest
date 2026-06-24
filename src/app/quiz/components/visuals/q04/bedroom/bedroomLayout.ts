@@ -7,7 +7,7 @@
 /*  Parent svg: viewBox "0 0 400 320", preserveAspectRatio slice.       */
 /* ================================================================== */
 
-export const sn = (v: number) => +v.toFixed(1);
+export { sn } from '../q04Shared';
 
 /* The back-wall / floor seam. Wall fills 0 → FLOOR_Y; floor FLOOR_Y → 320.
    NOTE: the whole scene is seated ~14px HIGH so the breathing mound hero

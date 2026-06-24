@@ -11,7 +11,7 @@
 /*  Parent svg: viewBox "0 0 400 320", preserveAspectRatio slice.       */
 /* ================================================================== */
 
-export const sn = (v: number) => +v.toFixed(1);
+export { sn } from '../q04Shared';
 
 /* The wall / desk seam. Wall fills 0 → DESK_Y; desktop DESK_Y → DESK_FRONT_Y
    (a slightly 3/4 top face band), front dropping to 320.

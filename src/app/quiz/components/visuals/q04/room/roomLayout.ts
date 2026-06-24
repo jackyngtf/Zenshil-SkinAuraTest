@@ -7,7 +7,7 @@
 /*  Parent svg: viewBox "0 0 400 320", preserveAspectRatio slice.        */
 /* ================================================================== */
 
-export const sn = (v: number) => +v.toFixed(1);
+export { sn } from '../q04Shared';
 
 /* The desk's tabletop surface line — every object on the desk sits with
    its BASE on DESK_Y. The tabletop front edge drops to DESK_FRONT_Y. */
