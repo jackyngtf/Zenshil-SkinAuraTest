@@ -6,7 +6,6 @@ import { useQuizStore } from '@/store/useQuizStore';
 import { calculateResult } from '@/lib/quizLogic';
 
 import FeaturedAuraCard from './components/FeaturedAuraCard';
-import AuraCompositionSection from './components/AuraCompositionSection';
 import SkinAuraFamilySection from './components/SkinAuraFamilySection';
 import PersonalitySkinBlock from './components/PersonalitySkinBlock';
 import AuraCarousel from './components/AuraCarousel';
@@ -33,7 +32,7 @@ export default function ResultPage() {
 
   if (!result) return null;
 
-  const { primaryAura, primaryPercentage, secondaryAura, secondaryPercentage, calculatedStats } = result;
+  const { primaryAura, primaryPercentage, secondaryAura, secondaryPercentage } = result;
 
   return (
     <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#f8f5ef] pb-8 text-stone-900 selection:bg-rose-200 touch-manipulation">
@@ -49,13 +48,7 @@ export default function ResultPage() {
           matchPercentage={primaryPercentage}
         />
 
-        {/* 2 — Aura composition & skin balance */}
-        <AuraCompositionSection
-          stats={calculatedStats}
-          auraId={primaryAura.id}
-        />
-
-        {/* 3 — Skin aura family + personality (horizontal carousel) */}
+        {/* 2 — Skin aura family + personality (horizontal carousel) */}
         <AuraCarousel language={language}>
           <SkinAuraFamilySection auraId={primaryAura.id} variant="carousel" />
           <PersonalitySkinBlock
@@ -66,19 +59,19 @@ export default function ResultPage() {
           />
         </AuraCarousel>
 
-        {/* 4 — Secondary aura */}
+        {/* 3 — Secondary aura */}
         <SecondaryAuraCard
           aura={secondaryAura}
           matchPercentage={secondaryPercentage}
         />
 
-        {/* 5 — Recommended ritual CTA */}
+        {/* 4 — Recommended ritual CTA */}
         <RitualCTASection auraId={primaryAura.id} />
 
-        {/* 6 — Bottom action row */}
+        {/* 5 — Bottom action row */}
         <ResultActionRow aura={primaryAura} />
 
-        {/* 7 — Brand footer */}
+        {/* 6 — Brand footer */}
         <BrandFooter />
       </div>
     </main>

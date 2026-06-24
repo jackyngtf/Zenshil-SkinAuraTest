@@ -14,11 +14,11 @@ interface AuraCarouselProps {
  * Why scroll-snap over a JS/drag carousel:
  *  - The browser handles flick momentum and snap thresholds natively, so the
  *    gesture feels identical to every other horizontal list on the device.
- *  - Zero JS animation cost — we only track the active index to drive the dots.
+ *  - Zero JS animation cost. We only track the active index to drive the dots.
  *  - No new dependency (framer-motion drag would need manual snap/threshold code).
  *
  * Layout: each slide is w-full and snap-start, so the container snaps one slide
- * per swipe. Height is not fixed — the track grows to fit the tallest slide, and
+ * per swipe. Height is not fixed. The track grows to fit the tallest slide, and
  * shorter slides sit at the top (the consumer fills trailing space as it likes).
  */
 export default function AuraCarousel({ children, language }: AuraCarouselProps) {
@@ -74,8 +74,8 @@ export default function AuraCarousel({ children, language }: AuraCarouselProps) 
         )}
       </div>
 
-      {/* Dot indicator — one per slide. Clicking a dot smooth-scrolls to it. */}
-      <div className="mt-3 flex items-center justify-center gap-2">
+      {/* Dot indicator. Each visual dot has a larger tap target for mobile. */}
+      <div className="mt-3 flex items-center justify-center gap-1">
         {Array.from({ length: slideCount }).map((_, i) => (
           <button
             key={i}
@@ -85,12 +85,16 @@ export default function AuraCarousel({ children, language }: AuraCarouselProps) 
               language === 'en' ? `Go to slide ${i + 1}` : `去第 ${i + 1} 張`
             }
             aria-current={i === activeIndex}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === activeIndex
-                ? 'w-5 bg-stone-800'
-                : 'w-1.5 bg-stone-300 hover:bg-stone-400'
-            }`}
-          />
+            className="group flex size-6 items-center justify-center rounded-full transition-transform duration-200 active:scale-95"
+          >
+            <span
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === activeIndex
+                  ? 'w-5 bg-stone-800'
+                  : 'w-1.5 bg-stone-300 group-hover:bg-stone-400'
+              }`}
+            />
+          </button>
         ))}
       </div>
     </div>

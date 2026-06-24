@@ -51,10 +51,15 @@ const surge = (reduceMotion: boolean, duration = 0.6): Transition =>
    specular. Positioned + scaled by the caller via transform; sized BIG so it
    reads as a confident foreground object, not a small prop. */
 const KB_R = 23; // body radius
-/* Flat base — the bell is truncated at the bottom so it rests FLAT on the
-   floor (a perfect circle only touches at a point → reads as hovering). */
-const KB_FB = sn(KB_R * 0.72); // local y of the flat base
-const KB_HX = sn(Math.sqrt(KB_R * KB_R - KB_FB * KB_FB)); // half-width of the flat base
+/* Grounding: the body is a FULL round circle (its curved bottom meets the
+   floor, so no straight bell-edge aligns with the straight floor-line). The
+   earlier flat chop aligned its chopped straight bottom exactly with the
+   bright floor-edge highlight → one continuous horizontal line → the floor
+   read as bisecting the bell → 凹入地面 (sunk). But a bare round-on-floor
+   circle only touches at a tangent point and reads as hovering, so a dark
+   OCCLUSION crescent sits at the base (contact shadow ON the bell) + a tight
+   cast shadow pools on the floor. KB_OCY = local y of the crescent centre. */
+const KB_OCY = KB_R - 3; // just inside the round bottom
 
 /* A single kettlebell as a <g> drawn around local (0,0) = body centre. The
    id() helper namespaces the shared gradient defs. */
@@ -80,8 +85,25 @@ function Kettlebell({ id }: { id: (n: string) => string }) {
         strokeLinecap="round"
         opacity={0.55}
       />
-      {/* Cast-iron bell BODY (round, top-lit). */}
+      {/* Cast-iron bell BODY — a FULL round circle so its curved bottom meets
+          the floor (no straight edge to align with the floor-line). The flat
+          chop it replaced put a chopped straight bottom flush on the floor,
+          collinear with the bright floor-edge line → floor read as bisecting
+          the bell → 凹入地面 (sunk). */}
       <circle cx={0} cy={0} r={KB_R} fill={`url(#${id('body')})`} />
+      {/* Base OCCLUSION crescent — darkens where the round body presses into
+          the floor (contact shadow ON the bell itself). This is what keeps a
+          round-on-floor bell reading as GROUNDED instead of a tangent-point
+          hover. Clipped to the body circle so it never spills. */}
+      <ellipse
+        cx={0}
+        cy={KB_OCY}
+        rx={KB_R * 0.88}
+        ry={6}
+        fill="#15131a"
+        opacity={0.55}
+        clipPath={`url(#${id('bodyClip')})`}
+      />
       {/* Coral weight-band across the shoulder (energetic pop). */}
       <path
         d={`M${sn(-KB_R + 4)} -8 Q 0 -2 ${sn(KB_R - 4)} -8`}
@@ -133,7 +155,8 @@ export default function GymEquipment({
   const glowCx = (DUMBBELLS.cx + ENERGY_SOURCE.x) / 2 - 8;
   const glowCy = FLOOR_Y - 34;
 
-  /* Kettlebell body-centre y so the bell bottom rests on the floor. */
+  /* Kettlebell origin y so the round body's bottom (local y=KB_R) rests on
+     the floor; the base occlusion crescent + tight contact shadow ground it. */
   const kbBaseY = FLOOR_Y - KB_R;
   const SRC = ENERGY_SOURCE;
 
@@ -176,6 +199,13 @@ export default function GymEquipment({
           <stop offset="60%" stopColor={GYM.energy} stopOpacity="0.22" />
           <stop offset="100%" stopColor={GYM.energy} stopOpacity="0" />
         </radialGradient>
+
+        {/* Body clip — the full bell circle. Keeps the base occlusion crescent
+            inside the round body. userSpaceOnUse resolves in each bell's own
+            translated+scaled space, so one clip serves both bells. */}
+        <clipPath id={id('bodyClip')}>
+          <circle cx={0} cy={0} r={KB_R} />
+        </clipPath>
 
         {/* Static blur filters — never animated. */}
         <filter id={id('bGlow')} x="-80%" y="-80%" width="260%" height="260%">
@@ -235,8 +265,8 @@ export default function GymEquipment({
       {/* Soft contact shadows pooled under the bells. */}
       <ellipse
         cx={sn(DUMBBELLS.cx - 32)}
-        cy={FLOOR_Y + 4}
-        rx={20}
+        cy={FLOOR_Y + 2}
+        rx={23}
         ry={6}
         fill="#2a1f14"
         opacity={0.28}
@@ -244,9 +274,9 @@ export default function GymEquipment({
       />
       <ellipse
         cx={sn(DUMBBELLS.cx)}
-        cy={FLOOR_Y + 5}
-        rx={27}
-        ry={7.5}
+        cy={FLOOR_Y + 2}
+        rx={30}
+        ry={6.5}
         fill="#2a1f14"
         opacity={0.34}
         filter={`url(#${id('bShadow')})`}

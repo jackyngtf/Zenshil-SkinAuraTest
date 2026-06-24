@@ -48,26 +48,31 @@ Read `node_modules/next/dist/docs/` for current API docs. Key changes from v15:
   ├─ Custom visual interaction per question type
   └─ Double-tap to confirm flow
 
-/result (Results Page)
+/result (Results Page — lock-gated, see Data Flow)
   └─ Personalized aura profile
-     ├─ Primary aura card + percentage
-     ├─ Secondary aura card
-     ├─ Aura composition stats
-     ├─ Personality/skin description
-     └─ Ritual recommendations
+     ├─ Featured primary aura card + percentage (animated orb)
+     ├─ Aura family + personality/skin (horizontal carousel)
+     ├─ Secondary (supporting) aura card
+     ├─ Ritual recommendation CTA
+     ├─ Action row (share/save image, retake)
+     └─ Brand footer
 ```
 
 ### Data Flow
 
 1. **Landing** → User clicks "Start Analysis"
 2. **Quiz** → User answers Q1-Q10, store answers in Zustand
-3. **Quiz → Result** → After Q10 confirmed, show 3.6s analysis animation, then navigate to /result
+3. **Quiz → Result** → After Q10 confirmed, `markCompleted()` sets `completedAt` BEFORE the 3.6s analysis animation, then navigates to `/result`. Setting the lock early means a refresh during the animation still lands the user on their result.
 4. **Result** → `calculateResult()` reads all 10 answers, scores 8 aura types by frequency, picks primary/secondary
 
-**State Management:** `src/store/useQuizStore.ts` (Zustand)
+**Lock-to-result:** Once `completedAt` is set (persisted), both `/` and `/quiz` bounce the user to `/result`. The only way back is an explicit retake (`resetQuiz()`), which clears `completedAt`. The result page treats `completedAt !== null` (not `answers`) as the authoritative "has a result" gate — `answers` alone is too loose (a half-finished quiz would otherwise render an empty result).
+
+**State Management:** `src/store/useQuizStore.ts` (Zustand + `persist` middleware → localStorage key `zenshil-quiz`)
 - `answers: Record<string, string>` — Map of question ID → selected option ID
 - `language: 'zh' | 'en'` — Current language
-- `resetQuiz()` — Clear answers when restarting
+- `completedAt: number | null` — Non-null once the quiz is finished; the lock-to-result gate
+- `resetQuiz()` — Clear answers/progress/completion when restarting
+- Persisted (via `partialize`): only `answers`, `language`, `completedAt` — transient quiz progress (`currentQuestionIndex`, `totalQuestions`) is not persisted. Bump `STATE_VERSION` when quiz structure/scoring changes to invalidate stored results.
 
 ---
 
@@ -103,14 +108,14 @@ Each question has a custom visual interaction:
 
 | Type | Component | Behavior |
 |------|-----------|----------|
-| `imageStage` | `ImageStageQuestion` | Cross-fade images, Q1 (destinations) |
-| `weatherStage` | `WeatherStageQuestion` | Animated weather scenes, Q2 (skin weather) |
-| `emotionStage` | `EmotionStageQuestion` | Emotion visuals, Q3, Q7 |
-| `resourceMeter` | `ResourceMeterQuestion` | Resource/depletion gauge, Q4 |
-| `mirrorFocus` | `MirrorFocusQuestion` | Mirror reflection UI, Q5 |
-| `elementStage` | `ElementStageQuestion` | Life rhythm elements, Q6 (67KB motif) |
-| `auraField` | `AuraFieldQuestion` | Aura cloud visualizations, Q9 |
-| `ritualStage` | `RitualStageQuestion` | Ritual/self-care scenes, Q10 |
+| `imageStage` | `ImageStageQuestion` | Cross-fade photos, Q1 (destinations) |
+| `weatherStage` | `WeatherStageQuestion` | Animated weather scenes in a circular orb, Q2 (skin weather) & Q8 (stress triggers) |
+| `emotionStage` | `EmotionStageQuestion` | Q3 full-screen mood blobs + `SkinVoiceMembrane`; Q7 shell-on-the-seabed scene via `ShellConcernStage` |
+| `resourceMeter` | `ResourceMeterQuestion` | Q4 circular-orb room scenes: bedroom (Sleep), relax room + vinyl (Relax), study + hourglass (Time), gym (Energy) — dispatched by `ResourceMeterVisual` |
+| `mirrorFocus` | `MirrorFocusQuestion` | Static mirror-room photo, Q5 (focus area tints only) |
+| `elementStage` | `ElementStageQuestion` | Life rhythm elements in a circular orb, Q6 |
+| `auraField` | `AuraFieldQuestion` | Aura cloud visualizations in a circular orb, Q9 |
+| `ritualStage` | `RitualStageQuestion` | Ritual/self-care scenes, Q10 (sleep/spa/nature/facial) |
 
 All use **double-tap confirmation** pattern:
 1. **Tap 1** → Preview option (trigger animation)
@@ -149,14 +154,40 @@ All use deterministic motion (seeded randomness) to ensure consistent visual out
 ### Result Page Components
 
 `src/app/result/components/`:
-- **`FeaturedAuraCard`** — Primary aura hero section with percentage
-- **`AuraCompositionSection`** — Stats bars (energy, glow, stress, recovery)
-- **`SkinAuraFamilySection`** — Visual tree of related aura profiles
-- **`PersonalitySkinBlock`** — Description + skin needs
-- **`SecondaryAuraCard`** — Secondary aura profile
-- **`RitualCTASection`** — Product/ritual recommendations
-- **`ResultActionRow`** — Share/reset buttons
-- **`shareResultImage.ts`** — Canvas-based image generation for sharing
+- **`FeaturedAuraCard`** — Primary aura hero with animated `ResultAuraOrb` + percentage
+- **`SkinAuraFamilySection`** — The 4 families + member auras, the user's highlighted (carousel slide)
+- **`PersonalitySkinBlock`** — Insight points + skin-needs chip cloud (carousel slide)
+- **`AuraCarousel`** — Native CSS scroll-snap wrapper for the family + personality slides
+- **`SecondaryAuraCard`** — Secondary "supporting tendency" aura
+- **`RitualCTASection`** — Ritual/booking CTA (WhatsApp link via `resultLinks.ts`)
+- **`ResultActionRow`** — Share/save image + retake (with confirm dialog)
+- **`BrandFooter`** — Wordmark + tagline
+- **`useResultShareImage` / `shareResultImage.ts`** — Canvas-based 1080×1920 share image generation
+
+> `AuraCompositionSection.tsx` exists but is **not used** — it was removed from the result page and is effectively dead code. Do not assume it renders unless re-wired.
+>
+> `resultData.ts` is the **single source** for presentation data: aura numbers, orb colors, editorial "lens" palettes, the 4 families, identity profiles, insight points, stat labels, and the universal "Barrier Support" need rule (`withUniversalNeeds` / `getNeedLabel`). Read from here instead of hardcoding.
+
+---
+
+## Internal Preview Routes (not linked, safe to delete)
+
+`src/app/` contains standalone dev/preview harnesses for eyeballing visuals in isolation. They are **not reachable from the app** and can be removed without breaking anything:
+
+| Route | Purpose |
+|------|---------|
+| `/q4-preview` | All 4 Q4 room scenes stacked vertically, with a confirm-surge toggle |
+| `/q7-preview` | All 5 Q7 shell states (idle + A–D) in their circular-orb clip, with a confirm toggle |
+| `/result-preview` | All 8 share-images (1080×1920) rendered via `createResultShareImage`, each forced by a verified answer key; EN/ZH switch |
+| `/result-v2-preview` | A single "v2" full result-page layout (hardcoded `stress` aura) — the in-progress next design direction |
+
+> `tmp/` holds design-review screenshots for the v2 result exploration. It is scratch space, not shipped.
+
+### Dead / superseded code
+
+- **`q07/ClosedShellScene.tsx`** — an earlier idle-only shell concept, superseded by the live `ShellConcernStage.tsx`. Never imported; remove when convenient.
+- **`AuraCompositionSection.tsx`** — see note above; removed from the result page.
+- **`ElementStageQuestion.tsx`** still carries a guarded `Q4ResourceMeter` branch, but Q4 routing goes through `ResourceMeterQuestion`/`ResourceMeterVisual` instead — that branch is unreachable.
 
 ---
 
