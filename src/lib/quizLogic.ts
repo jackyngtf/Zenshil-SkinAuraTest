@@ -50,8 +50,10 @@ export function calculateResult(answers: Record<string, string>) {
   return {
     primaryAura: auraProfiles[primaryAuraKey],
     primaryPercentage,
+    primaryRawScore,
     secondaryAura: auraProfiles[secondaryAuraKey],
     secondaryPercentage,
+    secondaryRawScore,
     calculatedStats: auraProfiles[primaryAuraKey].statsModifiers
   };
 }

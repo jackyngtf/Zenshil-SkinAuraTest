@@ -9,6 +9,8 @@ import { ArrowRight, Bookmark, RefreshCcw, Share2 } from 'lucide-react';
 import auraProfilesData from '@/data/aura_profiles.json';
 import {
   auraLensPalettes,
+  auraV2Content,
+  getCouplet,
   getNeedLabel,
   getOrbColors,
   withUniversalNeeds,
@@ -48,7 +50,8 @@ type IdentityDetail = {
 type AuraV2Preview = {
   auraId: keyof typeof auraProfilesData;
   secondaryAuraId: keyof typeof auraProfilesData;
-  matchPercentage: number;
+  /** Frequency of the primary aura across 10 answers (truthful signal strength). */
+  primaryRawScore: number;
   secondaryPercentage: number;
   family: LanguageCopy;
   societyDescription: LanguageCopy;
@@ -58,10 +61,8 @@ type AuraV2Preview = {
   rareTone: LanguageCopy;
   luckyTone: LanguageCopy;
   dailyReminder: LanguageCopy;
-  skinQuote: LanguageCopy;
   societyTraits: SocietyTrait[];
   identityDetails: IdentityDetail[];
-  ritualNotes: IdentityNote[];
   skinMessage: LanguageCopy;
   skinAdviceNotes: IdentityNote[];
   journey: JourneyStep[];
@@ -70,7 +71,7 @@ type AuraV2Preview = {
 const preview: AuraV2Preview = {
   auraId: 'stress',
   secondaryAuraId: 'hidden_aging',
-  matchPercentage: 76,
+  primaryRawScore: 7,
   secondaryPercentage: 51,
   family: {
     zh: '壓力屏障系 Society',
@@ -97,10 +98,6 @@ const preview: AuraV2Preview = {
   dailyReminder: {
     zh: '先替肌膚降噪',
     en: 'Lower the noise',
-  },
-  skinQuote: {
-    zh: '你不是太敏感，只是肌膚接收得太快。',
-    en: 'You are not too sensitive. Your skin simply receives too quickly.',
   },
   societyTraits: [
     {
@@ -138,12 +135,6 @@ const preview: AuraV2Preview = {
       title: { zh: '今日提醒：先替肌膚降噪', en: 'Today cue: lower the noise' },
       detail: { zh: '少一點刺激，多一點鎮靜，讓屏障慢慢回穩。', en: 'Less stimulation, more calm, and time for the barrier to settle.' },
     },
-  ],
-  ritualNotes: [
-    { label: { zh: '水果', en: 'Fruit' }, value: { zh: '藍莓', en: 'Blueberry' } },
-    { label: { zh: '輕食', en: 'Light Bite' }, value: { zh: '核桃', en: 'Walnut' } },
-    { label: { zh: '飲品', en: 'Drink' }, value: { zh: '白茶', en: 'White Tea' } },
-    { label: { zh: '生活提醒', en: 'Lifestyle Cue' }, value: { zh: '今晚提早 30 分鐘離線', en: 'Log off 30 min earlier tonight' } },
   ],
   skinMessage: {
     zh: '我不是鬧情緒，只是替你接收了太多。今日少一點刺激，多一點鎮靜，讓屏障有時間回穩。',
@@ -207,6 +198,8 @@ function ResultV2Hero({ language }: { language: 'zh' | 'en' }) {
   const lens = auraLensPalettes[preview.auraId] ?? auraLensPalettes.glow;
   const displayName = language === 'en' ? aura.name : aura.chineseName;
   const secondaryName = language === 'en' ? aura.chineseName : aura.name;
+  const purityPercent = Math.floor((preview.primaryRawScore / 10) * 100);
+  const couplet = getCouplet(preview.auraId, preview.secondaryAuraId);
 
   return (
     <motion.section
@@ -232,7 +225,7 @@ function ResultV2Hero({ language }: { language: 'zh' | 'en' }) {
         <div className="mb-6 flex items-center justify-center gap-2 rounded-full border border-white/70 bg-white/58 px-4 py-2 shadow-sm backdrop-blur-sm">
           <span className="size-2 rounded-full" style={{ backgroundColor: orb.mid }} aria-hidden="true" />
           <span className="text-[10px] font-medium tracking-[0.16em] text-stone-500">
-            {language === 'en' ? `Aura Match ${preview.matchPercentage}%` : `氣場吻合度 ${preview.matchPercentage}%`}
+            {language === 'en' ? `Purity ${purityPercent}%` : `純度 ${purityPercent}%`}
           </span>
         </div>
 
@@ -266,7 +259,7 @@ function ResultV2Hero({ language }: { language: 'zh' | 'en' }) {
               {language === 'en' ? 'What you need to hear today' : '今日最需要聽到的一句'}
             </p>
             <p className="font-serif text-[19px] leading-relaxed text-stone-700 text-pretty">
-              &ldquo;{t(preview.skinQuote, language)}&rdquo;
+              &ldquo;{t(couplet, language)}&rdquo;
             </p>
           </div>
 
@@ -351,6 +344,9 @@ function SocietySlide({ language }: { language: 'zh' | 'en' }) {
 
 function IdentitySlide({ language }: { language: 'zh' | 'en' }) {
   const orb = getOrbColors(preview.auraId);
+  const lucky = auraV2Content[preview.auraId];
+  const fruitLabel: LanguageCopy = { zh: '果物', en: 'Fruit' };
+  const drinkLabel: LanguageCopy = { zh: '飲品', en: 'Drink' };
 
   return (
     <GlassCard className="min-h-[500px] p-7">
@@ -395,22 +391,27 @@ function IdentitySlide({ language }: { language: 'zh' | 'en' }) {
 
         <div className="my-6 h-px w-full bg-stone-200/55" />
 
-        <div className="mt-5">
-          <h3 className="mb-4 text-[11px] font-semibold tracking-[0.12em] text-stone-900">
-            {language === 'en' ? 'Today Ritual Cues' : '今日小儀式'}
-          </h3>
-          <div className="flex flex-wrap gap-2.5">
-            {preview.ritualNotes.map((note) => (
+        {lucky && (
+          <div className="mt-5">
+            <h3 className="mb-4 text-[11px] font-semibold tracking-[0.12em] text-stone-900">
+              {language === 'en' ? 'Lucky Fruit & Drink' : '幸運果物與飲品'}
+            </h3>
+            <div className="flex flex-wrap gap-2.5">
               <span
-                key={note.label.zh}
                 className="inline-flex items-center gap-1.5 rounded-full border border-stone-200/55 bg-white/70 px-3.5 py-2 text-[12px] font-light leading-none tracking-wide text-stone-600 shadow-sm"
               >
                 <span className="text-[9px] text-stone-400">✦</span>
-                {t(note.label, language)} {t(note.value, language)}
+                {t(fruitLabel, language)} {t(lucky.luckyFruit, language)}
               </span>
-            ))}
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border border-stone-200/55 bg-white/70 px-3.5 py-2 text-[12px] font-light leading-none tracking-wide text-stone-600 shadow-sm"
+              >
+                <span className="text-[9px] text-stone-400">✦</span>
+                {t(drinkLabel, language)} {t(lucky.luckyDrink, language)}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </GlassCard>
   );

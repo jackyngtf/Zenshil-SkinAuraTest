@@ -152,6 +152,124 @@ export interface AuraIdentityProfile {
   dominantStats: AuraStatKey[];
 }
 
+// ── v2 result-page content: couplet variants + lucky fruit/drink ──
+// Each couplet follows the "唔係X，只係Y" absolution shape, with the denial
+// (X) and the reframe (Y) tuned to sensory metaphor (light / fire / signal /
+// rhythm) rather than popped emotion words. Variant 0 is the default; variants
+// 1/2 are selected when the secondary aura matches the keyed trigger, so two
+// results with different secondaries read differently.
+//
+// Em-dashes are deliberately absent in the English lines (house style: none).
+export interface CoupletVariant {
+  zh: string;
+  en: string;
+}
+
+export interface LuckyItem {
+  zh: string;
+  en: string;
+}
+
+export interface AuraV2Content {
+  /** Absolution couplets. Index 0 = default; 1/2 keyed by secondary aura id. */
+  couplets: CoupletVariant[];
+  /** Which couplet to show for a given secondary aura id. Falls back to 0. */
+  coupletBySecondary: Record<string, number>;
+  luckyFruit: LuckyItem;
+  luckyDrink: LuckyItem;
+}
+
+export const auraV2Content: Record<string, AuraV2Content> = {
+  overworked: {
+    couplets: [
+      { zh: '唔係冇光，只係暫時調暗咗。', en: 'Not gone dark. Just dimmed for now.' },
+      { zh: '唔係冇力氣，只係感官用得太滿。', en: "Not out of strength. Your senses are just full." },
+      { zh: '唔係變鈍，只係欠一晚好覺。', en: 'Not dulled. Just short of one good night.' },
+    ],
+    coupletBySecondary: { stress: 1, late_night: 2 },
+    luckyFruit: { zh: '桂圓', en: "Dragon's Eye" },
+    luckyDrink: { zh: '紅棗茶', en: 'Jujube Tea' },
+  },
+  stress: {
+    couplets: [
+      { zh: '唔係太敏感，係你收得比人快。', en: 'Not too sensitive. You just take in more, faster.' },
+      { zh: '唔係繃緊，係你同時接收緊太多。', en: "Not wound tight. You're just holding too much at once." },
+      { zh: '唔係撐唔住，係訊號一齊湧到。', en: 'Not breaking. The signals just arrived all at once.' },
+    ],
+    coupletBySecondary: { overworked: 1, burnout: 2 },
+    luckyFruit: { zh: '藍莓', en: 'Blueberry' },
+    luckyDrink: { zh: '洋甘菊茶', en: 'Chamomile Tea' },
+  },
+  hidden_aging: {
+    couplets: [
+      { zh: '唔係老化，係你讀到時間嘅紋理。', en: "Not aging. You're just reading time's grain." },
+      { zh: '唔係遲鈍，係你習慣慢工出細活。', en: 'Not slow. You just trust the steady hand.' },
+      { zh: '唔係有問題，係你見到人哋未見嘅微光。', en: 'Not flawed. You just see the small shifts others miss.' },
+    ],
+    coupletBySecondary: { preventive: 1, glow: 2 },
+    luckyFruit: { zh: '黑葡萄', en: 'Black Grapes' },
+    luckyDrink: { zh: '黑茶', en: 'Pu-erh Tea' },
+  },
+  recovery: {
+    couplets: [
+      { zh: '唔係停滯，係身體重新砌緊地基。', en: "Not stuck. Your body is just relaying its foundation." },
+      { zh: '唔係軟弱，係你畀自己慢慢復原。', en: "Not weak. You're just letting yourself recover, slowly." },
+      { zh: '唔係難修，係值得花時間修。', en: 'Not hard to fix. Just worth the time to fix well.' },
+    ],
+    coupletBySecondary: { stress: 1, hidden_aging: 2 },
+    luckyFruit: { zh: '木瓜', en: 'Papaya' },
+    luckyDrink: { zh: '蜂蜜檸檬水', en: 'Honey Lemon Water' },
+  },
+  preventive: {
+    couplets: [
+      { zh: '唔係乏味，係你守住緊平衡。', en: "Not dull. You're just holding a hard-won balance." },
+      { zh: '唔係低調，係你將光收得好穩。', en: "Not understated. You've just stored your glow where it stays." },
+      { zh: '唔係保守，係你識得護住根基。', en: 'Not cautious. You just know to guard the root.' },
+    ],
+    coupletBySecondary: { glow: 1, recovery: 2 },
+    luckyFruit: { zh: '蘋果', en: 'Apple' },
+    luckyDrink: { zh: '綠茶', en: 'Green Tea' },
+  },
+  glow: {
+    couplets: [
+      { zh: '唔係貪靚，係你對光有要求。', en: 'Not vain. You just have a standard for light.' },
+      { zh: '唔係浮誇，係你將穩定發成光。', en: "Not flashy. You're turning steadiness into light." },
+      { zh: '唔係一閃即逝，係你學緊點留住光。', en: "Not fleeting. You're just learning how to keep the light." },
+    ],
+    coupletBySecondary: { preventive: 1, hidden_aging: 2 },
+    luckyFruit: { zh: '火龍果', en: 'Dragon Fruit' },
+    luckyDrink: { zh: '玫瑰花茶', en: 'Rose Tea' },
+  },
+  burnout: {
+    couplets: [
+      { zh: '唔係失敗，係你燒得太耐太猛。', en: "Not failing. You've just burned long and bright." },
+      { zh: '唔係無能，係你急需降溫。', en: 'Not incapable. You just badly need to cool down.' },
+      { zh: '唔係耗盡，係你一路燒一路冇熄。', en: 'Not emptied. You just never let the fire rest.' },
+    ],
+    coupletBySecondary: { stress: 1, late_night: 2 },
+    luckyFruit: { zh: '紅棗', en: 'Red Dates' },
+    luckyDrink: { zh: '紅糖薑茶', en: 'Ginger Honey Tea' },
+  },
+  late_night: {
+    couplets: [
+      { zh: '唔係夜貓，係你嘅日夜調轉咗。', en: 'Not nocturnal. Your day and night just traded places.' },
+      { zh: '唔係懶，係你畀嘢逼住熬夜。', en: "Not lazy. You're just kept up by everything else." },
+      { zh: '唔係冇精神，係你將光留咗畀夜晚。', en: 'Not drained. You just gave your light to the night.' },
+    ],
+    coupletBySecondary: { overworked: 1, glow: 2 },
+    luckyFruit: { zh: '奇異果', en: 'Kiwi' },
+    luckyDrink: { zh: '牛奶', en: 'Warm Milk' },
+  },
+};
+
+/** Pick the couplet for a primary aura given its secondary, defaulting to 0. */
+export const getCouplet = (primaryAuraId: string, secondaryAuraId: string): CoupletVariant => {
+  const content = auraV2Content[primaryAuraId];
+  if (!content) return { zh: '', en: '' };
+  const index = content.coupletBySecondary[secondaryAuraId] ?? 0;
+  return content.couplets[index] ?? content.couplets[0];
+};
+
 export const auraSymbols: Record<string, { labelZh: string; labelEn: string; coreZh: string; coreEn: string }> = {
   overworked: {
     labelZh: '能量核心',
