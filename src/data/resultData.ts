@@ -507,6 +507,639 @@ export function getAuraIdentity(auraId: string) {
   return auraIdentityProfiles[auraId];
 }
 
+// ── v2 result-page editorial content (society, traits, journey, etc.) ──
+// One entry per aura. Follows the "不是X，而是Y / It is not X; it is Y"
+// absolution shape, with a distinct sensory register per aura. No em-dashes.
+export type LanguageCopy = { zh: string; en: string };
+export interface SocietyTrait { title: LanguageCopy; detail: LanguageCopy }
+export interface IdentityDetail { title: LanguageCopy; detail: LanguageCopy }
+export interface IdentityNote { label: LanguageCopy; value: LanguageCopy }
+export interface JourneyStep { label: LanguageCopy; treatment: string; detail: LanguageCopy }
+export interface AuraV2Editorial {
+  society: LanguageCopy;
+  societyDescription: LanguageCopy;
+  societyPercent: string;
+  auraCore: LanguageCopy;
+  rareTone: LanguageCopy;
+  luckyTone: LanguageCopy;
+  dailyReminder: LanguageCopy;
+  societyTraits: SocietyTrait[];
+  identityDetails: IdentityDetail[];
+  skinAdviceNotes: IdentityNote[];
+  skinMessage: LanguageCopy;
+  journey: JourneyStep[];
+}
+
+export const auraV2Editorial: Record<string, AuraV2Editorial> = {
+  stress: {
+    society: { zh: '壓力屏障系 Society', en: 'Barrier Pressure Society' },
+    societyDescription: {
+      zh: '你的肌膚對壓力、溫差、睡眠同情緒變化特別快有反應。不是脆弱，而是屏障正在提示你：先降噪，再修復。',
+      en: 'Your skin reacts quickly to pressure, temperature shifts, sleep, and emotional changes. It is not weakness; your barrier is asking for less noise and gentler repair.',
+    },
+    societyPercent: '18%',
+    auraCore: { zh: '高感知接收', en: 'High Sensitivity' },
+    rareTone: { zh: '稀有度 18%', en: 'Rarity 18%' },
+    luckyTone: { zh: '海霧粉紫', en: 'Sea-Mist Mauve' },
+    dailyReminder: { zh: '先替肌膚降噪', en: 'Lower the noise' },
+    societyTraits: [
+      {
+        title: { zh: '壓力訊號快', en: 'Fast pressure signals' },
+        detail: {
+          zh: '情緒、溫差與忙碌節奏，會較快反映在泛紅、繃緊與不穩定上。',
+          en: 'Emotion, temperature shifts, and busy rhythms show up quickly as redness, tightness, and instability.',
+        },
+      },
+      {
+        title: { zh: '屏障容易受壓', en: 'Barrier under pressure' },
+        detail: {
+          zh: '這一系的肌膚不是弱，而是屏障更容易被外界刺激推到緊繃狀態。',
+          en: 'This society is not weak. Its barrier is more easily pushed into a tense state by external stimulation.',
+        },
+      },
+      {
+        title: { zh: '需要鎮靜修復', en: 'Needs calm repair' },
+        detail: {
+          zh: '比起加強攻效，低刺激、降溫與屏障修復會更適合這一系。',
+          en: 'Low-stimulation calming and barrier repair work better than stronger actives for this society.',
+        },
+      },
+    ],
+    identityDetails: [
+      {
+        title: { zh: 'Aura No. 222', en: 'Aura No. 222' },
+        detail: { zh: '代表你的高感知身份編號。', en: 'Your High Sensitivity Operator identity number.' },
+      },
+      {
+        title: { zh: '幸運色：海霧粉紫', en: 'Lucky tone: Sea-Mist Mauve' },
+        detail: { zh: '用柔和冷粉紫，幫肌膚情緒先降溫。', en: 'A soft cool mauve that cues calm before repair.' },
+      },
+      {
+        title: { zh: '今日提醒：先替肌膚降噪', en: 'Today cue: lower the noise' },
+        detail: { zh: '少一點刺激，多一點鎮靜，讓屏障慢慢回穩。', en: 'Less stimulation, more calm, and time for the barrier to settle.' },
+      },
+    ],
+    skinAdviceNotes: [
+      { label: { zh: '目前訊號', en: 'Current Signal' }, value: { zh: '泛紅、繃緊、不穩', en: 'Redness, tightness, imbalance' } },
+      { label: { zh: '有幫助的是', en: 'What Helps' }, value: { zh: '少刺激，多鎮靜', en: 'Less stimulation, more calming' } },
+      { label: { zh: '今晚提醒', en: 'Tonight' }, value: { zh: '提早 30 分鐘離線', en: 'Log off 30 min earlier' } },
+    ],
+    skinMessage: {
+      zh: '我不是鬧情緒，只是替你接收了太多。今日少一點刺激，多一點鎮靜，讓屏障有時間回穩。',
+      en: 'I am not being dramatic. I have simply been receiving too much for you. Today, choose less stimulation and more calm so your barrier has time to settle.',
+    },
+    journey: [
+      {
+        label: { zh: 'Calm the Signal', en: 'Calm the Signal' },
+        treatment: 'X.prof 040',
+        detail: { zh: '先降低泛紅與高感知反應。', en: 'Lower visible redness and high-sensitivity response first.' },
+      },
+      {
+        label: { zh: 'Repair the Barrier', en: 'Repair the Barrier' },
+        treatment: 'EXOXEN',
+        detail: { zh: '把修復重點放回肌膚屏障。', en: 'Bring the focus back to barrier repair.' },
+      },
+      {
+        label: { zh: 'Maintain the Rhythm', en: 'Maintain the Rhythm' },
+        treatment: 'PLASONIC',
+        detail: { zh: '用低壓方式維持穩定與吸收力。', en: 'Maintain stability and absorption with a low-pressure rhythm.' },
+      },
+    ],
+  },
+
+  overworked: {
+    society: { zh: '持續過載系 Society', en: 'Constant Overload Society' },
+    societyDescription: {
+      zh: '你的肌膚長期處於運轉狀態，代謝慢慢走慢。不是懶惰，而是肌膚正在提示你：先回氣，再充電。',
+      en: 'Your skin has been running nonstop, and its metabolism has slowly drifted down. It is not laziness; your skin is asking for a pause to recharge.',
+    },
+    societyPercent: '22%',
+    auraCore: { zh: '過載運轉', en: 'Constant Overload' },
+    rareTone: { zh: '稀有度 22%', en: 'Rarity 22%' },
+    luckyTone: { zh: '暖霧琥珀', en: 'Amber Mist' },
+    dailyReminder: { zh: '先回氣，再出發', en: 'Pause before pushing' },
+    societyTraits: [
+      {
+        title: { zh: '代謝走慢了', en: 'Slowed metabolism' },
+        detail: {
+          zh: '代謝變慢讓暗沉與疲倦更容易累積，肌膚好像一直充不滿電。',
+          en: 'A slower metabolism lets dullness and tiredness build up; your skin feels undercharged.',
+        },
+      },
+      {
+        title: { zh: '持續過載訊號', en: 'Constant overload signal' },
+        detail: {
+          zh: '這一系不是懶，而是運轉太久，皮膚訊號開始遲鈍。',
+          en: 'This society is not lazy. It has been running too long, and its signals are slowing.',
+        },
+      },
+      {
+        title: { zh: '需要回氣充電', en: 'Needs a recharge pause' },
+        detail: {
+          zh: '比起不停加功效，先回氣、再充電會更適合這一系。',
+          en: 'A pause to recharge works better than piling on more actives for this society.',
+        },
+      },
+    ],
+    identityDetails: [
+      {
+        title: { zh: 'Aura No. 111', en: 'Aura No. 111' },
+        detail: { zh: '代表你的過載身份編號。', en: 'Your Constant Overload Operator identity number.' },
+      },
+      {
+        title: { zh: '幸運色：暖霧琥珀', en: 'Lucky tone: Amber Mist' },
+        detail: { zh: '用暖調琥珀，幫疲倦的肌膚慢慢回氣。', en: 'A warm amber that cues a slow recharge for tired skin.' },
+      },
+      {
+        title: { zh: '今日提醒：先回氣，再出發', en: 'Today cue: pause before pushing' },
+        detail: { zh: '讓肌膚有一個空檔，代謝才有氣力重新運轉。', en: 'Give skin a gap; metabolism needs space to spin up again.' },
+      },
+    ],
+    skinAdviceNotes: [
+      { label: { zh: '目前訊號', en: 'Current Signal' }, value: { zh: '疲倦、暗沉、代謝慢', en: 'Tiredness, dullness, slow metabolism' } },
+      { label: { zh: '有幫助的是', en: 'What Helps' }, value: { zh: '先回氣，再充電', en: 'Pause first, then recharge' } },
+      { label: { zh: '今晚提醒', en: 'Tonight' }, value: { zh: '提早 30 分鐘休息', en: 'Rest 30 min earlier' } },
+    ],
+    skinMessage: {
+      zh: '我不是變懶，只是替你撐了太久。今日給我一個空檔回氣，代謝才有氣力重新跑起來。',
+      en: 'I am not being lazy. I have been carrying the load for you for too long. Today, give me a gap to recharge so my metabolism can spin up again.',
+    },
+    journey: [
+      {
+        label: { zh: 'Restart the Metabolism', en: 'Restart the Metabolism' },
+        treatment: 'X.prof 040',
+        detail: { zh: '先喚醒疲倦、暗沉的代謝訊號。', en: 'Wake the tired, dull metabolism signal first.' },
+      },
+      {
+        label: { zh: 'Recharge the Reserve', en: 'Recharge the Reserve' },
+        treatment: 'EXOXEN',
+        detail: { zh: '把能量儲備重新充回肌膚。', en: 'Recharge the energy reserve back into the skin.' },
+      },
+      {
+        label: { zh: 'Sustain the Pace', en: 'Sustain the Pace' },
+        treatment: 'PLASONIC',
+        detail: { zh: '用低壓節奏維持動力，不要再逼。', en: 'Sustain momentum with a low-pressure rhythm, without pushing.' },
+      },
+    ],
+  },
+
+  hidden_aging: {
+    society: { zh: '結構生活系 Society', en: 'Structural Living Society' },
+    societyDescription: {
+      zh: '你的肌膚結構訊號變化細微，細紋與彈性會不知不覺浮現。不是變老，而是結構正在細聲提示：提早做保養。',
+      en: 'The structural signals of your skin shift subtly; fine lines and elasticity appear unnoticed. It is not aging; your structure is quietly asking for earlier care.',
+    },
+    societyPercent: '15%',
+    auraCore: { zh: '結構感知', en: 'Structural Awareness' },
+    rareTone: { zh: '稀有度 15%', en: 'Rarity 15%' },
+    luckyTone: { zh: '珠光灰棕', en: 'Pearl Taupe' },
+    dailyReminder: { zh: '提早做保養', en: 'Protect early' },
+    societyTraits: [
+      {
+        title: { zh: '細紋偷偷浮現', en: 'Fine lines surface quietly' },
+        detail: {
+          zh: '結構訊號變化細微，細紋與彈性下降會不知不覺出現。',
+          en: 'Structural shifts are subtle; fine lines and lost elasticity appear quietly.',
+        },
+      },
+      {
+        title: { zh: '彈性慢慢走樣', en: 'Elasticity drifting down' },
+        detail: {
+          zh: '彈性流失不是突然，而是日積月累地慢慢鬆弛。',
+          en: 'Lost elasticity is not sudden; it loosens slowly, day by day.',
+        },
+      },
+      {
+        title: { zh: '需要結構預防', en: 'Needs structural prevention' },
+        detail: {
+          zh: '比起補救，提早做結構保養更能守住底子。',
+          en: 'Early structural care protects the foundation better than repair later.',
+        },
+      },
+    ],
+    identityDetails: [
+      {
+        title: { zh: 'Aura No. 333', en: 'Aura No. 333' },
+        detail: { zh: '代表你的結構感知身份編號。', en: 'Your Structural Awareness identity number.' },
+      },
+      {
+        title: { zh: '幸運色：珠光灰棕', en: 'Lucky tone: Pearl Taupe' },
+        detail: { zh: '用沉穩灰棕，幫結構訊號靜靜打底。', en: 'A grounded taupe that quietly reinforces the structural base.' },
+      },
+      {
+        title: { zh: '今日提醒：提早做保養', en: 'Today cue: protect early' },
+        detail: { zh: '讓微老化少一點時間累積，結構才穩。', en: 'Give hidden aging less time to build; structure stays firmer.' },
+      },
+    ],
+    skinAdviceNotes: [
+      { label: { zh: '目前訊號', en: 'Current Signal' }, value: { zh: '細紋、彈性下降', en: 'Fine lines, lost elasticity' } },
+      { label: { zh: '有幫助的是', en: 'What Helps' }, value: { zh: '提早結構保養', en: 'Early structural care' } },
+      { label: { zh: '今晚提醒', en: 'Tonight' }, value: { zh: '加一步抗氧', en: 'Add one antioxidant step' } },
+    ],
+    skinMessage: {
+      zh: '我不是突然變老，只是結構訊號一直在細聲說話。今日提早多一步保養，讓微老化少一點時間累積。',
+      en: 'I am not aging all at once. My structural signals have been speaking quietly all along. Today, add one step of early care and give hidden aging less time to build.',
+    },
+    journey: [
+      {
+        label: { zh: 'Signal the Structure', en: 'Signal the Structure' },
+        treatment: 'X.prof 040',
+        detail: { zh: '先喚醒緊緻度與結構訊號。', en: 'Wake the firmness and structural signal first.' },
+      },
+      {
+        label: { zh: 'Rebuild the Foundation', en: 'Rebuild the Foundation' },
+        treatment: 'EXOXEN',
+        detail: { zh: '把結構基礎慢慢重建起來。', en: 'Rebuild the structural foundation steadily.' },
+      },
+      {
+        label: { zh: 'Hold the Line', en: 'Hold the Line' },
+        treatment: 'PLASONIC',
+        detail: { zh: '用持續節奏守住彈性，長線防鬆弛。', en: 'Hold elasticity with a steady rhythm to prevent long-term slackness.' },
+      },
+    ],
+  },
+
+  recovery: {
+    society: { zh: '修復重整系 Society', en: 'Repair Rebuild Society' },
+    societyDescription: {
+      zh: '你的肌膚正處於脆弱狀態，屏障還在慢慢重整。不是壞掉，而是屏障正在修復自己：給它溫柔與時間。',
+      en: 'Your skin sits in a fragile state, and the barrier is still slowly rebuilding. It is not broken; the barrier is repairing itself, and it asks for gentleness and time.',
+    },
+    societyPercent: '12%',
+    auraCore: { zh: '修復模式', en: 'Repair Mode' },
+    rareTone: { zh: '稀有度 12%', en: 'Rarity 12%' },
+    luckyTone: { zh: '鼠尾草薄霧', en: 'Sage Mist' },
+    dailyReminder: { zh: '慢一步，溫柔一點', en: 'Slow down, go gentle' },
+    societyTraits: [
+      {
+        title: { zh: '屏障正在受損', en: 'Barrier under repair' },
+        detail: {
+          zh: '皮膚正處於脆弱狀態，屏障還在慢慢重整。',
+          en: 'Your skin sits in a fragile state; the barrier is still slowly rebuilding.',
+        },
+      },
+      {
+        title: { zh: '容易受刺激', en: 'Easily stimulated' },
+        detail: {
+          zh: '這一系對外界反應大，太強的步驟會加重負擔。',
+          en: 'This society reacts strongly; steps that are too harsh add to the load.',
+        },
+      },
+      {
+        title: { zh: '需要溫柔修復', en: 'Needs gentle repair' },
+        detail: {
+          zh: '比起加碼功效，溫和、低刺激的修復更能幫屏障復原。',
+          en: 'Gentle, low-stimulation repair helps the barrier recover better than stronger actives.',
+        },
+      },
+    ],
+    identityDetails: [
+      {
+        title: { zh: 'Aura No. 444', en: 'Aura No. 444' },
+        detail: { zh: '代表你的修復模式身份編號。', en: 'Your Repair Mode identity number.' },
+      },
+      {
+        title: { zh: '幸運色：鼠尾草薄霧', en: 'Lucky tone: Sage Mist' },
+        detail: { zh: '用柔和的鼠尾草綠，幫受損屏障帶來平靜。', en: 'A soft sage green that brings calm to a wounded barrier.' },
+      },
+      {
+        title: { zh: '今日提醒：慢一步，溫柔一點', en: 'Today cue: slow and gentle' },
+        detail: { zh: '讓屏障多一點時間，修復不用急。', en: 'Give the barrier more time; repair does not need to rush.' },
+      },
+    ],
+    skinAdviceNotes: [
+      { label: { zh: '目前訊號', en: 'Current Signal' }, value: { zh: '脆弱、屏障受損', en: 'Fragile, damaged barrier' } },
+      { label: { zh: '有幫助的是', en: 'What Helps' }, value: { zh: '溫和、低刺激修復', en: 'Gentle, low-stimulation repair' } },
+      { label: { zh: '今晚提醒', en: 'Tonight' }, value: { zh: '停用一步猛效', en: 'Skip one active step tonight' } },
+    ],
+    skinMessage: {
+      zh: '我不是壞掉，只是屏障還在慢慢重整。今日慢一步、溫柔一點，讓我多一點時間復原。',
+      en: 'I am not broken. My barrier is still slowly rebuilding itself. Today, slow down and be gentle; give me a little more time to recover.',
+    },
+    journey: [
+      {
+        label: { zh: 'Soften the Damage', en: 'Soften the Damage' },
+        treatment: 'X.prof 040',
+        detail: { zh: '先溫和地安撫受損的屏障。', en: 'Gently soothe the wounded barrier first.' },
+      },
+      {
+        label: { zh: 'Rebuild Gently', en: 'Rebuild Gently' },
+        treatment: 'EXOXEN',
+        detail: { zh: '把修復重點放回脆弱的位置。', en: 'Bring repair focus back to the fragile areas.' },
+      },
+      {
+        label: { zh: 'Re-enter Slowly', en: 'Re-enter Slowly' },
+        treatment: 'PLASONIC',
+        detail: { zh: '用最輕的力度慢慢重回節奏。', en: 'Ease back into rhythm with the lightest pressure.' },
+      },
+    ],
+  },
+
+  preventive: {
+    society: { zh: '平衡建構系 Society', en: 'Balanced Build Society' },
+    societyDescription: {
+      zh: '你的肌膚狀態平穩，但外在壓力開始慢慢累積。不是無聊，而是這份平衡值得守住：持續建構，延長穩定。',
+      en: 'Your skin sits on a stable baseline, though outside pressure is building slowly. It is not boring; this balance is worth keeping: steady building extends the stability.',
+    },
+    societyPercent: '20%',
+    auraCore: { zh: '平衡建構', en: 'Balanced Build' },
+    rareTone: { zh: '稀有度 20%', en: 'Rarity 20%' },
+    luckyTone: { zh: '鴿石霧灰', en: 'Dove Stone' },
+    dailyReminder: { zh: '守住這份平衡', en: 'Hold the balance' },
+    societyTraits: [
+      {
+        title: { zh: '底子穩定', en: 'Stable baseline' },
+        detail: {
+          zh: '皮膚狀態平穩，是一個值得守住的健康基礎。',
+          en: 'Your skin sits on a stable baseline, a healthy base worth keeping.',
+        },
+      },
+      {
+        title: { zh: '防護需求浮現', en: 'Protection need rising' },
+        detail: {
+          zh: '雖然穩定，但外在壓力開始慢慢累積，需要加一層防護。',
+          en: 'Though stable, outside pressure is building slowly and asks for a layer of protection.',
+        },
+      },
+      {
+        title: { zh: '需要平衡建構', en: 'Needs balanced build' },
+        detail: {
+          zh: '比起急救，持續的平衡建構更能延長這份穩定。',
+          en: 'Steady balanced building extends this stability better than emergency rescue.',
+        },
+      },
+    ],
+    identityDetails: [
+      {
+        title: { zh: 'Aura No. 555', en: 'Aura No. 555' },
+        detail: { zh: '代表你的平衡建構身份編號。', en: 'Your Balanced Build identity number.' },
+      },
+      {
+        title: { zh: '幸運色：鴿石霧灰', en: 'Lucky tone: Dove Stone' },
+        detail: { zh: '用沉靜霧灰，幫穩定肌膚守住底線。', en: 'A quiet misted grey that guards a stable baseline.' },
+      },
+      {
+        title: { zh: '今日提醒：守住這份平衡', en: 'Today cue: hold the balance' },
+        detail: { zh: '持續建構，讓平衡成為長期的底氣。', en: 'Keep building so balance becomes your long-term foundation.' },
+      },
+    ],
+    skinAdviceNotes: [
+      { label: { zh: '目前訊號', en: 'Current Signal' }, value: { zh: '穩定、需保護', en: 'Stable, needs protection' } },
+      { label: { zh: '有幫助的是', en: 'What Helps' }, value: { zh: '持續平衡建構', en: 'Steady balanced building' } },
+      { label: { zh: '今晚提醒', en: 'Tonight' }, value: { zh: '做好防護打底', en: 'Lay down protective base' } },
+    ],
+    skinMessage: {
+      zh: '我不是無聊才這樣穩定，而是這份平衡值得你用心守住。今日持續建構，讓穩定成為長期的底氣。',
+      en: 'I am not stable out of boredom. This balance is worth protecting with care. Today, keep building so stability becomes your long-term foundation.',
+    },
+    journey: [
+      {
+        label: { zh: 'Read the Baseline', en: 'Read the Baseline' },
+        treatment: 'X.prof 040',
+        detail: { zh: '先讀取平穩的肌膚基線。', en: 'Read the stable skin baseline first.' },
+      },
+      {
+        label: { zh: 'Reinforce the Shield', en: 'Reinforce the Shield' },
+        treatment: 'EXOXEN',
+        detail: { zh: '把保護層加固在健康基礎上。', en: 'Reinforce a protective layer over the healthy base.' },
+      },
+      {
+        label: { zh: 'Keep the Balance', en: 'Keep the Balance' },
+        treatment: 'PLASONIC',
+        detail: { zh: '用平衡節奏長線守住穩定。', en: 'Guard stability long-term with a balanced rhythm.' },
+      },
+    ],
+  },
+
+  glow: {
+    society: { zh: '光感探索系 Society', en: 'Radiance Seek Society' },
+    societyDescription: {
+      zh: '你的肌膚代謝活躍，對光澤變化特別敏感。不是貪心，而是光感想被好好引導：溫和支持，自然透亮。',
+      en: 'Your skin has an active metabolism and is especially tuned to radiance. It is not greed; your glow wants to be guided well: gentle support, natural translucency.',
+    },
+    societyPercent: '25%',
+    auraCore: { zh: '光感探索', en: 'Radiance Seeking' },
+    rareTone: { zh: '稀有度 25%', en: 'Rarity 25%' },
+    luckyTone: { zh: '香檳金', en: 'Champagne Gold' },
+    dailyReminder: { zh: '讓光由內透出', en: 'Let glow rise within' },
+    societyTraits: [
+      {
+        title: { zh: '代謝活躍', en: 'Active metabolism' },
+        detail: {
+          zh: '皮膚代謝偏快，對光澤追求特別敏感。',
+          en: 'A faster metabolism makes this society especially tuned to radiance.',
+        },
+      },
+      {
+        title: { zh: '光感需求大', en: 'High radiance demand' },
+        detail: {
+          zh: '光澤變化會快反映在膚色與透亮度上。',
+          en: 'Radiance shifts show up quickly in tone and translucency.',
+        },
+      },
+      {
+        title: { zh: '需要光澤支持', en: 'Needs radiance support' },
+        detail: {
+          zh: '比起控油，溫和的代謝支持更能讓光感自然浮現。',
+          en: 'Gentle metabolism support lets radiance surface more naturally than oil control.',
+        },
+      },
+    ],
+    identityDetails: [
+      {
+        title: { zh: 'Aura No. 666', en: 'Aura No. 666' },
+        detail: { zh: '代表你的光感探索身份編號。', en: 'Your Radiance Seek identity number.' },
+      },
+      {
+        title: { zh: '幸運色：香檳金', en: 'Lucky tone: Champagne Gold' },
+        detail: { zh: '用亮澤香檳金，引導光感自然浮現。', en: 'A luminous champagne gold that guides radiance to the surface.' },
+      },
+      {
+        title: { zh: '今日提醒：讓光由內透出', en: 'Today cue: let glow rise within' },
+        detail: { zh: '溫和代謝支持，比猛烈亮白更耐看。', en: 'Gentle metabolism support outlasts harsh brightening.' },
+      },
+    ],
+    skinAdviceNotes: [
+      { label: { zh: '目前訊號', en: 'Current Signal' }, value: { zh: '追光、代謝活躍', en: 'Seeking light, active metabolism' } },
+      { label: { zh: '有幫助的是', en: 'What Helps' }, value: { zh: '溫和代謝支持', en: 'Gentle metabolism support' } },
+      { label: { zh: '今晚提醒', en: 'Tonight' }, value: { zh: '保濕先於亮白', en: 'Hydrate before brightening' } },
+    ],
+    skinMessage: {
+      zh: '我不是貪心，只是光感想被你好好引導。今日溫和地支持代謝，光澤會自然由內透出來。',
+      en: 'I am not being greedy. My radiance simply wants to be guided well. Today, support my metabolism gently and the glow will rise from within.',
+    },
+    journey: [
+      {
+        label: { zh: 'Wake the Light', en: 'Wake the Light' },
+        treatment: 'X.prof 040',
+        detail: { zh: '先重啟光澤代謝的源頭。', en: 'Restart the source of the radiance metabolism first.' },
+      },
+      {
+        label: { zh: 'Deepen the Glow', en: 'Deepen the Glow' },
+        treatment: 'EXOXEN',
+        detail: { zh: '把內在光感慢慢加深。', en: 'Deepen the inner glow steadily.' },
+      },
+      {
+        label: { zh: 'Set the Shine', en: 'Set the Shine' },
+        treatment: 'PLASONIC',
+        detail: { zh: '用均勻節奏鎖住透亮。', en: 'Lock in translucency with an even rhythm.' },
+      },
+    ],
+  },
+
+  burnout: {
+    society: { zh: '耗盡重啟系 Society', en: 'Depleted Reset Society' },
+    societyDescription: {
+      zh: '你的肌膚已經到了深層疲勞，彈性與光澤明顯下滑。不是放棄，而是身體已經響起最深的警報：先停止耗損。',
+      en: 'Your skin has reached deep fatigue; elasticity and radiance have dropped sharply. It is not giving up; your body has sounded its deepest alarm: stop the drain first.',
+    },
+    societyPercent: '8%',
+    auraCore: { zh: '耗盡臨界', en: 'Depleted Threshold' },
+    rareTone: { zh: '稀有度 8%', en: 'Rarity 8%' },
+    luckyTone: { zh: '灰紫燼', en: 'Deep Mauve Ash' },
+    dailyReminder: { zh: '先停止耗損', en: 'Stop the drain first' },
+    societyTraits: [
+      {
+        title: { zh: '嚴重疲勞訊號', en: 'Severe fatigue signal' },
+        detail: {
+          zh: '皮膚已經到了深層疲勞，彈性與光澤明顯下滑。',
+          en: 'Your skin has reached deep fatigue; elasticity and radiance have dropped sharply.',
+        },
+      },
+      {
+        title: { zh: '失去彈性', en: 'Lost elasticity' },
+        detail: {
+          zh: '這不是普通疲倦，而是儲備幾乎耗盡，皮膚難以回彈。',
+          en: 'This is not ordinary tiredness; reserves are nearly empty and skin struggles to bounce back.',
+        },
+      },
+      {
+        title: { zh: '需要深層重啟', en: 'Needs deep reset' },
+        detail: {
+          zh: '比起表面提亮，深層重啟與休息更能幫皮膚回氣。',
+          en: 'A deep reset and rest help more than surface brightening for this society.',
+        },
+      },
+    ],
+    identityDetails: [
+      {
+        title: { zh: 'Aura No. 777', en: 'Aura No. 777' },
+        detail: { zh: '代表你的耗盡臨界身份編號。', en: 'Your Depleted Threshold identity number.' },
+      },
+      {
+        title: { zh: '幸運色：灰紫燼', en: 'Lucky tone: Deep Mauve Ash' },
+        detail: { zh: '用沉靜灰紫，先幫耗盡的肌膚降溫熄火。', en: 'A deep mauve ash that cools and quiets depleted skin first.' },
+      },
+      {
+        title: { zh: '今日提醒：先停止耗損', en: 'Today cue: stop the drain first' },
+        detail: { zh: '讓皮膚有一個深層休息，其餘的之後再說。', en: 'Give skin a deep rest; everything else can wait.' },
+      },
+    ],
+    skinAdviceNotes: [
+      { label: { zh: '目前訊號', en: 'Current Signal' }, value: { zh: '深層疲勞、失去彈性', en: 'Deep fatigue, lost elasticity' } },
+      { label: { zh: '有幫助的是', en: 'What Helps' }, value: { zh: '深層重啟與休息', en: 'Deep reset and rest' } },
+      { label: { zh: '今晚提醒', en: 'Tonight' }, value: { zh: '今晚什麼都不多做', en: 'Do nothing extra tonight' } },
+    ],
+    skinMessage: {
+      zh: '我不是放棄，只是已經響起最深的警報。今日先停止耗損，給我一個深層休息，其餘的之後再說。',
+      en: 'I am not giving up. I have simply sounded my deepest alarm. Today, stop the drain first and give me a deep rest; everything else can wait.',
+    },
+    journey: [
+      {
+        label: { zh: 'Stop the Drain', en: 'Stop the Drain' },
+        treatment: 'X.prof 040',
+        detail: { zh: '先叫停最深層的耗損。', en: 'Halt the deepest drain first.' },
+      },
+      {
+        label: { zh: 'Rebuild from Zero', en: 'Rebuild from Zero' },
+        treatment: 'EXOXEN',
+        detail: { zh: '從最底層開始慢慢重建。', en: 'Rebuild slowly from the deepest layer up.' },
+      },
+      {
+        label: { zh: 'Reset the Pace', en: 'Reset the Pace' },
+        treatment: 'PLASONIC',
+        detail: { zh: '用可持續的節奏重設步伐。', en: 'Reset a sustainable pace with a steady rhythm.' },
+      },
+    ],
+  },
+
+  late_night: {
+    society: { zh: '夜間創作系 Society', en: 'Night Creator Society' },
+    societyDescription: {
+      zh: '你的肌膚因為夜間長時間消耗而缺水，循環節奏慢慢走樣。不是不會累，而是夜太長讓節奏失序：先補水，再重置。',
+      en: 'Long nights have drained your skin of moisture, and its circulation rhythm has slowly drifted. It is not that it cannot tire; the long night has thrown the rhythm off: refill water, then reset.',
+    },
+    societyPercent: '14%',
+    auraCore: { zh: '夜間節奏', en: 'Night Rhythm' },
+    rareTone: { zh: '稀有度 14%', en: 'Rarity 14%' },
+    luckyTone: { zh: '午夜鈷藍', en: 'Midnight Cobalt' },
+    dailyReminder: { zh: '先補水，再講效率', en: 'Hydrate before hustling' },
+    societyTraits: [
+      {
+        title: { zh: '缺水訊號明顯', en: 'Clear dehydration signal' },
+        detail: {
+          zh: '夜間長時間消耗讓水分流失，乾紋與暗沉較易出現。',
+          en: 'Long nights drain moisture; dry lines and dullness appear more easily.',
+        },
+      },
+      {
+        title: { zh: '循環節奏走樣', en: 'Circulation rhythm drifting' },
+        detail: {
+          zh: '熬夜讓循環變慢，膚色容易顯得青黃、不夠亮。',
+          en: 'Late nights slow circulation; tone tends to look sallow and under-lit.',
+        },
+      },
+      {
+        title: { zh: '需要補水與重置節奏', en: 'Needs hydration and rhythm reset' },
+        detail: {
+          zh: '比起猛效成分，先補水、再重置作息節奏更適合這一系。',
+          en: 'Hydration first, then a rhythm reset, suits this society better than potent actives.',
+        },
+      },
+    ],
+    identityDetails: [
+      {
+        title: { zh: 'Aura No. 888', en: 'Aura No. 888' },
+        detail: { zh: '代表你的夜間節奏身份編號。', en: 'Your Night Rhythm identity number.' },
+      },
+      {
+        title: { zh: '幸運色：午夜鈷藍', en: 'Lucky tone: Midnight Cobalt' },
+        detail: { zh: '用深沉鈷藍，幫走樣的夜間節奏慢慢歸位。', en: 'A deep cobalt that eases a drifting night rhythm back into place.' },
+      },
+      {
+        title: { zh: '今日提醒：先補水，再講效率', en: 'Today cue: hydrate before hustling' },
+        detail: { zh: '水分夠了，循環才有氣力重新跑。', en: 'With enough water, circulation can find its pace again.' },
+      },
+    ],
+    skinAdviceNotes: [
+      { label: { zh: '目前訊號', en: 'Current Signal' }, value: { zh: '缺水、循環差', en: 'Dehydration, poor circulation' } },
+      { label: { zh: '有幫助的是', en: 'What Helps' }, value: { zh: '先補水，再重置節奏', en: 'Hydrate first, then reset rhythm' } },
+      { label: { zh: '今晚提醒', en: 'Tonight' }, value: { zh: '多喝一杯水', en: 'Drink one more glass of water' } },
+    ],
+    skinMessage: {
+      zh: '我不是不會累，只是夜太長讓節奏走樣了。今日先把水分補回來，循環才有氣力重新跑回正軌。',
+      en: 'It is not that I cannot tire. The long night has shifted my rhythm. Today, refill the water first so circulation can find its pace again.',
+    },
+    journey: [
+      {
+        label: { zh: 'Refill the Water', en: 'Refill the Water' },
+        treatment: 'X.prof 040',
+        detail: { zh: '先把流失的水分倒回去。', en: 'Pour the lost hydration back in first.' },
+      },
+      {
+        label: { zh: 'Restart the Circulation', en: 'Restart the Circulation' },
+        treatment: 'EXOXEN',
+        detail: { zh: '喚醒遲鈍的夜間循環。', en: 'Wake the sluggish night circulation.' },
+      },
+      {
+        label: { zh: 'Reset the Clock', en: 'Reset the Clock' },
+        treatment: 'PLASONIC',
+        detail: { zh: '用穩定節奏重設夜間作息。', en: 'Reset the night rhythm with a steady pace.' },
+      },
+    ],
+  },
+};
+
 export function getAuraFamily(auraId: string) {
   const identity = getAuraIdentity(auraId);
   return identity ? skinAuraFamilies[identity.familyId] : undefined;
