@@ -48,14 +48,21 @@ Read `node_modules/next/dist/docs/` for current API docs. Key changes from v15:
   ├─ Custom visual interaction per question type
   └─ Double-tap to confirm flow
 
-/result (Results Page — lock-gated, see Data Flow)
-  └─ Personalized aura profile
-     ├─ Featured primary aura card + percentage (animated orb)
-     ├─ Aura family + personality/skin (horizontal carousel)
-     ├─ Secondary (supporting) aura card
-     ├─ Ritual recommendation CTA
-     ├─ Action row (share/save image, retake)
-     └─ Brand footer
+/result (Results Page — v2 layout, lock-gated, see Data Flow)
+  └─ Personalized aura profile, built from calculateResult(answers)
+     ├─ ResultV2Hero (animated orb, aura No., truth match%, couplet)
+     ├─ SocietySlide + IdentitySlide (horizontal carousel)
+     ├─ SkinMessageCard (Q3 answer echo + skin advice)
+     ├─ JourneyCard (3-step treatment journey)
+     ├─ SupportingSignal (secondary aura) → links to /family
+     ├─ BookingCta (WhatsApp booking)
+     ├─ ResultActionRow (share/save image, retake)
+     └─ BrandFooter
+
+/result-v1 (Legacy Results Page — old FeaturedAuraCard layout, accessible)
+  └─ The previous result layout, preserved for reference/rollback.
+     Shared components (ResultActionRow, AuraCarousel, BrandFooter,
+     ResultAuraOrb, shareResultImage) live in result-v1/components/.
 ```
 
 ### Data Flow
@@ -153,7 +160,7 @@ All use deterministic motion (seeded randomness) to ensure consistent visual out
 
 ### Result Page Components
 
-`src/app/result/components/`:
+`src/app/result-v1/components/` (shared by /result v2, /result-v1, /family):
 - **`FeaturedAuraCard`** — Primary aura hero with animated `ResultAuraOrb` + percentage
 - **`SkinAuraFamilySection`** — The 4 families + member auras, the user's highlighted (carousel slide)
 - **`PersonalitySkinBlock`** — Insight points + skin-needs chip cloud (carousel slide)
@@ -178,8 +185,9 @@ All use deterministic motion (seeded randomness) to ensure consistent visual out
 |------|---------|
 | `/q4-preview` | All 4 Q4 room scenes stacked vertically, with a confirm-surge toggle |
 | `/q7-preview` | All 5 Q7 shell states (idle + A–D) in their circular-orb clip, with a confirm toggle |
-| `/result-preview` | All 8 share-images (1080×1920) rendered via `createResultShareImage`, each forced by a verified answer key; EN/ZH switch |
-| `/result-v2-preview` | A single "v2" full result-page layout (hardcoded `stress` aura) — the in-progress next design direction |
+| `/family` | User-facing: all 4 families x 8 auras with real ResultAuraOrb, identity depth, user-highlight badges |
+| `/result-preview` | Internal: all 8 share-images (1080x1920) via `createResultShareImage`, each forced by a verified answer key; EN/ZH switch |
+| `/result-v1` | Legacy result layout (old FeaturedAuraCard). Kept for reference/rollback. |
 
 > `tmp/` holds design-review screenshots for the v2 result exploration. It is scratch space, not shipped.
 
