@@ -3,7 +3,7 @@
 // skin-aura families and their 8 member identities with the REAL ResultAuraOrb
 // (same layered orb as the result page + share image), aura-colored atmospheric
 // backgrounds, and identity depth per card. Design language mirrors the
-// result-v2-preview page. No new deps, no em-dashes.
+// result page. No new deps, no em-dashes.
 
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
@@ -19,8 +19,8 @@ import type { AuraFamilyId } from '@/data/resultData';
 import { useQuizStore } from '@/store/useQuizStore';
 import { calculateResult } from '@/lib/quizLogic';
 import GlobalHeader from '@/components/GlobalHeader';
-import BrandFooter from '@/app/result/components/BrandFooter';
-import ResultAuraOrb from '@/app/result/components/ResultAuraOrb';
+import BrandFooter from '@/app/result-v1/components/BrandFooter';
+import ResultAuraOrb from '@/app/result-v1/components/ResultAuraOrb';
 
 type LanguageCopy = { zh: string; en: string };
 

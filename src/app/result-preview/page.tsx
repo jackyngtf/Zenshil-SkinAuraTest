@@ -8,7 +8,7 @@ import { useQuizStore } from '@/store/useQuizStore';
 import {
   createResultShareImage,
   type ShareAuraProfile,
-} from '../result/components/shareResultImage';
+} from '../result-v1/components/shareResultImage';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // /result-preview — HIDDEN internal review route (not linked anywhere in the app).
