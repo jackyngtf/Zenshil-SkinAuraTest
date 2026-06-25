@@ -1,14 +1,16 @@
 'use client';
 // Family overview route. Editorial extension of the result page: shows all 4
-// skin-aura families and their 8 member identities, so a user who just got a
-// result can see the full landscape. Design language mirrors result-v2-preview
-// exactly (ivory base, radial backdrop, noise-overlay, glass cards, Playfair
-// serif, stone palette, framer-motion reveals). No new deps, no em-dashes.
+// skin-aura families and their 8 member identities with the REAL ResultAuraOrb
+// (same layered orb as the result page + share image), aura-colored atmospheric
+// backgrounds, and identity depth per card. Design language mirrors the
+// result-v2-preview page. No new deps, no em-dashes.
 
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import {
+  auraLensPalettes,
   auraNumbers,
+  auraSymbols,
   getAuraIdentity,
   getOrbColors,
   skinAuraFamilies,
@@ -18,6 +20,7 @@ import { useQuizStore } from '@/store/useQuizStore';
 import { calculateResult } from '@/lib/quizLogic';
 import GlobalHeader from '@/components/GlobalHeader';
 import BrandFooter from '@/app/result/components/BrandFooter';
+import ResultAuraOrb from '@/app/result/components/ResultAuraOrb';
 
 type LanguageCopy = { zh: string; en: string };
 
@@ -33,51 +36,16 @@ const COPY = {
     zh: '了解你的測試結果之外，仲有咩其他肌膚身份。',
     en: 'Beyond your result, explore the full landscape of skin auras.',
   },
-  memberLabel: { zh: '家族成員', en: 'Family members' },
   yourAuraBadge: { zh: '你嘅身份', en: 'Your Aura' },
   yourFamilyBadge: { zh: '你嘅 Family', en: 'Your Family' },
+  skinStateLabel: { zh: '肌膚狀態', en: 'Skin State' },
+  needLabel: { zh: '核心需求', en: 'Core Need' },
   backHasResult: { zh: '返回結果', en: 'Back to result' },
   backNoResult: { zh: '返回主頁', en: 'Back to home' },
 } satisfies Record<string, LanguageCopy>;
 
 function t(copy: LanguageCopy, language: 'zh' | 'en') {
   return copy[language];
-}
-
-function GlassCard({
-  children,
-  className = '',
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div
-      className={`relative overflow-hidden rounded-[30px] border border-white/65 bg-white/58 shadow-sm backdrop-blur-sm ${className}`}
-    >
-      {children}
-    </div>
-  );
-}
-
-function Kicker({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-[10px] font-medium tracking-[0.16em] text-stone-400">{children}</p>
-  );
-}
-
-/** Aura orb swatch in the established radial-gradient idiom. */
-function OrbSwatch({ auraId }: { auraId: string }) {
-  const orb = getOrbColors(auraId);
-  return (
-    <span
-      className="block size-14 rounded-full shadow-inner"
-      style={{
-        background: `radial-gradient(circle at 35% 30%, #ffffff 0%, ${orb.inner}66 30%, ${orb.mid}55 64%, transparent 100%)`,
-      }}
-      aria-hidden="true"
-    />
-  );
 }
 
 function MemberCard({
@@ -91,35 +59,84 @@ function MemberCard({
 }) {
   const identity = getAuraIdentity(auraId);
   const orb = getOrbColors(auraId);
+  const lens = auraLensPalettes[auraId];
   const number = auraNumbers[auraId]?.number ?? '';
-  if (!identity) return null;
+  const symbol = auraSymbols[auraId];
+  if (!identity || !lens) return null;
 
   const displayName = language === 'en' ? identity.displayName : identity.displayNameZh;
   const shortLine = language === 'en' ? identity.shortLine : identity.shortLineZh;
+  const skinState = language === 'en' ? identity.skinState : identity.skinStateZh;
+  const primaryNeed = language === 'en' ? identity.primaryNeed : identity.primaryNeedZh;
+  const symbolLabel = symbol
+    ? (language === 'en' ? symbol.labelEn : symbol.labelZh)
+    : '';
 
   return (
-    <div className="relative rounded-[24px] border border-white/60 bg-white/45 p-5 backdrop-blur-sm">
+    <div className="relative overflow-hidden rounded-[28px] border border-white/65 bg-white/55 shadow-sm backdrop-blur-sm">
+      {/* 3-layer aura-color atmospheric background, like the result hero + share image */}
       <div
-        className="absolute right-4 top-4 size-16 rounded-full opacity-60 blur-2xl"
-        style={{ backgroundColor: `${orb.mid}22` }}
+        className="absolute inset-0 opacity-90"
+        style={{
+          background: [
+            `radial-gradient(circle at 50% 32%, ${orb.inner}33 0%, transparent 38%)`,
+            `radial-gradient(circle at 20% 64%, ${orb.mid}22 0%, transparent 36%)`,
+            `radial-gradient(circle at 82% 70%, ${orb.outer}22 0%, transparent 38%)`,
+          ].join(', '),
+        }}
         aria-hidden="true"
       />
+
       {isUserAura && (
-        <span className="absolute left-4 top-4 z-10 rounded-full border border-stone-700/15 bg-stone-900/92 px-2.5 py-1 text-[8px] font-semibold uppercase tracking-[0.16em] text-white shadow-sm">
+        <span className="absolute right-4 top-4 z-20 rounded-full border border-stone-700/15 bg-stone-900/92 px-3 py-1 text-[8px] font-semibold uppercase tracking-[0.16em] text-white shadow-sm">
           {t(COPY.yourAuraBadge, language)}
         </span>
       )}
-      <div className="relative z-10">
-        <OrbSwatch auraId={auraId} />
-        <p className="mt-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-stone-400">
-          {number ? `No. ${number}` : ''}
-        </p>
-        <h4 className="mt-1.5 font-serif text-[17px] leading-tight text-stone-900">
+
+      <div className="relative z-10 flex flex-col items-center px-6 pb-7 pt-9 text-center">
+        {/* The real layered orb — same component as the result page + share image */}
+        <ResultAuraOrb palette={lens} className="size-[min(54vw,184px)]" />
+
+        {/* Aura No. + symbol label pills */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+          <span className="rounded-full border border-white/70 bg-white/55 px-3.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.16em] text-stone-500 shadow-sm backdrop-blur-sm">
+            {number ? `No. ${number}` : ''}
+          </span>
+          {symbolLabel && (
+            <span className="rounded-full border border-white/70 bg-white/55 px-3.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-stone-500 shadow-sm backdrop-blur-sm">
+              {symbolLabel}
+            </span>
+          )}
+        </div>
+
+        <h3 className="mt-4 font-serif text-[22px] leading-tight text-stone-950 text-balance">
           {displayName}
-        </h4>
-        <p className="mt-2 font-serif text-[12px] italic leading-relaxed text-stone-500 text-pretty">
+        </h3>
+
+        <p className="mt-3 max-w-[280px] font-serif text-[14px] italic leading-relaxed text-stone-500 text-pretty">
           &ldquo;{shortLine}&rdquo;
         </p>
+
+        {/* Identity depth: skin state + core need */}
+        <div className="mt-6 w-full max-w-[300px] space-y-3 text-left">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[8px] font-semibold uppercase tracking-[0.2em] text-stone-400">
+              {t(COPY.skinStateLabel, language)}
+            </span>
+            <span className="text-[12px] font-light leading-relaxed text-stone-600 text-pretty">
+              {skinState}
+            </span>
+          </div>
+          <div className="h-px w-full bg-stone-200/55" />
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[8px] font-semibold uppercase tracking-[0.2em] text-stone-400">
+              {t(COPY.needLabel, language)}
+            </span>
+            <span className="text-[12px] font-light leading-relaxed text-stone-600 text-pretty">
+              {primaryNeed}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -142,8 +159,7 @@ function FamilySection({
   const tone = language === 'en' ? family.tone : family.toneZh;
   const description = language === 'en' ? family.description : family.descriptionZh;
   const isUserFamily =
-    userAuraId !== null &&
-    getAuraIdentity(userAuraId)?.familyId === familyId;
+    userAuraId !== null && getAuraIdentity(userAuraId)?.familyId === familyId;
 
   return (
     <motion.section
@@ -151,45 +167,38 @@ function FamilySection({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-48px' }}
       transition={{ duration: 0.65, ease: 'easeOut' }}
-      className="mx-auto mb-5 w-full max-w-md px-5"
+      className="mx-auto mb-6 w-full max-w-md px-5"
     >
-      <GlassCard className="p-7">
-        {isUserFamily && (
-          <span className="absolute right-5 top-5 z-10 rounded-full border border-stone-700/15 bg-stone-900/92 px-3 py-1 text-[8px] font-semibold uppercase tracking-[0.16em] text-white shadow-sm">
-            {t(COPY.yourFamilyBadge, language)}
-          </span>
-        )}
-        <div className="relative z-10">
-          <div className="mb-5 flex items-center gap-3">
-            <Kicker>{t(COPY.memberLabel, language)}</Kicker>
-            <span className="h-px w-12 bg-stone-200/80" />
-          </div>
-
-          <h2 className="font-serif text-[27px] leading-tight text-stone-900">
+      <div className="mb-5 px-1">
+        <div className="mb-2 flex items-center gap-3">
+          <h2 className="font-serif text-[26px] leading-tight text-stone-900">
             {familyName}
           </h2>
-          <p className="mt-2 text-[11px] font-light tracking-wide text-stone-400">
-            {tone}
-          </p>
-          <p className="mt-4 text-[13px] font-light leading-relaxed text-stone-600 text-pretty">
-            {description}
-          </p>
-
-          <div className="my-6 h-px w-full bg-stone-200/55" />
-
-          {/* Member grid: stacks under 768px (sm:), two columns at and above. */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {memberIds.map((memberId) => (
-              <MemberCard
-                key={memberId}
-                auraId={memberId}
-                isUserAura={userAuraId === memberId}
-                language={language}
-              />
-            ))}
-          </div>
+          {isUserFamily && (
+            <span className="rounded-full border border-stone-700/15 bg-stone-900/92 px-2.5 py-1 text-[8px] font-semibold uppercase tracking-[0.16em] text-white shadow-sm">
+              {t(COPY.yourFamilyBadge, language)}
+            </span>
+          )}
         </div>
-      </GlassCard>
+        <p className="text-[11px] font-light tracking-wide text-stone-400">
+          {tone}
+        </p>
+        <p className="mt-3 text-[13px] font-light leading-relaxed text-stone-600 text-pretty">
+          {description}
+        </p>
+      </div>
+
+      {/* Members stack vertically, each card has room to breathe with its orb */}
+      <div className="space-y-4">
+        {memberIds.map((memberId) => (
+          <MemberCard
+            key={memberId}
+            auraId={memberId}
+            isUserAura={userAuraId === memberId}
+            language={language}
+          />
+        ))}
+      </div>
     </motion.section>
   );
 }
@@ -200,8 +209,6 @@ export default function FamilyPage() {
   const completedAt = useQuizStore((s) => s.completedAt);
   const reduce = useReducedMotion();
 
-  // null on first paint (no completed quiz, or pre-hydration); highlights
-  // render conditionally so SSR markup and the hydrated state both read clean.
   const userAuraId = completedAt ? calculateResult(answers).primaryAura.id : null;
   const backHref = userAuraId ? '/result' : '/';
   const backLabel = userAuraId ? COPY.backHasResult : COPY.backNoResult;
@@ -214,7 +221,7 @@ export default function FamilyPage() {
       <GlobalHeader />
 
       <div className="relative z-10">
-        {/* Compact hero. Single kicker restraint: only one small kicker line. */}
+        {/* Compact hero. Single kicker restraint. */}
         <motion.section
           initial={reduce ? false : { opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
@@ -242,13 +249,13 @@ export default function FamilyPage() {
           />
         ))}
 
-        {/* Back navigation, quiet pill. */}
+        {/* Back navigation, quiet pill */}
         <motion.section
           initial={reduce ? false : { opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mx-auto mb-4 w-full max-w-md px-5 pt-2 text-center"
+          className="mx-auto mb-4 w-full max-w-md px-5 pt-4 text-center"
         >
           <a
             href={backHref}

@@ -9,6 +9,7 @@ import ConcernLateNight from './concern/ConcernLateNight';
 import ConcernEmotion from './concern/ConcernEmotion';
 import ConcernStress from './concern/ConcernStress';
 import ConcernDiet from './concern/ConcernDiet';
+import Q2IdleWeatherScene from './q02/IdleWeatherScene';
 
 interface WeatherStageMotifProps {
   questionId: string;
@@ -56,19 +57,25 @@ export default function WeatherStageMotif({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  'radial-gradient(ellipse at 50% 45%, rgba(220,210,225,0.5) 0%, rgba(240,235,245,0.3) 50%, rgba(250,248,252,0.1) 100%)',
-              }}
-            />
-            <motion.div
-              className="h-20 w-20 rounded-full"
-              style={{ background: 'radial-gradient(circle, rgba(200,190,215,0.5) 0%, transparent 70%)' }}
-              animate={{ scale: [0.9, 1.15, 0.9], opacity: [0.4, 0.7, 0.4] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            />
+            {questionId === 'q2' ? (
+              <Q2IdleWeatherScene />
+            ) : (
+              <>
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      'radial-gradient(ellipse at 50% 45%, rgba(220,210,225,0.5) 0%, rgba(240,235,245,0.3) 50%, rgba(250,248,252,0.1) 100%)',
+                  }}
+                />
+                <motion.div
+                  className="h-20 w-20 rounded-full"
+                  style={{ background: 'radial-gradient(circle, rgba(200,190,215,0.5) 0%, transparent 70%)' }}
+                  animate={{ scale: [0.9, 1.15, 0.9], opacity: [0.4, 0.7, 0.4] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

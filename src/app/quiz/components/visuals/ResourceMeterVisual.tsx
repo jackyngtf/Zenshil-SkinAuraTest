@@ -5,6 +5,7 @@ import RelaxScene from './q04/RelaxScene';
 import GymScene from './q04/GymScene';
 import SleepScene from './q04/SleepScene';
 import StudyScene from './q04/StudyScene';
+import IdleScene from './q04/IdleScene';
 
 export type ResourceMeterOptionId = 'A' | 'B' | 'C' | 'D';
 
@@ -85,63 +86,6 @@ function AmbientBackdrop({
   );
 }
 
-function IdleLayer({
-  state,
-  reduceMotion,
-}: {
-  state: ResourceVisualState;
-  reduceMotion: boolean;
-}) {
-  return (
-    <svg viewBox="0 0 400 320" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <radialGradient id="resource-idle-orb" cx="50%" cy="43%" r="60%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-          <stop offset="56%" stopColor={state.accentSoft} stopOpacity="0.7" />
-          <stop offset="100%" stopColor={state.auraSoft} stopOpacity="0.12" />
-        </radialGradient>
-        <filter id="resource-idle-blur" x="-40%" y="-40%" width="180%" height="180%">
-          <feGaussianBlur stdDeviation="16" />
-        </filter>
-      </defs>
-      <motion.circle
-        cx="200"
-        cy="142"
-        r="82"
-        fill={state.aura}
-        opacity="0.18"
-        filter="url(#resource-idle-blur)"
-        animate={reduceMotion ? undefined : { scale: [0.96, 1.06, 0.96], opacity: [0.12, 0.22, 0.12] }}
-        transition={{ duration: 7.4, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ transformOrigin: '200px 142px' }}
-      />
-      <motion.circle
-        cx="200"
-        cy="142"
-        r="64"
-        fill="url(#resource-idle-orb)"
-        opacity="0.84"
-        animate={reduceMotion ? undefined : { scale: [1, 1.025, 1] }}
-        transition={{ duration: 6.8, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ transformOrigin: '200px 142px' }}
-      />
-      {[118, 150, 184].map((y, index) => (
-        <motion.path
-          key={y}
-          d={`M108 ${y} C144 ${y - 7}, 176 ${y + 5}, 208 ${y - 2} S260 ${y + 6}, 292 ${y - 5}`}
-          fill="none"
-          stroke={index === 1 ? state.accent : '#ffffff'}
-          strokeLinecap="round"
-          strokeWidth={index === 1 ? 1.2 : 1}
-          opacity={index === 1 ? 0.22 : 0.32}
-          animate={reduceMotion ? undefined : { x: [-5, 6, -5], opacity: [0.14, 0.32, 0.14] }}
-          transition={{ duration: 6 + index * 0.9, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      ))}
-    </svg>
-  );
-}
-
 export default function ResourceMeterVisual({
   selectedOptionId,
   isConfirming = false,
@@ -175,23 +119,21 @@ export default function ResourceMeterVisual({
               animate={reduceMotion ? undefined : { scale: [0.98, 1.035, 0.98], opacity: [0.38, 0.62, 0.38] }}
               transition={{ duration: 6.8, repeat: Infinity, ease: 'easeInOut' }}
             />
-            {optionId === 'A' || optionId === 'B' || optionId === 'C' || optionId === 'D' ? (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="skin-aura-orb-clip relative h-[min(80vw,300px)] w-[min(80vw,300px)]">
-                  {optionId === 'A' ? (
-                    <SleepScene isConfirming={isConfirming} />
-                  ) : optionId === 'B' ? (
-                    <RelaxScene isConfirming={isConfirming} />
-                  ) : optionId === 'C' ? (
-                    <StudyScene isConfirming={isConfirming} />
-                  ) : (
-                    <GymScene isConfirming={isConfirming} />
-                  )}
-                </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="skin-aura-orb-clip relative h-[min(80vw,300px)] w-[min(80vw,300px)]">
+                {optionId === 'A' ? (
+                  <SleepScene isConfirming={isConfirming} />
+                ) : optionId === 'B' ? (
+                  <RelaxScene isConfirming={isConfirming} />
+                ) : optionId === 'C' ? (
+                  <StudyScene isConfirming={isConfirming} />
+                ) : optionId === 'D' ? (
+                  <GymScene isConfirming={isConfirming} />
+                ) : (
+                  <IdleScene isConfirming={isConfirming} />
+                )}
               </div>
-            ) : (
-              <IdleLayer state={state} reduceMotion={reduceMotion} />
-            )}
+            </div>
           </div>
         </motion.div>
       </AnimatePresence>

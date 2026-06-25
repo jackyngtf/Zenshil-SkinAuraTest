@@ -350,7 +350,7 @@ function IdentitySlide({ language }: { language: 'zh' | 'en' }) {
     { label: { zh: '水果', en: 'Fruit' }, value: lucky ? lucky.luckyFruit : { zh: '—', en: '—' } },
     { label: { zh: '輕食', en: 'Light Bite' }, value: { zh: '核桃', en: 'Walnut' } },
     { label: { zh: '飲品', en: 'Drink' }, value: lucky ? lucky.luckyDrink : { zh: '—', en: '—' } },
-    { label: { zh: '生活提醒', en: 'Lifestyle Cue' }, value: { zh: '今晚提早 30 分鐘離線', en: 'Log off 30 min earlier tonight' } },
+    { label: { zh: '生活提醒', en: 'Lifestyle Cue' }, value: { zh: '晨早一杯溫水', en: 'Warm water each morning' } },
   ];
 
   return (

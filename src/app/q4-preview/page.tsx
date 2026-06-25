@@ -39,6 +39,15 @@ export default function Q4PreviewPage() {
         </div>
 
         <div className="flex flex-col gap-8">
+          <div className="rounded-2xl bg-[#151c23] p-4">
+            <p className="mb-2 text-center font-sans text-[12px] tracking-wide text-stone-400">
+              idle · 未揀 — Soft Room, Held Light
+            </p>
+            <div className="h-[360px] w-full">
+              <ResourceMeterVisual selectedOptionId={null} isConfirming={confirming} />
+            </div>
+          </div>
+
           {OPTIONS.map((o) => (
             <div key={o.id} className="rounded-2xl bg-[#151c23] p-4">
               <p className="mb-2 text-center font-sans text-[12px] tracking-wide text-stone-400">
