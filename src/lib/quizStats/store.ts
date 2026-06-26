@@ -96,6 +96,31 @@ export async function recordResult(auraId: string): Promise<{
   return result as { stats: QuizStats; userNumber: number };
 }
 
+/**
+ * Atomically decrement an aura's count (for retake: the user is discarding
+ * their previous result so it should no longer be counted). Decrements total
+ * too, but lastUserNumber keeps climbing (a retake is still a new session).
+ */
+export async function removeResult(auraId: string): Promise<QuizStats> {
+  if (!VALID_AURA_IDS.includes(auraId)) {
+    throw new Error(`Unknown aura id: ${auraId}`);
+  }
+
+  const result = await (writeChain = writeChain.then(async () => {
+    const stats = await readStats();
+    if ((stats.counts[auraId] ?? 0) > 0) {
+      stats.counts[auraId] -= 1;
+    }
+    if (stats.total > 0) {
+      stats.total -= 1;
+    }
+    await fs.writeFile(DATA_FILE, JSON.stringify(stats, null, 2), 'utf-8');
+    return stats;
+  }));
+
+  return result as QuizStats;
+}
+
 /** Rarity of an aura = its count / total, as a percentage string like "18%". */
 export function rarityPercent(count: number, total: number): string {
   if (total <= 0) return '0%';

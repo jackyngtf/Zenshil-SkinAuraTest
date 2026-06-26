@@ -7,6 +7,7 @@ import { useQuizStore } from '@/store/useQuizStore';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import type { ShareAuraProfile } from './shareResultImage';
 import { useResultShareImage } from './useResultShareImage';
+import { clearRaritySession } from '@/app/result/components/useQuizRarity';
 
 interface ResultActionRowProps {
   aura: ShareAuraProfile;
@@ -28,6 +29,9 @@ export default function ResultActionRow({ aura, primaryRawScore, secondaryAuraId
 
   const handleRetakeConfirm = () => {
     setIsRetakeOpen(false);
+    // Tell the server to stop counting the old result, then clear the local
+    // session so the next completion records fresh. Fire-and-forget.
+    void clearRaritySession();
     resetQuiz();
     router.push('/');
   };

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import auraProfilesData from '@/data/aura_profiles.json';
@@ -572,9 +572,30 @@ export default function ResultV2PreviewPage() {
   const language = useQuizStore((state) => state.language);
   const answers = useQuizStore((state) => state.answers);
   const completedAt = useQuizStore((state) => state.completedAt);
-  const preview = completedAt ? buildPreview(answers) : null;
+
+  // The Zustand store is persisted to localStorage, so `completedAt`/`answers`
+  // are null/empty on the server but populated on the client. Render a stable
+  // loading state on the first pass (server + client), then reveal the real
+  // result after mount to avoid a hydration mismatch.
+  const [mounted, setMounted] = useState(false);
+  // Standard mount-detection idiom to gate hydration-sensitive reads of the
+  // persisted store. Suppressed: set-state-in-effect is the intended pattern here.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setMounted(true), []);
+
+  const preview = mounted && completedAt ? buildPreview(answers) : null;
   // Record + fetch live rarity once a result exists.
   const rarityState = useQuizRarity(preview?.auraId ?? null);
+
+  // Still mounting (server + first client render): quiet loading state.
+  if (!mounted) {
+    return (
+      <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#f8f5ef] pb-8 text-stone-900 selection:bg-rose-200 touch-manipulation">
+        <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.92),transparent_42%)]" />
+        <div className="absolute inset-0 z-0 noise-overlay opacity-70" />
+      </main>
+    );
+  }
 
   // No completed result: render a quiet empty state (the lock gate normally
   // redirects here only after completion; a direct visit shows this).
