@@ -34,8 +34,13 @@ export const useQuizStore = create<QuizState>()(
       setCurrentQuestionInfo: (index, total) =>
         set({ currentQuestionIndex: index, totalQuestions: total }),
       markCompleted: () => set({ completedAt: Date.now() }),
-      resetQuiz: () =>
-        set({ answers: {}, currentQuestionIndex: null, totalQuestions: null, completedAt: null }),
+      resetQuiz: () => {
+        // Clear the rarity posted flag so the next result records fresh.
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('zenshil-rarity-posted');
+        }
+        set({ answers: {}, currentQuestionIndex: null, totalQuestions: null, completedAt: null });
+      },
     }),
     {
       name: 'zenshil-quiz',

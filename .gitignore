@@ -50,3 +50,6 @@ SKIN AURA TEST.pdf
 .claude/
 .superpowers/
 tmp/
+
+# runtime quiz-stats counter (server-side, not shipped)
+.data/

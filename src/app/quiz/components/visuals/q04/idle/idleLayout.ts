@@ -1,15 +1,14 @@
 /* ================================================================== */
 /*  Q4 · idle 「Soft Room, Held Light」微光空房 — shared LAYOUT + PALETTE. */
 /*                                                                     */
-/*  The NEUTRAL "before you choose" scene: a soft-focus empty interior  */
-/*  in the SAME orb-clip room language as A–D. One upper-centre window  */
-/*  (the bedroom WINDOW slot) holds a frosted pane with a warm-neutral  */
-/*  light-BLOOM that breathes (the reincarnated idle orb, now diegetic) */
-/*  + two sheer CURTAIN folds (the reincarnated drifting meter-lines).  */
-/*  A bare wall washes into an empty floor with a wide light-POOL (the  */
-/*  secondary breathing mass that holds the centre-of-gravity low so    */
-/*  the focal weight doesn't jump on cross-fade into A–D). Resolutely   */
-/*  warm-neutral taupe/cream — NO bed, candle, hourglass or gym gear.   */
+/*  The NEUTRAL "before you choose" scene: a soft-focus resource        */
+/*  antechamber in the SAME orb-clip room language as A–D. One upper-   */
+/*  centre window (the bedroom WINDOW slot) holds a frosted pane with a */
+/*  warm-neutral light-BLOOM that breathes (the reincarnated idle orb,  */
+/*  now diegetic) + two sheer CURTAIN folds. A low console/tray grounds */
+/*  four ghosted dormant resource tokens; selected A–D scenes are       */
+/*  untouched and carry the active answer illustrations. Resolutely     */
+/*  warm-neutral taupe/cream with no branch signature colors.           */
 /*  Parent svg: viewBox "0 0 400 320", preserveAspectRatio slice.       */
 /* ================================================================== */
 
@@ -66,6 +65,27 @@ export const MOTES = [
   { cx: 132, cy: 210, r: 3.8, dx: -6, dy: -28, dur: 13.6, delay: 4.2, peak: 0.2 },
 ] as const;
 
+/* The low console/tray — a neutral middle-lower anchor that makes the idle
+   feel like a resource antechamber without duplicating a selected room prop. */
+export const RESOURCE_SHELF = {
+  x: 104,
+  y: 202,
+  w: 192,
+  h: 24,
+  shadowRx: 104,
+  shadowRy: 7,
+} as const;
+
+/* Four dormant resource tokens, balanced left → right and parked on/around the
+   console. All are deliberately low-contrast neutral silhouettes. */
+export const RESOURCE_CUES = {
+  order: ['sleep', 'relax', 'time', 'energy'] as const,
+  sleep: { x: 134, y: 196, opacity: 0.42, scale: 1.025, dy: -1.4, dur: 9.4, delay: 0.1 },
+  relax: { x: 178, y: 195, opacity: 0.38, scale: 1.02, dy: -1.2, dur: 10.6, delay: 1.8 },
+  time: { x: 223, y: 195, opacity: 0.4, scale: 1.024, dy: -1.6, dur: 8.8, delay: 0.9 },
+  energy: { x: 267, y: 196, opacity: 0.39, scale: 1.022, dy: -1.3, dur: 11.2, delay: 2.7 },
+} as const;
+
 /* Warm-neutral idle palette — anchored to ResourceMeterVisual.visualStates.idle
    (aura #e9ded4, auraSoft #dbe9e6, accent #b8a895, accentSoft #efe8df) plus
    derived tones. Deliberately ZERO indigo/rose/cyan/amber so it borrows no
@@ -96,4 +116,12 @@ export const IDLE = {
   pool: '#efe8df',
   motes: '#b8a895',
   vig: '#b8a895', // warm taupe corner vignette (low opacity)
+  /* dormant console + resource-token silhouettes */
+  objectTop: '#e9ded4',
+  objectBase: '#d8cabb',
+  objectLine: '#b8a895',
+  objectShadow: '#9f907e',
+  tokenFill: '#cbbdad',
+  tokenLight: '#efe8df',
+  tokenLine: '#b8a895',
 } as const;

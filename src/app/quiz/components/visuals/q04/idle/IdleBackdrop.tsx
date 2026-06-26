@@ -7,11 +7,12 @@ import { IDLE, WINDOW, WALL_WASH, FLOOR_Y, sn } from './idleLayout';
 /* ================================================================== */
 /*  Q4 · idle 微光空房 — BACKDROP (renders FIRST, behind everything).    */
 /*                                                                     */
-/*  A warm-neutral wall washing into a bare floor band, a single CRISP  */
+/*  A warm-neutral wall washing into a floor band, a single CRISP       */
 /*  upper-centre window with a FROSTED (out-of-focus) cream pane —      */
 /*  deliberately no moon/sun disc — a slow wall-wash ellipse behind it, */
-/*  and a soft top/corner vignette. The room shell: an empty, undecided */
-/*  interior. NO furniture of any kind.                                 */
+/*  and a soft top/corner vignette. The low console/resource tokens are */
+/*  rendered later in the idle-only object layer; selected A–D scenes   */
+/*  remain untouched.                                                  */
 /*                                                                     */
 /*  MOSTLY STATIC — only the warm wall-wash breathes (~8.4s, offset     */
 /*  from the hero so it's out of phase). CONFIRM (~0.6s,                */

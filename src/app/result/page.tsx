@@ -22,6 +22,7 @@ import ResultAuraOrb from '@/app/result-v1/components/ResultAuraOrb';
 import AuraCarousel from '@/app/result-v1/components/AuraCarousel';
 import BrandFooter from '@/app/result-v1/components/BrandFooter';
 import { getBookingUrl } from '@/app/result-v1/components/resultLinks';
+import { useQuizRarity, type RarityData } from '@/app/result/components/useQuizRarity';
 
 type IdentityNote = {
   label: LanguageCopy;
@@ -96,11 +97,11 @@ function buildPreview(answers: Record<string, string>): AuraV2Preview | null {
   };
 }
 
-const PreviewContext = createContext<AuraV2Preview | null>(null);
+const PreviewContext = createContext<{ preview: AuraV2Preview; rarity: RarityData | null } | null>(null);
 const usePreview = () => {
-  const preview = useContext(PreviewContext);
-  if (!preview) throw new Error('usePreview must be used within PreviewContext.Provider');
-  return preview;
+  const ctx = useContext(PreviewContext);
+  if (!ctx) throw new Error('usePreview must be used within PreviewContext.Provider');
+  return ctx;
 };
 
 
@@ -133,7 +134,7 @@ function Pill({ children }: { children: React.ReactNode }) {
 }
 
 function ResultV2Hero({ language }: { language: 'zh' | 'en' }) {
-  const preview = usePreview();
+  const { preview, rarity } = usePreview();
   const aura = auraProfilesData[preview.auraId];
   const orb = getOrbColors(preview.auraId);
   const lens = auraLensPalettes[preview.auraId] ?? auraLensPalettes.glow;
@@ -166,7 +167,7 @@ function ResultV2Hero({ language }: { language: 'zh' | 'en' }) {
         <div className="mb-6 flex items-center justify-center gap-2 rounded-full border border-white/70 bg-white/58 px-4 py-2 shadow-sm backdrop-blur-sm">
           <span className="size-2 rounded-full" style={{ backgroundColor: orb.mid }} aria-hidden="true" />
           <span className="text-[10px] font-medium tracking-[0.16em] text-stone-500">
-            {language === 'en' ? `Aura Match ${purityPercent}%` : `氣場吻合度 ${purityPercent}%`}
+            {language === 'en' ? `Match ${purityPercent}%` : `吻合度 ${purityPercent}%`}
           </span>
         </div>
 
@@ -191,9 +192,21 @@ function ResultV2Hero({ language }: { language: 'zh' | 'en' }) {
 
           <div className="mt-5 flex flex-wrap justify-center gap-2">
             <Pill>Aura No. {preview.auraNumber}</Pill>
-            <Pill>{t(preview.rareTone, language)}</Pill>
+            {rarity ? (
+              <Pill>{language === 'en' ? `Rarity ${rarity.rarity}` : `稀有度 ${rarity.rarity}`}</Pill>
+            ) : (
+              <Pill>{t(preview.rareTone, language)}</Pill>
+            )}
             <Pill>{t(preview.luckyTone, language)}</Pill>
           </div>
+
+          {rarity && (
+            <p className="mt-3 text-[11px] font-light tracking-wide text-stone-400">
+              {language === 'en'
+                ? `You are #${rarity.userNumber} of ${rarity.total} to take this test`
+                : `你是第 ${rarity.userNumber} 位完成測試嘅人（共 ${rarity.total} 位）`}
+            </p>
+          )}
 
           <div className="mx-auto mt-7 max-w-[322px]">
             <p className="mb-2 text-[9px] font-medium uppercase tracking-[0.24em] text-stone-400">
@@ -217,7 +230,7 @@ function ResultV2Hero({ language }: { language: 'zh' | 'en' }) {
 }
 
 function SocietySlide({ language }: { language: 'zh' | 'en' }) {
-  const preview = usePreview();
+  const { preview } = usePreview();
   const orb = getOrbColors(preview.auraId);
   const aura = auraProfilesData[preview.auraId];
   const societyNeeds = withUniversalNeeds(aura.skinNeeds);
@@ -285,7 +298,7 @@ function SocietySlide({ language }: { language: 'zh' | 'en' }) {
 }
 
 function IdentitySlide({ language }: { language: 'zh' | 'en' }) {
-  const preview = usePreview();
+  const { preview } = usePreview();
   const orb = getOrbColors(preview.auraId);
   const lucky = auraV2Content[preview.auraId];
   const ritualNotes: IdentityNote[] = [
@@ -360,7 +373,7 @@ function IdentitySlide({ language }: { language: 'zh' | 'en' }) {
 }
 
 function SkinMessageCard({ language }: { language: 'zh' | 'en' }) {
-  const preview = usePreview();
+  const { preview } = usePreview();
   const orb = getOrbColors(preview.auraId);
   const q3Echo: LanguageCopy = { zh: '你話我會講『我頂唔順』', en: 'You said I would say “I can’t cope”' };
 
@@ -406,7 +419,7 @@ function SkinMessageCard({ language }: { language: 'zh' | 'en' }) {
 }
 
 function JourneyCard({ language }: { language: 'zh' | 'en' }) {
-  const preview = usePreview();
+  const { preview } = usePreview();
   const orb = getOrbColors(preview.auraId);
 
   return (
@@ -462,7 +475,7 @@ function JourneyCard({ language }: { language: 'zh' | 'en' }) {
 }
 
 function SupportingSignal({ language }: { language: 'zh' | 'en' }) {
-  const preview = usePreview();
+  const { preview } = usePreview();
   const aura = auraProfilesData[preview.secondaryAuraId];
   const orb = getOrbColors(preview.secondaryAuraId);
 
@@ -504,7 +517,7 @@ function SupportingSignal({ language }: { language: 'zh' | 'en' }) {
 }
 
 function BookingCta({ language }: { language: 'zh' | 'en' }) {
-  const preview = usePreview();
+  const { preview } = usePreview();
   const orb = getOrbColors(preview.auraId);
   const bookingUrl = getBookingUrl(preview.auraId, language);
 
@@ -560,6 +573,8 @@ export default function ResultV2PreviewPage() {
   const answers = useQuizStore((state) => state.answers);
   const completedAt = useQuizStore((state) => state.completedAt);
   const preview = completedAt ? buildPreview(answers) : null;
+  // Record + fetch live rarity once a result exists.
+  const rarityState = useQuizRarity(preview?.auraId ?? null);
 
   // No completed result: render a quiet empty state (the lock gate normally
   // redirects here only after completion; a direct visit shows this).
@@ -584,7 +599,7 @@ export default function ResultV2PreviewPage() {
   }
 
   return (
-    <PreviewContext.Provider value={preview}>
+    <PreviewContext.Provider value={{ preview, rarity: rarityState.data }}>
       <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#f8f5ef] pb-8 text-stone-900 selection:bg-rose-200 touch-manipulation">
         <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.92),transparent_42%),radial-gradient(circle_at_20%_45%,rgba(244,214,204,0.18),transparent_32%),radial-gradient(circle_at_82%_58%,rgba(201,211,226,0.18),transparent_32%)]" />
         <div className="absolute inset-0 z-0 noise-overlay opacity-70" />

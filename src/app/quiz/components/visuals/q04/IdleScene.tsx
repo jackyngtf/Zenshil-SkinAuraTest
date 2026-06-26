@@ -5,22 +5,20 @@ import { useReducedMotion } from 'framer-motion';
 import { IDLE, FLOOR_Y } from './idle/idleLayout';
 import IdleBackdrop from './idle/IdleBackdrop';
 import WindowGlowHero from './idle/WindowGlowHero';
+import IdleResourceCues from './idle/IdleResourceCues';
 import IdleAtmosphere from './idle/IdleAtmosphere';
 
-/* ── Q4 · idle「Soft Room, Held Light」微光空房 (assembly) ──
+/* ── Q4 · idle「Soft Room, Held Light」resource antechamber (assembly) ──
    The NEUTRAL "before you choose" scene — a true sibling of A–D, in the
-   SAME orb-clip room language (viewBox 0 0 400 320, slice, three layers
-   under one elliptical edge-fade mask). A warm-neutral empty interior:
-   a bare wall washing into a floor (IdleBackdrop), a single upper-centre
-   window whose frosted pane holds a soft warm light-BLOOM that breathes —
-   the reincarnated idle orb — flanked by two sheer curtain folds, the
-   reincarnated drifting meter-lines (WindowGlowHero), all tied together
-   by a warm haze + a wide floor light-pool (the lower anchor mass that
-   holds the centre-of-gravity) + drifting dust motes (IdleAtmosphere).
-   No bed / candle / hourglass / gym gear — it commits to no resource, so
-   it reads as a calm held breath before you choose, and dissolves softly
-   into whichever room (A–D) you pick. The scene fades at its edges so it
-   melts into the page like its sibling scenes. */
+   SAME orb-clip room language (viewBox 0 0 400 320, slice, layered under
+   one elliptical edge-fade mask). A warm-neutral room shell: a bare wall
+   washing into a floor (IdleBackdrop), a single upper-centre window whose
+   frosted pane holds a soft warm light-BLOOM that breathes, flanked by two
+   sheer curtain folds (WindowGlowHero). The idle-only object layer adds a
+   quiet low console/tray with four equal, ghosted dormant resource tokens;
+   selected A–D scenes and their active answer illustrations stay untouched.
+   Warm haze + floor light-pool + drifting dust motes (IdleAtmosphere) tie
+   the objects back into the room while keeping idle unbiased. */
 
 export default function IdleScene({ isConfirming = false }: { isConfirming?: boolean }) {
   const reduceMotion = Boolean(useReducedMotion());
@@ -62,6 +60,9 @@ export default function IdleScene({ isConfirming = false }: { isConfirming?: boo
 
         {/* ── The breathing window light-bloom + sheer curtains (hero) ── */}
         <WindowGlowHero uid={uid} isConfirming={isConfirming} reduceMotion={reduceMotion} />
+
+        {/* ── Idle-only low console + four dormant resource tokens ── */}
+        <IdleResourceCues isConfirming={isConfirming} reduceMotion={reduceMotion} />
 
         {/* ── Warm haze + floor light-pool + dust motes + vignette (topmost) ── */}
         <IdleAtmosphere uid={uid} isConfirming={isConfirming} reduceMotion={reduceMotion} />
