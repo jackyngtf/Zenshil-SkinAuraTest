@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zenshil — Skin Aura Test
+
+An interactive **skin-personality quiz web app** for the Zenshil skincare brand. Users answer a series of image-driven lifestyle questions and receive a personalized "skin aura" result with tailored product recommendations.
+
+> Client project — designed and built end-to-end, from product brief to deployable app.
+
+## The Problem
+
+The brand needed an engaging, shareable way to connect potential customers to the right skincare products — not a static product page, but something interactive that captures attention and segments users by their lifestyle/personality profile.
+
+## The Solution
+
+A visually-led quiz experience: each question is presented with four evocative image options (coastal wellness, hillside cafe, hotel staycation…). The user's path through the questions maps to a **skin aura archetype**, which drives a personalized result page with curated product picks and a shareable card.
+
+## How It Works
+
+- **Quiz flow** — image-driven multiple-choice questions, state managed with Zustand
+- **Scoring & archetype mapping** — answers route to a result archetype that personalizes the outcome
+- **Result page** — curated content system (copy + product recommendations) keyed off the archetype
+- **Motion design** — Framer Motion transitions between questions for a premium feel
+- **Documentation-driven build** — see `docs/` for the full spec chain (product brief → UI/UX flow → quiz logic → data model → asset brief → MVP backlog)
+
+## Tech Stack
+
+`Next.js 16` · `React 19` · `TypeScript` · `Tailwind CSS v4` · `Framer Motion` · `Zustand` · `lucide-react`
+
+## Documentation
+
+The `docs/` folder contains the complete product spec chain — a notable aspect of this project is that the build was specification-first:
+
+- `01_CEO_Product_Confirmation_Brief.md` — product direction
+- `02_UIUX_Flow_Board_Spec.md` — screens & flow
+- `04_Quiz_Logic_and_Data_Model.md` — scoring logic
+- `07_MVP_Backlog.md` — build breakdown
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000).
